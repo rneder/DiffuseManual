@@ -1,2 +1,2 @@
 # DiffuseManual
-Latex sources to the "DiffuseCode" Suite manuals
+Latex sources to the "DiffuseCode" Suite manuals.
