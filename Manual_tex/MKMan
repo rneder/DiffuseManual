@@ -3,7 +3,7 @@
 
 cd `dirname "$0"`
 MYDIR=$PWD
-BINDIR=${MYDIR}/../Manual_PDF/
+BINDIR=${MYDIR}/../../Manual_PDF/
 
 cd hlp2tex
 ./UPDATE
