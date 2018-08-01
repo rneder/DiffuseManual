@@ -1,0 +1,53 @@
+rese
+orient port
+font just,center
+#
+load ni,plain.scat
+load ni,period.scat
+load ni,aver.scat
+load ni,lots.scat
+#
+hart 1,2
+hart 2,2
+hart 3,2
+hart 4,2
+#
+fnam off
+achx [h 0]
+achy [0 k]
+buff 0.06
+#
+nfra 4
+sfra 1,0.00,0.00,0.50,0.35
+sfra 2,0.50,0.00,1.00,0.35
+sfra 3,0.00,0.35,0.50,0.70
+sfra 4,0.50,0.35,1.00,0.70
+#
+afra 1
+kfra 1,1
+aver 1.0
+mark 0.5,0.5
+hlin 1,0,0.05,1,%
+tit2 Plain Fourier
+#
+afra 2
+kfra 2,2
+aver 1.0
+mark 0.5,0.5
+hlin 1,0,0.05,1,%
+tit2 On grid 1/50
+#
+afra 3
+kfra 3,3
+aver 1.0
+mark 0.5,0.5
+hlin 1,0,15.,1,%
+tit2 <F> subtracted
+#
+afra 4
+kfra 4,4
+aver 1.0
+mark 0.5,0.5
+hlin 1,0,25.,1,%
+tit2 Using lots
+#

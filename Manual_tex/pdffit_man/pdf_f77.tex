@@ -1,0 +1,633 @@
+%------------------------------------------------------------------------
+% Chapter:  FORTRAN interpreter
+%------------------------------------------------------------------------
+
+\chapter{FORTRAN style interpreter \label{fort}}
+
+The program includes a FORTRAN style interpreter that allows the
+user to program complex modifications.  The interpreter provides
+variables, linked to data sets and free variables, loops, logical
+construction, basic arithmetic and built in functions.  Commands
+related to the FORTRAN interpreter are {\tt =, break, do, else,
+elseif, enddo, endif, eval, if} and {\tt variable}. The command {\tt
+eval} allows to examine the contents of a variable of evaluate an
+expression, e.g. {\tt eval r[1]*0.5}. \par
+
+%------------------------------------------------------------------------
+
+\section{Variables \label{var}}
+
+There are two types of variables: user defined single named
+variables of type integer or real and build in variables, denoted by
+a name, immediately followed by a left square bracket [, one or more
+indices and a right square bracket ]. An example of the use of
+defined variables is shown here:
+%
+\begin{MacVerbatim}
+   1  variable  real,alpha,90.0
+   2  variable  real,beta
+   3  variable  real,diff
+   4  beta = 94.0
+   5  diff = alpha - beta
+   6  eval diff
+\end{MacVerbatim}
+%
+In line one we define a real variable {\tt alpha} with an initial
+value of 90. Next two more variables are defined and the difference
+between {\tt alpha} and {\tt beta} is calculated (line 5) and the
+result displayed on the screen (line 6). Examples for build in
+variables are given next.
+
+\begin{quote}
+  {\it Example :\/} i[1], r[0], i[i[1]], x[1,2]
+\end{quote}
+
+The left square brackets {\bf must} immediately follow the name of
+the variable.  Blanks within the square brackets are not
+significant.  The index can be any integer expression, especially
+any of the integer variables again.  Two free variables are
+provided, an integer, {\tt i[n]}, and a real, {\tt r[n]} variable.
+Each of these variables is actually an array of dimension n given in
+squared brackets. The allowed range for n is 0 to MAXPARAM, which is
+defined at compilation time by the parameter MAXPARAM in the file
+{\it param.inc}. More details are given in appendix
+\ref{app-install}. \par
+
+Beside these variables {\tt i[n]} and {\tt r[n]} for general use a
+large variety of variables is linked to specific information of {\it
+PDFFIT}, e.g. of the currently loaded structural data or PDF data.
+Some of these variables c an not be modified, others like atomic
+positions or thermal factors can be altered, thus allowing to modify
+the loaded structure. Table \ref{v1-tab} shows a summary of {\it
+PDFFIT} specific variables related to a loaded structure. Note that
+all structure related variables are linked to the currently active
+phase. To alter structural information of another phase use the
+command {\tt phase} first. Variables related to PDF data are listed
+in Table \ref{v2-tab} and refinement variables can be found in Table
+\ref{v3-tab}.
+
+\begin{table}[!htb]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Variable} & {\bf Description} \\
+  \hline \hline
+  {\tt n[1]}$^{*}$ & Total number of atoms of current phase \\
+  {\tt n[2]}$^{*}$ & Number of different atoms of current phase \\
+  {\tt n[3]}$^{*}$ & Number of atoms per unit cell (current phase) \\
+  {\tt n[4]}$^{*}$ & Number of phases \\
+  {\tt n[5]}$^{*}$ & Number of currently active phase \\
+  \hline
+  {\tt x[n]}      & x-position of atom n of current phase \\
+  {\tt y[n]}      & y-position of atom n of current phase \\
+  {\tt z[n]}      & z-position of atom n of current phase \\
+  {\tt m[n]}      & Number of atom type on site n (current phase) \\
+  {\tt u[i,n]}    & Anisotropic thermal factor $U_{lm}$ for site n with
+                    ($i=1..6$ for $U_{11}, U_{22}, U_{33}, U_{12}, U_{13},
+                     U_{23}$)\\
+  {\tt o[n]}      & Occupancy of site n (current phase) \\
+
+  {\tt lat[i]}    & Lattice parameters ($i=1..6$ for $a,b,c,\alpha,\beta,
+                    \gamma$) \\
+  {\tt csca[p]}   & Scaling factor $f_{p}$ for phase $p$ \\
+  {\tt rhoz[p]}   & Number density $\rho_{0}$ for phase $p$ \\
+  \hline
+\end{tabularx}
+\caption[{\it PDFFIT} structural variables]
+        {\label{v1-tab}{\it PDFFIT} structural variables. Variables marked
+         with $^{*}$ are read-only and can not be altered.}
+\end{table}
+
+\begin{table}[!htb]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Variable} & {\bf Description} \\
+  \hline \hline
+  {\tt n[6]}$^{*}$    & Number of loaded experimental PDFs \\
+  {\tt np[s]}$^{*}$   & Number of data points of data set $s$ \\
+  \hline
+  {\tt pc[n,s]}       & Value of calculated PDF point $n$ of data set
+                        $s$ for current phase \\
+  {\tt po[n,s]}       & Value of observed PDF point $n$ of data set $s$ \\
+  {\tt pw[n,s]}       & Value of weight ($1/\sigma^{2}$) of point $n$
+                        of data set $s$ \\
+  \hline
+  {\tt rmin[s]}       & Minimum $r$-value for dataset $s$ \\
+  {\tt rmax[s]}       & Maximum $r$-value for dataset $s$ \\
+  {\tt delr[s]}       & Step size $\Delta r$ for dataset $s$ \\
+  {\tt rang[i,s]}     & Range in $r$ to be calculated or refined ($i=1,2$
+                        for lower and upper limit) \\
+  \hline
+  {\tt delt[p]}       & Value of $\delta$ for quadratic PDF peak sharpening for
+                        phase $p$\\
+  {\tt gamm[p]}       & Value of $\gamma$ for linear PDF peak sharpening for
+                        phase $p$\\
+  {\tt rcut[p]}       & Value of $r_{cut}$ below which the PDF peak width
+                        is multiplied with $\phi_{0}$ \\
+  {\tt srat[p]}       & Value of $\phi_{0}$ (or $\sigma$-ratio) \\
+  {\tt qmax[s]}       & Maximum $Q$-value for data set $s$ \\
+  {\tt qalp[s]}       & Value of $\alpha(s)$ (resolution broadening) for
+                        data set $s$ \\
+  {\tt qsig[s]}       & Value of $\sigma_{Q}$ (resolution dampening) for
+                        data set $s$ \\
+  {\tt dsca[s]}       & Scale factor $f_{s}$ for data set $s$ \\
+  {\tt bave[s]}       & Average scattering length \\
+  \hline
+\end{tabularx}
+\caption[{\it PDFFIT} PDF related variables]
+        {\label{v2-tab}{\it PDFFIT} PDF related variables. Variables marked
+         with $^{*}$ are read-only and can not be altered.}
+\end{table}
+
+\begin{table}[!htb]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Variable} & {\bf Description} \\
+  \hline \hline
+  {\tt n[7]}$^{*}$    & Maximum number of parameters \\
+  {\tt n[8]}$^{*}$    & Number of used refinement parameters \\
+  \hline
+  {\tt p[n]}          & Value of refinement parameter $p_{n}$ \\
+  {\tt dp[n]}$^{*}$   & Standard deviation of {\tt p[n]} \\
+  {\tt pf[n]}         & Refinement flag for $p_{n}$ (1=refine, 0=fixed) \\
+  {\tt cl[n,m]}$^{*}$ & Value of correlation between parameters $p_{n}$ and
+                        $p_{m}$ \\
+  {\tt rw[1]}$^{*}$   & Expected R-value of refinement \\
+  {\tt rw[2]}$^{*}$   & Resulting R-value of refinement \\
+  {\tt rw[3]}$^{*}$   & Resulting weighted R-value of refinement \\
+  \hline
+  {\tt dx[n]}          & Standard deviation of {\tt x[n]} \\
+  {\tt dy[n]}          & Standard deviation of {\tt y[n]} \\
+  {\tt dz[n]}          & Standard deviation of {\tt z[n]} \\
+  {\tt du[i,n]}$^{*}$  & Standard deviation of {\tt u[i,n]} \\
+  {\tt do[n]}$^{*}$    & Standard deviation of {\tt o[n]} \\
+  {\tt drhoz[p]}$^{*}$ & Standard deviation of {\tt rhoz[p]} \\
+  {\tt dlat[i]}        & Standard deviation of {\tt lat[i]} \\
+  {\tt ddelt[n]}$^{*}$ & Standard deviation of {\tt delt[n]} \\
+  {\tt dgamm[n]}$^{*}$ & Standard deviation of {\tt gamm[n]} \\
+  {\tt dsrat[n]}$^{*}$ & Standard deviation of {\tt srat[n]} \\
+  {\tt dcsca[n]}$^{*}$ & Standard deviation of {\tt csca[n]} \\
+  {\tt ddsca[s]}$^{*}$ & Standard deviation of {\tt dsca[s]} \\
+  {\tt dqsig[s]}$^{*}$ & Standard deviation of {\tt qsig[s]} \\
+  {\tt dqalp[s]}$^{*}$ & Standard deviation of {\tt qalp[s]} \\
+  \hline
+\end{tabularx}
+\caption[{\it PDFFIT} refinement variables]
+        {\label{v3-tab}{\it PDFFIT} refinement variables. Variables marked
+         with $^{*}$ are read-only and can not be altered.}
+\end{table}
+
+Another variable is {\tt res[i]} which contains the results of a
+particular {\it PDFFIT} command. The variable {\tt res[0]} contains
+the number of elements returned in {\tt res[i]}. Check the online
+help for the different commands to see what results might be
+returned in this variable. \par
+
+%------------------------------------------------------------------------
+
+\section{Arithmetic expressions \label{arith-exp}}
+
+{\it PDFFIT} allows the use of arithmetic expressions using the same
+notation as in FORTRAN. Valid operators are `+', `-', `*', `/' and `**'.
+Expressions can be grouped by round brackets ( and ). The usual
+hierarchy for the operators holds. Values of expressions can be
+assigned to any modifiable variable. If you know FORTRAN (or another
+programming language) you will have no problems with these examples.
+
+\begin{MacVerbatim}
+  i[0] = 1
+  r[3] = 3.1415
+  r[i[1]] = 2.0*(i[5]-5.0/6.5)
+\end{MacVerbatim}
+
+%------------------------------------------------------------------------
+
+\section{Logical expressions \label{log-exp}}
+
+Logical expressions are formed similar to FORTRAN.  They may contain
+numerical comparisons using the syntax: {\it $<$arithmetic
+expression$> <$operator$> <$arithmetic expression$>$}.  The allowed
+operators within {\it PDFFIT} are {\it .lt., .le., .gt., .ge., .eq.}
+and {\it .ne.} for operations less than, less equal, greater than,
+greater equal, equal and not equal, respectively.\par
+
+Logical expressions can be combined by the logical operators {\it
+.not., .and., .or.} and {\it .xor.}.  The following example shows an
+expression that is true for values of {\tt i[1]} within the interval
+of 3 and 11, false otherwise.
+
+\begin{MacVerbatim}
+  i[1].ge.3 .and. i[1].le.11
+\end{MacVerbatim}
+
+Logical operations may be nested and grouped using round brackets (
+and ). For more examples see section \ref{if}.
+
+%------------------------------------------------------------------------
+
+\section{Intrinsic functions \label{func}}
+
+Several intrinsic functions are defined.  Each function is
+referenced, as in FORTRAN, by its name {\bf immediately} followed by
+a pair of parentheses ( and ) that include the list of arguments.
+Trigonometric and arithmetic functions are listed in table
+\ref{func-trig}.  Table \ref{func-ran} contains various random
+number generating functions.
+
+\begin{table}[!tb]
+\centering
+\begin{tabularx}{\textwidth}{|p{15mm}|p{45mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline \hline
+  real & sin(r) cos(r) tan(r) &
+         Sine, cosine and tangent of $<$r$>$ in radian \\
+  real & sind(r) cosd(r) tand(r) &
+         Sine, cosine and tangent of $<$r$>$ in degrees \\
+  real & asin(r) acos(r) atan(r) &
+         Arc sin, cosine, tangent of $<$r$>$, result in radian \\
+  real & asind(r) acosd(r) atand(r) &
+         Arc sin, cosine, tangent of $<$r$>$, result in degrees \\
+  \hline
+  real & sqrt(r) & Square root of $<$r$>$ \\
+  real & exp(r) &  Exponential of $<$r$>$, base e \\
+  real & ln(r) &   Logarithm of $<$r$>$ \\
+  real & sinh(r) cosh(r) tanh(r) &
+                   Hyperbolic sine, cosine and tangent of $<$r$>$ \\
+  \hline
+  real    & abs(r)      &  Absolute value of $<$r$>$ \\
+  integer & mod(r1, r2) &  Modulo $<$r1$>$ of $<$r2$>$ \\
+  integer & int(r)      &  Convert $<$r$>$ to integer \\
+  integer & nint(r)     &  Convert $<$r$>$ to nearest integer \\
+  real    & frac(r)     &  Returns fractional part of $<$r$>$ \\
+  \hline
+  real    & min(r1, r2) &  Smaller number of $<$r1$>$ and $<$r2$>$ \\
+  real    & max(r1, r2) &  Larger number of $<$r1$>$ and $<$r2$>$ \\
+  \hline
+\end{tabularx}
+\caption{\label{func-trig}Trigonometric and arithmetic functions}
+\end{table}
+
+\begin{table}[!tb]
+\centering
+\begin{tabularx}{\textwidth}{|p{15mm}|p{30mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline\hline
+  real & ran(r) &         Uniformly distributed pseudo random number
+                          between 0.0 and 1.0. Argument $<$r$>$ is a
+                          dummy\\
+  \hline
+  real & gran(r1, typ) &  Gaussian distributed random number with mean
+                          0 and a width given by $<$r1$>$. If $<$typ$>$
+                          is "s" $<$r1$>$ is taken as sigma, if
+                          $<$typ$>$ is "f" $<$r1$>$ is taken as
+                          FWHM. \\
+  \hline
+  real & gbox(r1, r2, r3) & Returns pseudo random number with
+                          distribution given by a box centered
+                          at 0 with a width of $<$r2$>$ and two half
+                          Gaussian distributions with individual
+                          sigmas of $<$r1$>$ and $<$r3$>$ to the left
+                          and right, respectively. \\
+  real & logn(r1,r2)      & Returns a lognormal distributed number
+                          with mean $<$r1$>$ and sigma $<$r2$>$ of
+                          the underlying
+                          Gaussian distribution.\\
+  integer & pois(r1)      & Returns a poisson distributed random
+                          number with mean $<$r1$>$.\\
+  \hline
+\end{tabularx}
+\caption{\label{func-ran}Random number functions}
+\end{table}
+
+{\it PDFFIT} offers some crystallographic functions to calculate
+bond length, bond angles and related values. These functions are
+summarised in Table \ref{func-cryst}.
+
+\begin{table}[!tb]
+\centering
+\begin{tabularx}{\textwidth}{|p{15mm}|p{30mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline
+  real & \raggedright bang(u1,u2,u3, v1,v2,v3 [,w1,w2,w3]) &
+       Returns the bond angle in degrees between {\bf u} and {\bf v}
+       at site {\bf w}. If {\bf w} is omitted, the angle between
+       direct space vectors {\bf u} and {\bf v} is returned. \\
+  \hline
+  real & \raggedright blen(u1,u2,u3 [,v1,v2,v3]) &
+       Returns the length of the real space vector {\bf v}-{\bf u}.
+       The vector {\bf v} defaults to zero. \\
+  \hline
+  real & \raggedright dstar(h1,h2,h3 [,k1,k2,k3]) &
+       Returns the length of reciprocal vector {\bf k} - {\bf h} in
+       \AA$^{-1}$. Vector {\bf k} defaults to zero. \\
+  \hline
+  real & \raggedright rang(h1,h2,h3, k1,k2,k3 [,l1,l2,l3]) &
+       Returns the angle between reciprocal vectors {\bf k} - {\bf h} and
+       {\bf k} - {\bf l} at site {\bf k}.  If {\bf l} is omitted, the angle
+       between reciprocal vectors {\bf h} and {\bf k} is returned. \\
+  \hline
+\end{tabularx}
+\caption{\label{func-cryst}Crystallographic functions}
+\end{table}
+
+Finally we have (currently only one) functions related to the
+refinement itself listed in Table \ref{func-fit}.
+
+\begin{table}[!tb]
+\centering
+\begin{tabularx}{\textwidth}{|p{15mm}|p{30mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline
+  real & rval(s [,rmi,rma]) &
+       Returns the weighted R-value for the given data set $<$s$>$.
+       Optionally a the region in $r$ taken into account can be
+       restricted by giving the values $<$rmi$>$ and $<$rma$>$. \\
+  \hline
+\end{tabularx}
+\caption{\label{func-fit}Refinement functions}
+\end{table}
+
+%------------------------------------------------------------------------
+
+\section{Loops \label{do}}
+
+Loops can be programmed in {\it PDFFIT} using the {\tt do} command.
+Three different types of loops are implemented. The first type
+executes a predefined number of times. The syntax for this type of
+loop is
+
+\begin{quote}
+{\it do $<$variable$>$ = $<$start$>$,$<$end$>$ [,$<$increment$>$] \\
+     \ldots commands to be executed \ldots \\
+     enddo }
+\end{quote}
+
+Loops may contain constants or arithmetic expressions for $<$start$>$,
+$<$end$>$, and $<$increment$>$.  $<$increment$>$ defaults to 1.  The
+internal type of the variables is real.  The loop counter is evaluated from
+{\it ($<$end$>$ - $<$start$>$)/$<$increment$>$ + 1}. If this is negative,
+the loop is not executed at all.  The parameters for the counter variable,
+start end and increment variables are evaluated only at the beginning of
+the do - loop and stored in internal variables.  It is possible to change
+the values of $<$variable$>$, $<$start$>$ and/or $<$end$>$ within the loop
+without any effect on the performance of the loop.  This practice is not
+encouraged, could, however, be an unexpected source of errors. \par
+
+The second type of loop is executed while $<$logical expression$>$ is
+true. Thus it might not be executed at all. The syntax for this type
+of loop is
+
+\begin{quote}
+{\it do while $<$logical expression$>$ \\
+     \ldots commands to be executed \ldots \\
+     enddo }
+\end{quote}
+
+The last type of loop is executed until $<$logical expression$>$ is
+true. This loop, however, is always executed once and has the
+following syntax
+
+\begin{quote}
+{\it do \\
+     \ldots commands to be executed \ldots \\
+     enddo until $<$logical expression$>$ }
+\end{quote}
+
+In the body of commands any valid {\it PDFFIT} command can be used.
+This includes calls to the sublevels, further do loops or macros,
+even if these macros contain do loops themselves.  The maximum level
+of nesting is limited by the parameter {\it MAXLEV} in the file {\it
+doloop.inc}.  If necessary adjust this parameter to allow for deeper
+nesting.  All commands from the first {\tt do} command to the
+corresponding {\tt enddo} are read and stored in an internal array.
+This array can take at most {\it MAXCOM} (defined in file {\it
+doloop.inc} as well) commands at every level of nesting.  If lengthy
+macro files are included in the do loop, this parameter might have
+to be adjusted.  \par
+
+If a do loop (or an if block) needs to be terminated, the {\tt
+break} command will perform this function.  The parameter on the
+{\tt break} command line gives the number of nested levels of {\tt
+do} and {\tt if} blocks to be terminated. The interpreter will
+continue execution with the first command following the
+corresponding {\tt enddo} or {\tt endif} command.  An example is
+given below, note, that the line numbers are only given for better
+orientation and are no actual part of the listed commands. \par
+
+\begin{MacVerbatim}
+     1  do i[2]=1,5
+     2    do i[1]=1,5
+     3      if ((i[1]+i[2]) .eq 6) then
+     4        break 2
+     5      endif
+     6    enddo
+     7  enddo
+\end{MacVerbatim}
+
+In this example, the execution of the inner do-loop will stop as
+soon as the sum of the two increment variables {\tt i[1]} and {\tt
+i[2]} is equal to 6.  The program continues with the {\tt enddo}
+line of the outer do - loop.  Notice that two levels need to be
+interrupted, the if block and the innermost do loop.  If the
+parameter had been equal to one, only the if block would have been
+interrupted, while the innermost do loop would have continued
+without break. \par
+
+%------------------------------------------------------------------------
+
+\section{Conditional statements \label{if}}
+
+Commands can be executed conditionally by using the {\tt if}
+command. Analogous to FORTRAN, the if-control structure takes the
+following form:
+
+\begin{quote}
+{\it if ( $<$logical expression$>$ ) then \\
+     \ldots commands to be executed \ldots \\
+     elseif ( $<$logical expression$>$ ) then \\
+     \ldots commands to be executed \ldots \\
+     else \\
+     \ldots commands to be executed \ldots \\
+     endif }
+\end{quote}
+
+The logical expressions are explained in section \ref{log-exp}.
+Enclosed within an if block any valid {\it PDFFIT} command can be
+used.  This includes calls to the sublevels further if blocks, do
+loops or macros, even if these macros contain if blocks or do loops
+themselves.  The {\tt elseif} and {\tt else} section is optional.
+The maximum level of nesting is limited by the parameter {\it
+MAXLEV} in the file {\it doloop.inc}. If necessary adjust this
+parameter to allow for deeper nesting.  All commands from the first
+{\tt if} command to the corresponding {\tt endif} are read and
+stored in an internal array. This array can take at most {\it
+MAXCOM} (defined in file {\it doloop.inc} as well) commands at every
+level of nesting.  If lengthy macro files are included in the do
+loop, this parameter might have to be adjusted. \par
+
+If an if block (or a do loop) needs to be terminated, the {\tt
+break} command will perform this function.  The parameter on the
+{\tt break} command line gives the number of nested levels of {\tt
+do} and {\tt if} blocks to be terminated. The interpreter will
+continue execution with the first command following the
+corresponding {\tt enddo} or {\tt endif} command.  See the example
+in section \ref{do} for further explanations. \par
+
+\begin{MacVerbatim}
+     1  do i[1]=1,n[7]
+     2    if(dp[i[1]].gt.0.0) then
+     3      p[i[1]]=(1.0+0.1*(0.5-ran(0)))*p[i[1]]
+     4    endif
+     5  enddo
+\end{MacVerbatim}
+
+The example listed above illustrates the use of loops and
+conditional statements within {\it PDFFIT}.  Again, the line numbers
+are given for easy reference and not part of the actual {\it PDFFIT}
+input. This little sequence of commands will add a $\pm 5\%$ random
+noise to all parameters that have a standard deviation greater than
+zero. In line 1 starts a do-loop over all possible parameters.  The
+variable n[7] contains this information (see table \ref{v1-tab} in
+section \ref{var}). In line 2 we check whether the standard
+deviation is greater than zero and if this is true, the value of
+{\tt p[n]} is altered in line 3. Since the function 'ran' produces a
+uniformly distributed pseudo random number in the range 0.0 to 1.0,
+the factor the parameter is multiplied with (line 3) ranges from
+0.95 to 1.05.
+
+%------------------------------------------------------------------------
+
+\section{Filenames \label{fnames}}
+
+Usually, file names are understood as typed, including capital
+letters. Unix operating systems distinguish between upper and lower
+case typing ! However, sometimes it is required to be able to alter
+a file name e.g. within a loop.  Thus, {\it PDFFIT} allows the user
+to construct file names by writing additional (integer) numerical
+input into the filename.  The syntax for this is:
+
+\begin{quote}
+  {\it "string\%dstring",$<$integer expression$>$}
+\end{quote}
+
+The file format MUST be enclosed in quotation marks.  The position
+of each integer must be characterised by a {\tt \%d}.  The sequence
+of strings and \%d's can be mixed at will.  The corresponding
+integer expressions must follow after the closing quotation mark. If
+the command line requires further parameter they must be given after
+the format parameters. The interpretation of the \%d's follows the C
+syntax.  Up to 10 numbers can be written into a filename.  All of
+the following examples will result in the file name {\it a1.1.pdf}:
+
+\begin{MacVerbatim}
+     i[5]=1
+     save pdf,1,a1.1
+     save pdf,1,"a%d.%d",1,1
+     save pdf,1,"a%d.%d",4-3,i[5]
+\end{MacVerbatim}
+
+The second example shows how filenames are changes within a loop.
+Here the structure files {\it phase1.stru} to {\it phase3.stru} will
+be loaded.
+
+\begin{MacVerbatim}
+     do i[1]=1,3
+       ..
+       read stru,"data%d.calc",i[1]
+       ..
+     enddo
+\end{MacVerbatim}
+
+%------------------------------------------------------------------------
+
+\section{Macros \label{mac}}
+
+Any list of valid {\it PDFFIT} commands can be written to an ASCII
+file and executed indirectly by the command {\tt @$<$filename$>$}.
+Macro files can be written by any editor on your system or be
+generated by the {\tt learn} command. The command {\tt learn} starts
+to remember all the commands that follow and saves them into the
+given file. The learn sequence is terminated by the {\tt lend}
+command.  The default extension of the macro file is {\it .mac}.
+Macro files can be nested and even reference themselves directly or
+indirectly.  This referencing of macro files is, however, just a
+nesting of the corresponding text of each macro, not a call to a
+function.  All variable retain their values. \par
+
+On the command line of the macro command {\tt @}, optional
+parameters can be supplied.  Within the macro these have to be
+referenced as {\tt \$1}, {\tt \$2} etc.  Upon execution of the macro
+the formal parameters '\$n' are replaced by the character string of
+the actual values from the command line. The parameter {\tt \$0}
+contains the number of parameter passed to the macro. As any other
+command parameters, these parameters must be separated by comma.  If
+a formal parameter is referenced inside a macro without a
+corresponding parameter on the command line, an error message is
+given.  An example is given below:
+
+\begin{MacVerbatim}
+     # Adds two numbers supplied as command line parameters.
+     # The value is stored in variable defined by parameter three
+     #
+     $3 = $1 + $2
+\end{MacVerbatim}
+
+If this macro is called with the following line, {\tt @add
+1,2,i[4]}, the result is stored in variable {\tt i[4]} which now
+has the integer value 3. \par
+
+If the program {\it PDFFIT} is started with command line parameters,
+e.g. {\tt pdffit 1.mac 2.mac}, the program will execute the given
+macros in the specified order, in our example first {\tt 1.mac} then
+{\tt 2.mac}. If a macro is not found in the current working
+directory, a system macro director is searched. This system macro
+directory is located at {\tt path\_to\_binary/sysmac/pdffit/}.
+Commonly used macro files might be installed in this directory.
+
+%------------------------------------------------------------------------
+
+\section{Working with files \label{io}}
+
+The command language offers the user several commands to write
+variables to a file or read values from a file. First a file needs
+to be opened using the command {\tt fopen}. An optional parameter
+'append' allows one to append data to an existing file. Once the
+task is finished, the file must be closed via {tt fclose}. In the
+standard configuration, the program can open five files at the same
+time. The first parameter of all file input/output related commands
+is the unit number which can range from 1 to 5. The commands {\tt
+fget} and {\tt fput} are used to read and write data, respectively.
+The following example illustrates the usage of these commands:
+
+\begin{MacVerbatim}
+      1  fopen 1,sin.dat
+      2  fput 1,'Cool sinus function'
+      3  #
+      4  do i[1]=1,50
+      5    r[1]=i[1]*0.1
+      6    r[2]=sin(r[1])
+      7    fput 1,r[1],r[2]
+      8  enddo
+      9  #
+     10  fclose 1
+\end{MacVerbatim}
+
+In line 1 we open the file {\it sin.dat} and write a title (line 2).
+If the file already exists it will be overwritten. Note that the
+text must be given in {\it single} quotes. Text and variables may be
+mixed in a single line. Next we have a loop calculating $y=\sin(x)$
+and writing the resulting $x$ and $y$ values to the open file (line
+7). Finally the file is closed (line 10). To read values from a file
+use simply the command {\tt fget} and the read numbers will be
+stored in the specified variables. In contrast to writing to a file,
+mixing of text and number is not allowed when reading data. However,
+complete lines will be skipped when the command {\tt fget} is
+entered without any parameters.
+
+%------------------------------------------------------------------------

@@ -1,0 +1,227 @@
+%------------------------------------------------------------------------
+% Chapter:  Monte Carlo simulation
+%------------------------------------------------------------------------
+
+\chapter{Monte Carlo simulation \label{mc}}
+
+In general Monte Carlo (MC) methods can be described as statistical
+simulation methods involving sequences of random numbers to perform
+the simulation. The MC algorithm goes back to \citet{merorotete53}.
+It works as follows: The total energy of the crystal is expressed as
+a function of random variables such as as site occupancies or
+displacements from the average structure. The simulation process
+proceeds as follows: A site within the model crystal is chosen at
+random and the associated variables are altered by some random
+amount.  The energy difference $\Delta E$ of the configuration
+before and after the change is computed.  The new configuration is
+accepted if the transition probability $P$ given by
+%
+\begin{equation}
+    P = \frac { \exp ( - \frac {\Delta E } { kT } ) }
+              { 1 + \exp ( - \frac {\Delta E } { kT } ) }
+    \label{mc-eq1}
+\end{equation}
+%
+is less than a random number $\eta$, chosen uniformly in the range
+[0,1]. $T$ is the temperature and $k$ Boltzmann's constant. Thus the
+energy of the model crystal in minimized by the MC simulation. Note
+the a higher temperature $T$ means that more moves will be accepted
+that lead to a higher total energy $E$. In order to analyze the
+defect structure of a particular system, the diffraction pattern of
+the generated defect structure can be calculated and compared to the
+experimental data. By adjusting near-neighbor interactions defining
+the energy $E$ the model can be changed until a match with the
+experiment is obtained. On the other hand MC simulations can be used
+to explore the relationship between certain correlations and the
+corresponding diffraction pattern, e.g. for teaching purposes. \par
+
+In order to be able to carry out MC simulations, the energy $E$ of
+the crystal needs to be defined.  The following sections give
+energies for occupational as well as displacement correlations based
+on the energy for an Ising model. Again readers are encouraged to
+have a look at the Discus cookbook \citep{nedpro} which
+contains a detailed discussion, examples and exercises on MC
+simulations using Discus. \par
+
+\begin{quote}
+  {\it Note that the current version of \Discus contains a new
+  rewritten module {\tt mmc} which allows to define more complex
+  energies. The old {\tt mc} module is no longer available.}
+\end{quote}
+
+%------------------------------------------------------------------------
+\section{Occupational disorder \label{mc-corr-occ}}
+
+To represent the distribution of atom or molecule types within a
+crystal, it is convenient to use Ising spin variables $\sigma_{i}
+= \pm 1$.  Here $\sigma_{i} = 1$ means site $i$ is occupied with
+type A and $\sigma_{i} = -1$ stands for type B being present on
+site $i$.  Using these variables, the Hamiltonian (or energy)
+takes the following form:
+%
+\begin{equation}
+    E_{occ} = \sum_{i} H \sigma_{i} +
+              \sum_{i}\sum_{n} J_{n} \sigma_{i} \sigma_{i-n} + \ldots
+    \label{mc-eq2}
+\end{equation}
+%
+The sums are over all sites $i$ and neighbors $n$.  The value
+$\sigma_{i-n}$ refers to the occupancy (spin) of the neighboring
+site $i-n$ of site $i$.  The quantities $J_{n}$ are pair interaction
+energies corresponding to the neighboring vector defined by $i$ and
+$n$.  Although the Hamiltonian can easily be extended to include
+multi-site interactions, we will neglect those in this manual.  The
+quantity $H$ is a single site energy which has the effect of an
+external field in magnetic Ising models. Here it controls the
+overall concentration.\par
+
+The interaction energies $H$ and $J_{n}$ are initially unknown and
+Discus employs a feedback mechanism to determine their values.
+This is done in the following way: After a MC cycle, defined as the
+number of MC steps needed to visit every crystal site once on
+average, has been carried out, the resulting correlations are
+computed and compared to the target values defined by the user.  If
+the computed lattice averages are too low, then the corresponding
+$H$ and $J_{n}$ are decreased by an amount proportional to the
+difference between calculated and required value and {\it vice
+versa}. It should be noted that even the simplest 2D Ising model
+possesses a phase transition which is important to avoid when using
+the described feedback mechanism during a MC simulation. \par
+
+Starting with \Discus version 5.1 a damping algorithm gradually
+decreases the changes of the interaction energies within the feed
+back loop. This reduces fluctuations and provides a better 
+convergence towards the desired correlations.
+%------------------------------------------------------------------------
+\section{Displacement disorder \label{mc-corr-disp}}
+
+The MC simulation technique described above to create structures
+with certain occupational correlations can quite simply been applied
+to the case of displacements. Displacement correlations were already
+discussed in section \ref{chem-corr-disp}. The Ising spin variables
+$\sigma_{i}$ are replaces by continuous variables $x_{i}$ describing
+the displacement of the atom or molecule on site $i$. Furthermore we
+assume that the variable $x_{i}$ is Gaussian distributed with mean
+zero ($ \langle x_{i} \rangle = 0$). Thus the Hamiltonian becomes:
+%
+\begin{equation}
+    E_{dis} = \sum_{i} \sum_{n} J_{n} x_{i} x_{i-n}
+    \label{mc-eq3}
+\end{equation}
+%
+Here, as before, the first sum is over all sites $i$ and the second
+sum is over all neighbors $n$ of the site $i$. In this equation there is
+no term that depends on $x_{i}$ alone, since this would introduce a
+shift in the average value $\langle x_{i} \rangle$. The MC
+simulation operates as described before. Note that there are two
+different modes to model displacements {\tt shift} and {\tt swdisp}.
+Further details can be found in section \ref{rmc-mode}.
+\par
+
+Note that the displacements $x_{i}$ are taken in the direction
+defined by {\tt set neig,dir} and the energy defined in equation
+\ref{mc-eq3} is {\it blind} to displacement components in other
+directions. It is recommended to use the 'swdisp' mode to maintain
+the overall displacements within the crystal. In cases, however,
+where the {\tt shift} mode is used, the generated shifts should be
+restricted to directions corresponding to the correlations desired
+in the MC simulation. If e.g. the x-displacements of one atom are
+correlated with the y-direction of neighboring atoms, the shifts
+should be restricted via the command {\tt set move} to the xy-plane.
+
+%------------------------------------------------------------------------
+
+\section{Creating distortions \label{mc-disp}}
+
+In the previous section displacement correlations were introduced,
+but the average displacements remained constant.  The modeling of
+distortions {\it via} MC simulations works in a similar way. 
+\Discus offers two different potentials. The first one uses a
+Hamiltonian (equation \ref{mc-eq4}, where the atoms or molecules
+move in harmonic potentials (Hooke's law).
+%
+\begin{equation}
+    E_{h} = \sum_{i} \sum_{n} k_{n} [ d_{in} - \tau_{in} d_{0} ] ^{2}
+    \label{mc-eq4}
+\end{equation}
+%
+The sums are over all sites $i$ within the crystal and all neighbors
+$n$ around site $i$.  The distance between neighboring atoms or
+molecules is given by $d_{in}$ and the average distance is $d_{0}$.
+The desired distortions are defined by the factor $\tau_{in}$. The
+value $k_{n}$ is a force constant for each individual neighbor type
+$n$. The second potential is the Lennard-Jones potential :
+%
+\begin{equation}
+   E_{lj} = \sum_{i} \sum_{n \ne i}
+            \left [ \frac{A}{d_{in}^M} - \frac{B}{d_{in}^N} \right ]
+   \label{sro-eq-lennard}
+\end{equation}
+%
+with
+%
+\begin{equation}
+  A = D \frac{N}{N-M} \tau_{in}^M ~ \mbox{and} ~
+  B = D \frac{M}{N-M} \tau_{in}^N.
+  \label{sro-eq-lennard2}
+\end{equation}
+%
+The sums are over all sites $i$ within the crystal and all
+neighbors $n$ around site $i$.  The values for $A$ and $B$ are
+calculated from the target distance $\tau_{in}$, {\it i.e.} the
+distance where Lennard-Jones has its potential minimum, and from the
+potential depth $D$ which must be negative.
+\par
+A standard Lennard-Jones potential is calculated with the repulsive
+term and M=12 and the attractive term with N=6. \Discus allows
+you to use other exponents as well.
+
+A purely repulsive potential is used to create an even distribution
+of defects within a crystal:
+
+\begin{equation}
+  E = -E_{\infty} + \left ( \frac{r-r_{min}}{scale} \right )^M
+\end{equation}
+Here $E_{infty}$ is the energy between two atoms at infinite 
+distance. As the MC algorithm looks at changes, its value is not
+relevant. Atoms at distances shorter than $r_{min}$ are placed
+at essentially infinite energy, for longer distances the energy
+changes according to the exponent M. A large value of M will
+cause a steep descent at short distances, but the descent at longer 
+distances might will be less relevant. To extend the effect of
+the repulsive potential over long distances, choose a large 
+value of {\tt scale}.
+\par
+Another potential function is the Buckingham potential:
+\par
+Angular distortions are realized with a potential energy:
+
+\begin{equation}
+  E = K \left (\Theta - \Theta_{ideal} \right )^2
+\end{equation}
+Here $\Theta_{ideal}$ is the indented ideal bond angle.
+
+%------------------------------------------------------------------------
+
+\section{Working with molecules \label{mc-mol}}
+
+Discus allows the use of molecules. The command 'set mole'
+selects the molecule types to be used for the MC simulation and
+automatically switches Discus to molecule mode. On the other
+hand 'set atoms' will return to atoms mode and select the atom
+types to be used for the MC simulation. \par
+
+All neighboring definitions work exactly as for atoms. However, the
+site label used to define neighboring vectors ({\tt set vec}) still
+refers to the atom site within the crystal regardless of the current
+working mode.  Thus the user has to check which site of the unit
+cell is occupied by the origin of the selected molecules and define
+the vectors accordingly.  The use of the 'distance' mode to define
+neighbors works straight forward, however, this mode is much slower
+compared to using the vector definitions. All operation modes work
+on rigid molecules.  Note, there are currently no MC (or RMC) moves
+defining rotations of the molecules.  Rotations and other symmetry
+operations can be realized by creating the wanted different
+orientations of the molecules as different types using the symmetry
+segment of Discus (see chapter \ref{cryst-sym}) and
+subsequently using the {\it swap chemistry} mode.

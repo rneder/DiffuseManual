@@ -1,0 +1,558 @@
+%------------------------------------------------------------------------
+%                       DISCUS COMMON Users guide
+%------------------------------------------------------------------------
+
+\documentclass[11pt]{report}
+
+\usepackage[letterpaper]{geometry}
+\geometry{height=8.5in}
+\geometry{bottom=1.1in}
+\geometry{left=1.1in}
+\geometry{right=1.1in}
+
+\usepackage[dvips]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{floatflt}
+\usepackage{tabularx}
+\usepackage[round]{natbib}
+\usepackage[hang,small,bf]{caption2}
+\usepackage{fancyvrb}
+\usepackage{scalefnt}
+\usepackage{color}
+\usepackage{url}
+\usepackage{hyperref}
+
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+
+% General page style
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\bfseries \slshape\leftmark}
+\fancyhead[R]{\bfseries Reference Guide}
+\fancyfoot[R]{\bfseries Page \thepage}
+\fancyfoot[L]{\bfseries \Discus Package}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\input{../version.tex}
+\newcommand{\discus}{\textsc{Discus}}
+\newcommand{\Discus}{\textsc{Discus\ }}
+\newcommand{\Diffev}{\textsc{Diffev\ }}
+\newcommand{\diffev}{\textsc{Diffev}}
+\newcommand{\Kuplot}{\textsc{Kuplot\ }}
+\newcommand{\kuplot}{\textsc{Kuplot}}
+\newcommand{\Mixscat}{\textsc{Mixscat\ }}
+\newcommand{\mixscat}{\textsc{Mixscat}}
+\newcommand{\Suite}{\textsc{Discus Suite\ }}
+\newcommand{\suite}{\textsc{Discus Suite}}
+
+
+% Style for chapter start pages ..
+
+\fancypagestyle{plain} {
+  \fancyhf{}
+  \fancyhead[R]{\bfseries Reference Guide}
+  \fancyfoot[L]{\bfseries \Discus Package}
+  \fancyfoot[R]{\bfseries Page \thepage}
+  \fancyfoot[L]{\bfseries \Diffev \version}
+  \renewcommand{\headrulewidth}{0.4pt}
+}
+
+% MacVerbatim style for macros
+
+\definecolor{DarkBlue}{rgb}{0.1,0.0,0.5}
+
+\DefineVerbatimEnvironment%
+{MacVerbatim}{Verbatim}
+{fontfamily=courier,
+ fontsize=\scriptsize,
+ fontseries=b,
+ formatcom=\color{DarkBlue}}
+
+\graphicspath{{pic/}}
+
+\setlength\parindent{0pt}
+
+%------------------------------------------------------------------------
+
+\begin{document}
+
+%------------------------------------------------------------------------
+% Title
+%------------------------------------------------------------------------
+
+\begin{titlepage}
+\begin{flushright}
+
+  \hrule
+  \vspace{15mm}
+  \textbf{{\scalefont{8} \discus}} \\
+  \vspace{5mm}
+  \textbf{{\scalefont{4} Package}} \\
+  \vspace{10mm}
+  \textbf{{\Huge Reference Guide}} \\
+  \vspace{10mm}
+  \textbf{{\Huge Version  \version}} \\
+  \vspace{10mm}
+
+  \hrule
+  \vspace{45mm}
+  \textbf{developed by} \\
+
+  \vspace{5mm}
+  \textbf{\Large Reinhard Neder} \\
+  Email: reinhard.neder@fau.de \\
+
+  \vspace{ 2mm}
+  \textbf{\Large Thomas Proffen} \\
+  Email: tproffen@ornl.gov \\
+
+  \vspace{12mm}
+  \textbf{\Large 
+     \url{http://tproffen.github.io/DiffuseCode/} 
+  } \\
+
+  \vspace{3mm}
+  \hrule
+  \vspace{3mm}
+ 
+  \textit{Document created: \today}
+\end{flushright}
+
+\end{titlepage}
+
+%------------------------------------------------------------------------
+% Table of contents
+%------------------------------------------------------------------------
+
+\tableofcontents
+
+%------------------------------------------------------------------------
+% Short summary of the DISCUS package
+%------------------------------------------------------------------------
+
+\newpage
+\chapter{Welcome} \label{welc}
+
+Congratulations for downloading the \Discus package. The \Discus package
+consists of the following programs:
+
+\begin{itemize}
+  \item \textbf{\textsc{DISCUS SUITE}}: The \Suite is a common program
+  that includes \Discus \Diffev and \kuplot. It allows to switch
+  seamlessly between the individual sections and will eventually replace
+  the individual parts. It also offers an optimization for large scale 
+  computing facilities. For all practical reasons, the 
+  \textbf{\textsc{DISCUS SUITE}} should be used and the use of the 
+  individual programs DISCUS, DIFFEV and KUPLOT is discouraged.
+
+  \item \textbf{\textsc{DISCUS}}: This is the main diffuse scattering
+  and defect structure simulation program. This is the program that
+  gave the package its name.
+  
+  \item \textbf{\textsc{DIFFEV}}: This is a more recent addition. This
+  program allows the refinement of a set of high level parameters 
+  (\textit{e.g.} input parameters of a \Discus macro) based on a
+  differential evolutionary algorithm.
+  
+  \item \textbf{\textsc{MIXSCAT}}: This is newest addition to the 
+  \Discus package. This program allows on to extract differential
+  PDFs from neutron- and x-ray data.
+  
+  \item \textbf{\textsc{KUPLOT}}: This is plotting program of the
+  package. It is nearly as old as \Discus itself. 
+  
+%  \item \textbf{\textsc{PDFFIT}}: This is a PDF refinement program.
+%  It has been retired and users are encouraged to download the new
+%  version \textsc{PDFgui} at \url{http://www/diffpy.org}.
+\end{itemize}
+
+Each of the program(sections) has its own users guide which include disclaimers 
+and the appropriate references to cite in case you are publishing work
+derived from using these programs.
+
+This manual contains a description of the command language common to all
+programs as well as detailed installation instructions. \Discus itself 
+has been developing over the last nearly 30 years and the command language
+was developed before anyone knew about things like python. The commands
+are loosely related to FORTRAN77 syntax, so the older generation should
+have no trouble with it. 
+\par
+\ \par
+Please visit the \Discus homepage frequently at 
+\url{http://tproffen.github.io/DiffuseCode/} 
+and also consider subscribing 
+to the \Discus mailing lists.
+
+\section{Getting started} \label{start}
+
+\subsection{Windows} \label{start-win}
+
+Once the programs have been installed you should see an icon for each of 
+the programs on your personal desktop. Double click the icon to start
+the program of your choice.
+
+At program start, each of the programs sets its starting folder to\\
+\begin{MacVerbatim}
+   C:\Users\your_name
+\end{MacVerbatim}
+where {\tt your\_name} will be your user name. The string {\tt Users}
+may be slightly different depending on the language settings.
+To work with data and macros that are stored in a separate folder, 
+you need to change to this folder.
+
+Within the DIFFUSE program window, type the command {\tt cd } including a
+blank space after the {\tt cd}. At this point do not hit the enter key.
+Open the desired folder with the Windows-Explorer. Left click on the 
+small folder symbol in the top line that indicates the path to your
+folder. This should highlight the full path to the folder. 
+
+For \discus, \diffev, and \Mixscat you can drag this folder symbol into the
+DIFFUSE program window. The command line should now read something like
+\begin{MacVerbatim}
+   cd C:\Users\Neder\Documents\DISCUS_examples
+\end{MacVerbatim}
+
+For \Kuplot and \suite,  select the highlighted path to the folder
+with CTRL-c. Activate the \Kuplot or \Suite window and press the 
+middle button on the mouse. This should place the full path into the
+program window. 
+
+Once you activate the window and hit the ENTER key the program will 
+work in this folder.
+
+\subsection{Linux} \label{start-linux}
+
+Once you have installed the Diffuse program package, the binaries will
+usually reside in the directory: {\tt /usr/local/bin/}. 
+To use any of the programs, open a terminal window, switch to the
+desired directory and type the program name. 
+
+Several command line options are available for the Linux version.
+The most important one is to start the execution of a macro:
+
+\begin{MacVerbatim}
+discus_suite -macro useful.mac  
+discus_suite -macro useful_with_params.mac  par1 par2 par3
+\end{MacVerbatim}
+
+The first line would start \Suite and begin the automatic execution
+of macro {\tt useful.mac}. Likewise in the second line, the macro
+{\tt useful\_with\_params.mac} is started, which takes three parameters.
+The actual strings that
+you provide for <par1>, <par2>, <par3> are handed down as parameters to 
+this macro. Note that there are no comma between the parameters.
+
+For info on further command line options the the on-line help for
+the Command language.
+
+\section{Command language overview} \label{over}
+
+All sections of the \Suite are controlled by a command language. The
+basic command style is a command verb that may be accompanied by one 
+or several parameters. You must type at least one empty space between
+the command and the list of parameters. The parameters are all 
+separated from each other by a comma as in the following short example: 
+
+\begin{MacVerbatim}
+  discus
+  ! a comment
+  # another comment
+  read
+  cell example.cell, 2,3, 4
+  show atom, all   ! In line comment after exclamation mark
+  exit
+\end{MacVerbatim}
+
+Anything to the right of an exclamation mark {\tt !} or a hash tag
+{\tt \#} is considered a comment and is not interpreted. 
+
+Most commands can be abbreviated, as long as the short form is
+still unique. Thus these commands are all valid forms to 
+step into the \Discus fourier menu:
+
+\begin{MacVerbatim}
+  fourier
+  fourie
+  fouri
+  four
+  fou
+\end{MacVerbatim}
+
+
+Several command throughout the \Suite take optional parameters.
+Sometimes these are the last parameter(s) that you can simply
+omit. See the on-line help for the individual commands for
+full information.
+
+More and more though the optional parameters are specified with the
+syntax: Name of the optional parameter, a colon ":" and the actual
+value you want to provide:
+\begin{MacVerbatim}
+ run  plot:inter, kill:yes
+\end{MacVerbatim}
+If an optional parameter is omitted, its value goes back to the
+default value. This is a bit different compared to the
+non-optional parameters. These parameters retain their value
+until you change the value explicitly.
+
+As the named optional parameters are identified by their name,
+they may be given in arbitrary order.
+
+
+\subsection{Help} \label{over-help}
+
+The \Suite offers the manuals, and on-line help. To access any of the 
+manuals from the \suite, type :
+\begin{MacVerbatim}
+  manual                 ! Opens the manual for your current section
+  manual section:suite   ! Opens the SUITE manual
+  manual section:discus  ! Opens the DIFFEV manual
+  manual section:diffev  ! Opens the DISCUS manual
+  manual section:kuplot  ! Opens the KUPLOT manual
+  manual section:package ! Opens this PACKAGE manual
+\end{MacVerbatim}
+
+The \Suite will open the manual with a standard PDF viewer. Alternatively
+you can open the manual with your favorite viewer with the second 
+optional parameter {\tt viewer:viewer\_name}, where {\tt viewer\_name} 
+shall be replaced by your favorite.
+
+At a Linux system the manual files are usually installed into 
+{\tt /usr/local/share}.
+
+At a Windows system the manual files are in the {\tt share} folder 
+within the Discus installation, commonly at
+{\tt c:Program Files (x86)\textbackslash Discus\textbackslash share}.  
+
+On-line help is available for each command through the {\tt help}
+command. A straight {\tt help} will open the on-line help at the
+current section respectively menu within a section. Alternatively
+you can migrate immediately to the on-line help for a specific 
+command by adding the command name after the help command. If 
+the command is within a menu of your current section you can 
+access the help by providing the menu as first parameter, followed
+by the command name.
+
+\begin{MacVerbatim}
+help               ! Opens the help at the current section / menu
+help fourier       ! Opens the help for the fourier command
+help fourier, lots ! Opens the help for the fourier> lots command
+\end{MacVerbatim}
+
+To leave the on-line help simply hit the {\tt ENTER} key. At each 
+help level the on-line help gives a list of further topics, type
+any of these names to get help on one of these topics. 
+
+The help is organized hierarchically for the menus. At the \Discus
+section for example the top level provides help to all \Discus
+commands. If you step into the help of (for example) the 
+{\tt fourier} menu you can access the {\tt fourier} commands. 
+
+To go back to an upper help level type {\tt ..} at the 
+on-line help prompt.
+
+As most help entries are lengthy, the list of help options at
+the current level will have moved out of your view. Just type
+{\tt ?} to refresh this list.
+
+\subsection{Main commands} \label{over-main}
+
+The main \Suite commands are summarized in table \ref{over-cmds}
+followed by a list of common Unix commands.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{50mm}|X|}
+  \hline
+  {\bf Name} &  {\bf Description} \\
+  \hline\hline
+  discus & Go from the main \suite level to the \Discus
+           section.
+           Leave this section with an "exit" command. \\
+  \hline
+  diffev & Go from the main \suite level to the \Diffev
+           section.
+           Leave this section with an "exit" command. \\
+  \hline
+  kuplot & Go from the main \suite level to the \Kuplot
+           section. 
+           Leave this section with an "exit" command. \\
+  \hline
+  branch <name> & Step sideway from your current section into 
+           the section <name>. 
+           Leave this section with an "exit" command. \\
+  \hline
+  exit & Leave a menu, a section or the program. If you are 
+         within a menu of any of the three sections, you will
+         get back to the main level of this section. If you are
+         at the top level of any of the three sections, you 
+         will get back to the main \Suite level. If you are at
+         the main\Suite level, the program will terminate 
+         without further confirmation. \\
+  \hline
+   help & Enter the help menu\\
+  \hline
+   @macro.mac & Run the commands in file "macro.mac" as if 
+          they were typed interactively. See section \ref{mac}
+          for full details.\\
+  \hline
+   learn macro.mac & Start to learn everything to type and
+          log these command into the file "macro.mac". 
+          This log will include everything you type, including 
+          errors...\\
+  \hline
+   lend & Finish the learn sequence. The macro "macro.mac is 
+          now available to be run as {\tt @macro.mac}\\
+  \hline
+   cd <folder> & Change the directory / folder to the new 
+          directory / folder <folder>. 
+          The path can be a 
+          relative path as in {\tt cd ../new\_folder} or
+          an absolute path.\\
+  \hline
+   system <command> & Instruct your operating system to execute
+          the command <command>. As the \Suite is really a
+          Unix driven program, even on a Windows computer
+          these are predominantly Unix commands. Some 
+          commonly used commands are listed in Table
+          \ref{over-unix}\\
+  \hline
+   set error, <status> & The <status> may be "continue", 
+          "exit" "live".\\
+  \hline
+   show  & Most sections and menus offer a "show" command
+           to display the local settings. Check the on-line
+           help at the respective menu for details.\\
+  \hline
+   run   & Most of the menus expect several commands that
+           define the simulation / calculation prior to the
+           calculation. The actual 
+           calculation is carried out with the "run" command
+           at the respective menu.\\
+  \hline
+   set prompt, <status> & The <status> may be "on", "off".\\
+  \hline
+\end{tabularx}
+\caption{\label{over-cmds}Main \Suite commands}
+\end{table}
+
+The \Suite can react in different ways to an erroneous calculation or 
+erroneous input. The default "continue" is to display an error message 
+and to stop the execution of a macro/calculation. Thereafter the program 
+continues with the regular interactive prompt. Sometimes one may
+want to live on after a fault. This may for example occur if you test
+for the existence of a file or directory/folder, or if you encounter 
+the end of file upon a read. A macro can live on if the error status is
+set to "live". The most stringent reaction to an error is to terminate
+the  \Suite with the error status "exit". Keep in mind that no data are
+saved!
+
+During a regular interactive session the program displays a prompt like
+\begin{MacVerbatim}
+suite>         ! Prompt within the top level suite
+discus/four>   ! Prompt within a sub menu of a section, here DISCUS
+\end{MacVerbatim}
+If a macro is executed, the lines that the \Suite reads from the macro
+file are also echoed to the screen. This may produce lengthy output.
+The choices offered are to set the prompt "on" or "off". An optional
+parameter allows to save the current prompt status so that the "old" 
+status can be restored at a later stage.
+
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{50mm}|X|}
+  \hline
+  {\bf Name} &  {\bf Description} \\
+  \hline \hline
+   pwd & Inquire the current directory/folder, the
+          {\bf p}resent {\bf w}orking {\bf d}irectory.\\
+  \hline
+   ls    & List the content of the current directory/folder\\
+  \hline
+   mkdir <folder> & Make the new directory/folder <folder> \\
+  \hline
+   mkdir -p <folder> & Make the new directory/folder <folder>,
+         including any intermediate parent folders. 
+         This command version will not flag an error,
+         if the folder does already exist. \\
+  \hline
+   rm <filename> & Remove the file <filename>. \\
+       & Careful, this command does not ask for 
+         a confirmation! \\
+       & If the file does not exist
+         or if it is a protected file you will get an
+         error message.\\
+  \hline
+   rm -f <filename> & Forced remove the file <filename>. \\
+       & Careful, this version does not ask for a confirmation!\\
+       & This command version will not flag an error,
+         if the file does not exist. \\
+  \hline
+   cp <from> <to> & Copies the old file <from> to a new name and
+         or directory/folder <to>.\\
+  \hline
+\end{tabularx}
+\caption{\label{over-unix}Common Unix commands}
+\end{table}
+
+Most of the Unix commands offer many more options. Just try it 
+out, in many cases a parameter like "-help" 
+or "--help" will give a short summary of the available options.
+Examples:
+
+\begin{tabularx}{\textwidth}{p{25mm}X}
+ls -a & List all files, that includes hidden files\\
+ls -l & List a long listing that includes many details\\
+ls -R & List recursively into sub directories as well\\
+\end{tabularx}
+
+Unix offers many possibilities to work in a flexible manner with file 
+names. You can place into the filename different {\it wild} characters:
+
+\begin{tabularx}{\textwidth}{p{25mm}X}
+* & character string of any length\\
+? & exactly one character\\
+\ [a-z,A-Z] & a character from interval a-z or A-Z.\\
+\end{tabularx}
+
+You may provide a single interval as well, and also a range of numbers.
+Examples:
+
+\begin{tabularx}{\textwidth}{p{25mm}X}
+ls *.mac & List all files that end in ".mac"\\
+ls data.0[0-9]1 & List all files called data.001, data.011, to data.091
+files called data.002 etc. are omitted\\
+\end{tabularx}
+
+
+\subsection{Interrupt} \label{over-inter}
+If a lengthy calculation or macro appears to be faulty you can interrupt
+the calculation with a {\tt CTRL-c}. The \Suite will offer a selection
+how to proceed after this interrupt. You can:
+
+
+\begin{tabularx}{\textwidth}{p{25mm}X}
+{\tt resume} & the calculation. The program will (hopefully) resume
+   the calculation as if nothing had happened. \\
+{\tt continue} & with the normal interactive prompt. At this point
+   you will be at the top level of the \Suite. Be aware that a macro
+   may have changed the folder/directory. You are well advised to 
+   check this with a command {\tt system pwd} \\
+{\tt save} & The program will write the current crystal 
+   to a file {\tt EMERGENCY.STRU} to give you a chance to recover 
+   (most) of your work. It then continues in the same fashion as with the
+   continue command. \\
+{\tt exit} & the \Suite. \\
+\end{tabularx}
+
+%------------------------------------------------------------------------
+
+\include{pack_f90}
+\include{pack_api}
+\include{lib_f90}
+
+\end{document}

@@ -1,0 +1,53 @@
+#!/bin/bash
+# $Id: MKMan,v 1.1 2010/01/16 10:46:42 tproffen Exp $
+
+cd `dirname "$0"`
+MYDIR=$PWD
+BINDIR=${MYDIR}/../Manual_PDF/
+
+cd hlp2tex
+./UPDATE
+cd ..
+####./hlp2tex/UPDATE
+
+# "exit 1" statements make sure things run in the right place
+
+#for PACKAGE in  discus_man 
+if [ "$#" -eq 0 ]; then
+for PACKAGE in  discus_man kuplot_man diffev_man mixscat_man suite_man package_man;
+do
+    cd ${MYDIR}/${PACKAGE} || exit 1
+    echo "#-------------------------------------------------"
+    echo "# BUILDING MANUAL ${PACKAGE}"
+    echo "#-------------------------------------------------"
+
+    FILE=`ls *_man.tex | sed 's/.tex//' `
+    latex ${FILE}
+    bibtex ${FILE}
+    latex ${FILE}
+    latex ${FILE}
+    dvips ${FILE}.dvi
+    ps2pdf13 ${FILE}.ps
+    mv ${FILE}.pdf ${BINDIR}
+
+#    ./clean
+done
+else
+    cd ${MYDIR}/$1 || exit 1
+    echo "#-------------------------------------------------"
+    echo "# BUILDING MANUAL ${PACKAGE}"
+    echo "#-------------------------------------------------"
+
+    FILE=`ls *_man.tex | sed 's/.tex//' `
+    latex ${FILE}
+    bibtex ${FILE}
+    latex ${FILE}
+    latex ${FILE}
+    dvips ${FILE}.dvi
+    ps2pdf13 ${FILE}.ps
+    mv ${FILE}.pdf ${BINDIR}
+
+#    ./clean
+fi
+
+echo "Done .."

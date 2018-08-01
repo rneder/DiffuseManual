@@ -1,0 +1,239 @@
+%------------------------------------------------------------------------
+% Chapter:  Introduction
+%------------------------------------------------------------------------
+
+\chapter{Introduction \label{intro}}
+\section{What is DISCUS\_SUITE ?}
+
+The \Suite is a combination of the components of the DISCUS program 
+suite. It includes the stand alone programs 
+\href{./discus\_man.pdf}\discus, 
+\href{./diffev\_man.pdf}\diffev, and
+\href{./kuplot\_man.pdf}\Kuplot under a common  command language. 
+The command language is documented in the manual 
+\href{./package\_man.pdf}{package\_man}.\\
+In this combination, the 
+\Suite allows you to seamlessly switch between the individual
+sections. Its main advantage lies in the field of massive parallel 
+computing. As the \Suite includes the full functionality of 
+\diffev, the \Suite allows you to perform parallel refinements.
+In contrast to a stand alone \diffev, the \Suite does have to
+perform nearly no I/O during the refinement.
+
+See the \Diffev manual for full details of the refinement process.
+
+%------------------------------------------------------------------------
+
+\section{Getting started \label{intro-get}}
+
+\subsection{Windows}
+
+Once the programs have been installed you should see an icon for each of
+the programs on your personal desktop. Double click the icon to start
+the program of your choice.
+
+At program start, each of the programs sets its starting folder to\\
+\begin{MacVerbatim}
+   C:\Users\your_name
+\end{MacVerbatim}
+where {\tt your\_name} will be your user name. The string {\tt Users}
+may be slightly different depending on the language settings.
+To work with data and macros that are stored in a separate folder,
+you need to change to this folder.
+
+Within the DIFFUSE program window, type the command {\tt cd } including a
+blank space after the {\tt cd}. At this point do not hit the enter key.
+Open the desired folder with the Windows-Explorer. Left click on the
+small folder symbol in the top line that indicates the path to your
+folder. This should highlight the full path to the folder.
+
+For \discus, \diffev, you can drag this folder symbol into the
+DIFFUSE program window. The command line should now read something like
+\begin{MacVerbatim}
+   cd C:\Users\Neder\Documents\DISCUS_examples
+\end{MacVerbatim}
+
+For \Kuplot and \suite,  select the highlighted path to the folder
+with CTRL-c. Activate the \Kuplot or \Suite window and press the
+middle button on the mouse. This should place the full path into the
+program window.
+
+Once you activate the window and hit the ENTER key the program will
+work in this folder.
+
+\subsection{Linux}
+
+
+After the program {\it DISCUS\_SUITE} has been installed properly and the
+environment variables are set, the program can be started by typing
+'discus\_suite' at the operating systems prompt.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Symbol} & {\bf Description} \\
+  \hline\hline
+  "text"     &  Text given in double quotes is to be understood as typed. \\
+  \hline
+  $<$text$>$ &  Text given in angled brackets is to be replaced by an
+                appropriate value, if the corresponding line is used
+                in \suite. It could, for example be the actual name
+                of a file, or a numerical value. \\
+  \hline
+  {\tt text} &  Text in single quotes exclusively refers to \Suite
+                commands. \\
+  \hline
+  $[$text$]$ &  Text in square brackets describes an optional parameter or
+                command. If omitted, a default value is used, else
+                the complete text given in the square brackets is to
+                be typed. \\
+  \hline
+  \{text $|$ text\} &  Text given in curly brackets is a list of alternative
+                parameters. A vertical line separates two alternative,
+                mutually exclusive parameters. \\
+  \hline
+\end{tabularx}
+\caption{\label{sym-tab}Used symbols}
+\end{table}
+
+The program uses a command language to interact with the user.  The
+command {\tt exit} terminates the program and returns control to the
+shell.  All commands of \Suite consist of a command verb,
+optionally followed by one or more parameters.  All parameters must
+be separated from one another by a comma ",".  There is no
+predefined need for any specific sequence of commands.  \Suite     
+is case sensitive, all commands and alphabetic parameters MUST be
+typed in lower case letters.  If \Suite has been compiled
+using the {\tt -DREADLINE} option (see installation files) basic
+line editing and recall of commands is possible.  For more
+information refer to the reference manual or check the online help
+using ({\tt help command input}).  Names of input or output files
+are to be typed as they will be expected by the shell.  If necessary
+include a path to the file.  All commands may be abbreviated to the
+shortest unique possibility. At least a single space is needed
+between the command verb and the first parameter.  No comma is to
+precede the first parameter. A line can be marked as comment by
+inserting a "{\tt \#}" as first character in the line.\par
+
+The symbols used throughout this manual to describe commands,
+command parameters, or explicit text used by the program \Suite     
+are listed in Table \ref{sym-tab}. There are several sources
+of information, first \Suite  has a build in online help, which
+can be accessed by entering the command {\tt help} or if help for a
+particular command $<$cmd$>$ is wanted by {\tt help $<$cmd$>$}. This
+manual describes background and principle functions of \Suite
+and should give some insight in the ways to use this program. \par
+
+\Suite is distributed as part of the diffuse scattering
+simulation software \discus.  In contrast to, \diffev, \Suite
+does not lend itself as efficiently as a general refinement program 
+separate from the \Discus program package. \Suite handles a 
+structure refinement via the internal \Discus and \Kuplot sections.
+
+\subsubsection{Command line options \label{intro-cmd}}
+Several command line options are available for the Linux version.
+The most important one is to start the execution of a macro:
+
+\begin{MacVerbatim}
+discus_suite -macro useful.mac
+discus_suite -macro useful_with_params.mac  par1 par2 par3
+\end{MacVerbatim}
+
+The first line would start \Suite and begin the automatic execution
+of macro {\tt useful.mac}. Likewise in the second line, the macro
+{\tt useful\_with\_params.mac} is started, which takes three parameters. 
+The actual strings that
+you provide for par1, par2, par3 are handed down as parameters to
+this macro. Note that there are no comma between the parameters.
+
+For info on further command line options the the on-line help for
+the Command language.
+
+\section{Parallel execution \label{intro-par}}
+
+The typical application of the \Suite is a run on a massive parallel 
+system. You will have to check for details with your local administrator.
+In general you should expect to start \Suite along the lines of:
+
+\begin{MacVerbatim}
+mpiexec -n 192 discus_suite -macro refine.mac > /dev/null
+\end{MacVerbatim}
+
+The command {\tt mpiexec} initiates the MPI system. Here in this example
+we request 192 CPUs {\tt -n 192}. The MPI system then starts the \Suite
+and read its input from the macro {\tt refine.mac}. All output is discarded
+ to {\tt /dev/null} in order to minimize I/O. During development of your 
+macro you might redirect the output to a logfile.
+
+The example line above works fine on a single multi-core computer with 
+Linux. The number of processes would be more reasonably placed around 
+the number of CPUs on your computer.
+
+Within the Windows version, parallel execution of such a macro is 
+performed by \Suite command {\it parallel}:
+
+\begin{MacVerbatim}
+parallel refine.mac 
+parallel 6, refine.mac 
+\end{MacVerbatim}
+
+The first command version instructs \Suite to run a parallel 
+refinement via the macro {\it suite.mac}. The number of parallel 
+threads is determined automatically. Alternatively you can tell 
+\Suite how many parallel threads you would like to run by adding the
+number of threads prior to the macro name. In the example above 
+\Suite is instructed to use 6 threads.
+
+
+%------------------------------------------------------------------------
+
+\section{Command language}
+
+%\begin{table}[!tb]
+%\centering
+%\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+%  \hline
+%  {\bf Variable} & {\bf Description} \\
+%  \hline \hline
+%  pop\_gen[1]    &  Current population number \\
+%  pop\_n[1]      &  Number of members in the population\\
+%  pop\_c[1]      &  Number of children in the population\\
+%  pop\_dimx[1]   &  Number of parameters to be refined  \\
+%  \hline 
+%  diff\_cr[1]     &  Cross over probability\\
+%  diff\_f[1]      &  Scale factor for the difference vectors\\
+%  diff\_k[1]      &  point along line between parent and donor base\\
+%  diff\_lo[1]     &  Local search probability\\
+%  \hline \hline
+%  pop\_xmin[i]   &  Minimum allowed value for parameter no. i  \\
+%  pop\_xmax[i]   &  Maximum allowed value for parameter no. i  \\
+%  pop\_smin[i]   &  Minimum allowed starting value for parameter no. i  \\
+%  pop\_smax[i]   &  Maximum allowed starting value for parameter no. i  \\
+%  pop\_sig[i]    &  Global sigma for parameter no. i  \\
+%  pop\_lsig[i]   &  Local search sigma for parameter no. i  \\
+%  \hline \hline
+%  pop\_v[i,j] *  &  Value of parameter no. i for member no. j  \\
+%  pop\_t[i,j] *  &  Value of current trial parameter no. i for child no. j  \\
+%  rvalue[i] *    &  R-value for member no. i\\
+%  bestm[1] *     &  Number of member with best R-value\\
+%  bestr[1] *     &  Best R-value\\
+%  worstm[1] *    &  Number of member with worst R-value\\
+%  worstr[1] *    &  Worst R-value\\
+%  \hline
+%\end{tabularx}
+%\caption[\Diffev structural variables]
+%        {\label{v1-tab}\Diffev variables. Variables marked
+%         with $^{*}$ are read-only and cannot be altered.}
+%\end{table}
+
+The program includes a FORTRAN style interpreter that allows the
+user to program complex modifications. A detailed discussion about the 
+command language which is common to all \Discus package programs can be 
+found in the separate \Discus package reference guide which is included with 
+the package. At the moment, \Suite does not include any specific
+variables.
+
+%Table \ref{v1-tab} shows a summary of \Diffev specific 
+%variables. Some of these variables can not be modified, others like can be 
+%altered, thus allowing to modify the loaded structure. 

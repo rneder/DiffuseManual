@@ -1,0 +1,47 @@
+rese
+orient port
+#
+# Load data
+#
+load xy,tot.calc
+load xy,dif_ga.calc
+load xy,par_ga.calc
+#
+# Now we make some common settings
+#
+fnam off
+fset 2
+achy G(r) [\A\u-2\d]
+skal xmin[1],xmax[1],1.2*ymin[1],1.2*ymax[1]
+mark 2.0,10.0
+#
+# Setting frames
+#
+r[1] = (1.0/3.0)
+r[2] = 0.75*r[1]
+#
+nfra 3
+sfra 1,0.0,r[1]+r[2],1.0,r[1]+r[2]+r[1]
+sfra 2,0.0,r[1]     ,1.0,r[1]+r[2]
+sfra 3,0.0,0.0      ,1.0,r[1]
+#
+afra 1
+buff 0.1,0.1,0.0,0.1
+kfra 1,1
+lcol 1,6
+achx OFF
+sann 1,"total PDF",13.0,10.0,right
+#
+afra 2
+buff 0.1,0.1,0.0,0.0
+kfra 2,2
+lcol 2,6
+achx OFF
+sann 1,"differential Ga PDF",13.0,10.0,right
+#
+afra 3
+buff 0.1,0.1,0.1,0.0
+kfra 3,3
+lcol 3,6
+sann 1,"partial Ga PDF",13.0,10.0,right
+achx r [\A]

@@ -1,0 +1,30 @@
+rese
+orient port
+buf 0.05
+fset 2
+grid on
+#
+load cr,before.plot
+load cr,after.plot
+#
+fnam off
+achx OFF
+achy OFF
+font just,cent
+#
+nfra 2
+afra 1
+kfra 1,1
+skal -5.5,4.5,-5.5,4.5
+mark  1.0,1.0,-6.0,-6.0
+msiz 1,0.25
+aver 1.
+tit2 (a) start
+#
+afra 2
+kfra 2,2
+skal -5.5,4.5,-5.5,4.5
+mark  1.0,1.0,-6.0,-6.0
+msiz 2,0.25
+aver 1.
+tit2 (b) disordered

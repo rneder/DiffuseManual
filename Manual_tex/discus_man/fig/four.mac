@@ -1,0 +1,57 @@
+#
+# Read structure first
+#
+read
+stru demo.stru
+#
+# Calculate 'plain' Fourier
+#
+four
+xray
+wvle moa1
+ll 0.0,0.0,0.0
+lr 2.0,0.0,0.0
+ul 0.0,2.0,0.0
+na 81
+no 81
+set aver,0.0
+lots off
+run
+exit
+#
+@output plain.scat
+#
+# Now we calculate on a grid 
+# corresponding to 1/50
+#
+four
+na 101
+no 101
+run
+exit
+#
+@output period.scat
+#
+# Now recalculate with subtracted
+# <F> calculated from 50% of the
+# model crystal
+#
+four
+na 81
+no 81
+set aver,50.
+run
+exit
+#
+@output aver.scat
+#
+# Now use 100 lots, 10x10x1 unit cells
+# in size
+#
+four
+lots eli,10,10,1,100,y
+run
+exit
+#
+@output lots.scat
+#

@@ -1,0 +1,20 @@
+rese
+#
+load ni,test.small
+#
+hlin 1,100,50,20
+hcol 1,1,3
+#
+achx [h h 0]
+achy [0 0 l]
+fnam off
+aver 0.707
+mark 0.5,0.5,0.0,0.0
+#
+smax 1,3
+#
+ptyp 1,3
+mcol 1,1
+msiz 1,0.5
+#
+plot

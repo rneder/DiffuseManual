@@ -1,0 +1,12 @@
+read
+stru chem.1.stru
+#
+@plot chem.1.plot
+#
+chem
+elem
+set lots,eli,5,5,1,2000,y
+set bin,20
+homo occ,zr,chem.1.homo
+#
+exit

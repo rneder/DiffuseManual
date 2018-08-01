@@ -1,0 +1,17 @@
+orient port
+#
+rese
+load cr,rsin.plot
+#
+fnam off
+achx x [l.u.]
+achy y [l.u.]
+grid on
+font just,cent
+#
+msiz 1,0.2
+skal 0,9.5,0,9.5
+mark 1,1
+aver 1.0
+tit2 Rotational wave
+

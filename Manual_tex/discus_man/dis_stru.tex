@@ -1,0 +1,906 @@
+%------------------------------------------------------------------------
+% Chapter:  Creating structure
+%------------------------------------------------------------------------
+
+\chapter{Creating structures \label{struc}}
+
+The first steps towards any simulation are to create the desired
+structure and possibly to modify it.  \Discus offers two
+different ways to perform this task, the structure can either be
+generated from the contents of a asymmetric unit of a unit cell or
+be completely read from a file.  For each atom the program stores
+its type, its fractional coordinates (x,y,z) an isotropic
+thermal coefficient (B) and a set of property flags. 
+ If the crystal is generated from an
+asymmetric unit, the program uses the space group symbol read from
+the data file to generate the unit cell from the asymmetric unit.
+Prior to this generation, the space group symbol is checked for
+consistency with the lattice constants.  An error message flags any
+inconsistencies.  The unit cell is copied to generate a crystal of
+desired (rectangular) dimensions.
+\par
+
+The following sections describe the structure file formats and how
+to group atoms to (rigid) molecules.  Once a crystal (which could be
+as small as one atom) is generated, several tools are provided to
+modify the crystal.  These tools can be grouped into those that
+affect individual atoms and those that affect the whole crystal.
+The first group includes the following modifications of an
+individual atom: moving, replacing, removing and inserting new
+atoms.  These are discussed in chapter \ref{mod-simple}.  The second
+group includes at present the following modifications of the crystal
+at large, for more details see chapter \ref{mod}: thermal
+displacement, waves, stacking faults and domains, generalized 
+symmetry operations ( chapter \ref{cryst}), Monte-Carlo modelling
+( chapter \ref{mc}), and Reverse-Monte-Carlo modelling ( chapter 
+\ref{rmc}).
+
+%------------------------------------------------------------------------
+
+\section{Reading structure files \label{struc-read}}
+
+\Discus uses its own file format for crystal structures. In part this 
+is a legacy feature since the {\it CIF} file format was not around at the time 
+\Discus was started. A second aspect concerns the fact that a {\it CIF} file 
+is restricted to the content of a single unit cell. As \Discus 
+often builds large blocks of unit cells with reduced periodicity, 
+the \Discus file format still bears many merits.
+
+For the use of initial input a {\it CIF} file is fine and can be 
+read directly 
+within the {\tt read} menu. Alternatively the {\it CIF} file can
+be imported into the \Discus file format. Further file formats can 
+be imported into the \Discus format.
+
+As the standard choice the \Discus 
+specific format is described in this section.
+
+A unit cell (actually the asymmetric unit within the unit cell )
+or a whole structure is read from file by the command
+{\tt read}. The format of these two file types is identical.  If a
+unit cell is read, the contents of the file is regarded as the
+asymmetric unit of the unit cell.  The space group information is
+used to generate the whole unit cell. If, on the other hand, a
+structure is read, the contents of the file is taken as it is.  \par
+
+A keyword controlled structure file format is used allowing more
+flexibility, e.g. the use of molecules. However, \Discus is
+capable to read both the very old and the new structure files
+automatically recognizing the correct format. Furthermore the
+command {\tt format nokey} in the {\tt save} segment allows the user
+to save a structure using the old format (see section
+\ref{struc-save}). As the non keyword file format lacks many of
+the storage features its use is highly discouraged.
+
+
+\subsection{Structure file format \label{struc-new}}
+
+The standard \Discus structure file is a simple text file starting
+with a section with keywords setting parameters like lattice
+constants or space group followed by a section with the actual
+atoms. The sequence of keywords is arbitrary with two exceptions,
+the first line {\bf must} contain the keyword {\tt title} setting a
+title and the last keyword {\bf must} be i{\tt atoms} followed by a list of
+atoms and/or molecule definitions (see section \ref{mol}). Each atom
+within the asymmetric unit or complete structure is defined 
+at least by its
+name (e.g. ZR), the fractional coordinates $(x,y,z)$ and an
+isotropic temperature factor $B$. The property flag is optional
+and defines if the atom is a normal atom, inside a molecule, inside
+or outside the crystal, within a domain. 
+Starting with version 5.18.0 one can in addition specify the 
+molecule number to which the atom belongs and an occupancy for the atom.
+
+A list of valid keywords within a
+structure file is given in Table \ref{struc-new-tab1}.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{25mm}|X|}
+  \hline
+  {\bf Keyword} & {\bf Description} \\
+  \hline\hline
+  \#          & Allows comments in the keyword section of the structure
+                file.. \\
+  \hline
+  adp         & A list of isotropic B values for all atom types. If 
+                present, these values will override the parameter 
+                specified for an atom upon reading a structure.\\
+  \hline
+  atoms       & Marks the start of the atom list and must be the {\bf
+                last} keyword except for 'molecule'.\\
+              & Parameters are the names of the columns that are 
+                present for each atom. Valid columns are:\\
+              & x, y, z, Biso:  These four columns must always be present.\\
+              & Property:  The property flag\\
+              & MoleNo, MoleAt: Molecule number and entry number for the 
+                atom. These two columns are written by \Discus during
+                a save. To build a structure with molecules it is 
+                easier for you to use the {\tt molecule} keyword.\\
+              & Occ: Occupancy for this atom type\\
+              & The sequence of the columns is arbitrary, yet the recommended
+                sequence is:\\
+              & x,y,z, Biso, Property, MoleNo, MoleAt, Occ\\
+  \hline
+  cell        & Parameters $a,b,c,\alpha,\beta,\gamma$ define the
+                lattice constants of the crystal. Note that {\bf all} six
+                parameters must always be given.\\
+  \hline
+  generator   & Allows to define generators additional to the ones
+                defined by the space group. The 12 parameters define the
+                symmetry operation. \\
+  \hline
+  molecule    & Defines rigid molecules. The keyword must stand in
+                the atoms section of the structure file (see section
+                \ref{mol}).\\
+  \hline
+  ncells      & Parameters $nx,ny,nz$ and $nc$ define the size of the
+                crystal in unit cells and the number of atoms within a
+                unit cell.  This information is needed if a complete
+                structure is read in order to allow \Discus to
+                determine the crystals size.\\
+  \hline
+  occ         & A list of atom occupancy values\\
+  \hline
+  scat        & A list of atom types. This will ensure that the atom
+                types have a fixed sequence.\\
+  \hline
+  spcgr       & Sets the space group for the crystal.\\
+  \hline
+  symmetry    & Defines an additional symmetry operation defined by
+                the 12 parameters given.\\
+  \hline
+  title       & Sets a title for the structure file. This {\bf must}
+                be the first keyword in the file.\\
+  \hline
+\end{tabularx}
+\caption{\label{struc-new-tab1} List of keywords for structure files}
+\end{table}
+
+Keywords are processed the same way as normal commands and
+parameters have to be separated by commas. An example input file for
+cubic zirconia ($ZrO_{2}$) is shown below.
+
+\begin{MacVerbatim}
+    title Structure of cubic ZrO2
+    spcgr Fm-3m
+    cell  5.14, 5.14, 5.14, 90., 90., 90.
+    atoms
+    ZR    0.00000, 0.00000, 0.00000,  0.5
+    O     0.25000, 0.25000, 1./4.  ,  1.0
+\end{MacVerbatim}
+
+A full information input file as of version 5.18.0 has the form:
+
+\begin{MacVerbatim}
+    title Structure of cubic ZrO2
+    spcgr Fm-3m
+    cell  5.14, 5.14, 5.14, 90., 90., 90.
+    atoms x,    y,    z,     Biso, Property, MoleNo, MoleAt, Occ
+    ZR    0.00, 0.00, 0.00,  0.5,  1,        0,      0,      1.0
+    O     0.25, 0.25, 1./4., 1.0,  1,        0,      0,      1.0
+\end{MacVerbatim}
+
+
+The first line is the required {\tt title} line describing the
+structure. The next line specifies the space group
+$Fm\overline{3}m$.  The symbols used should be the Hermann-Mauguin
+symbols used in International Tables for Crystallography Vol.  A
+\cite{tables}.  A center of inversion as in this example should be
+given as {\tt -} sign immediately preceding the axis. Lattice types need
+to be given as capital characters, mirror planes as small
+characters.  Monoclinic cell choices 2,3 or unique c-axis will be
+assumed if the corresponding non standard Hermann-Mauguin symbol is
+used. \Discus checks the given space group symbol for
+contradictions with the lattice constants and in case of an error
+the unit cell is not read.  A complete list of valid space group
+symbols is part of the online help and can be accessed via 'help
+space' from the \Discus command line.  The next line in the
+example above gives the lattice constants of $a=b=c=5.14$\AA \ and
+$\alpha=\beta=\gamma=90$ degrees.  Note that \Discus requires
+all six values to be given.  The keyword 'atoms' in the example file
+which must be the last keyword starts the section with the list of
+atoms.  Here zirconium occupies site 4(a) on (0,0,0) and oxygen is
+on 8(f) at ($\frac{1}{4}, \frac{1}{4}, \frac{1}{4}$).  The isotropic
+temperature factors for Zr and O are set to 0.5 \AA$^{2}$ and 1.0
+\AA$^{2}$ respectively. \par
+
+If the lattice parameters or the atom coordinates are separated
+by comma, you can use simple expressions like 1./2. or even 
+variables instead of explicit numerical values. \par
+
+Additional generators can be defined through the optional {\tt
+generator} keyword.  These generators act identical to the
+generators defined through the space group symbol.  All previously
+generated copies of the atoms in the asymmetric unit are copied by
+this generator, and will in turn be copied by any generators
+following later.  Since these additional generators are applied
+after the space group generators, you can use these generators to
+create non-standard groups or to create a set of symmetries that
+does not from a group. The syntax of the 'generator' keyword is as
+follows:
+
+\begin{MacVerbatim}
+    generator g11,g12,g13,g14, g21,g22,g23,g24, g31,g32,g33,g34
+\end{MacVerbatim}
+
+Copies of an atom at (x,y,z) will be calculated using the following
+equation:
+
+\begin{equation}
+        \left ( \begin{array}{c} x'\\ y'\\ z'\end{array} \right ) =
+        \left (
+        \begin{array}{ccc}
+                g_{11} & g_{12} & g_{13}  \\
+                g_{21} & g_{22} & g_{23}  \\
+                g_{31} & g_{32} & g_{33}
+        \end{array}
+        \right ) \cdot
+        \left ( \begin{array}{c} x\\ y\\ z\end{array} \right ) +
+        \left ( \begin{array}{c} g_{14}\\ g_{24}\\ g_{34}\end{array} \right )
+        \label{struc-new-eq1}
+\end{equation}
+
+Additional symmetry operations can be defined through the optional
+{\tt symmetry} keyword.  These symmetry operations act different
+than the generators described above which are defined through the
+space group symbol or listed as additional generators.  The symmetry
+operations copy only those atoms created by the generators.  In
+contrast to generators they do not act on copies of the atoms
+created by previous symmetry operations. Both keywords {\tt
+generator} and {\tt symmetry} define the symmetry operation in a
+similar way using 12 parameters as shown in equation
+\ref{struc-new-eq1}
+\par
+
+The following example shall illustrate the difference between
+generators and additional symmetry operations.  The following two
+generators
+
+\begin{MacVerbatim}
+    generator 1,0,0,0.5, 0,1,0,0.5, 0,0,1,0.0
+    generator 1,0,0,0.5, 0,1,0,0.0, 0,0,1,0.5
+\end{MacVerbatim}
+
+would create the following copies of an atom at (0,0,0):
+$(\frac{1}{2}, \frac{1}{2}, 0), (\frac{1}{2}, 0, \frac{1}{2})$ and
+$(0, \frac{1}{2}, \frac{1}{2})$.  In contrast similar symmetry
+operations
+
+\begin{MacVerbatim}
+    symmetry 1,0,0,0.5, 0,1,0,0.5, 0,0,1,0.0
+    symmetry 1,0,0,0.5, 0,1,0,0.0, 0,0,1,0.5
+\end{MacVerbatim}
+
+will only generate the following two copies of an atom at (0,0,0):
+$(\frac{1}{2}, \frac{1}{2}, 0)$ and $(\frac{1}{2}, 0, \frac{1}{2})$
+since the symmetry operations will not act on previously generated
+copies of the atom at (0,0,0). The second symmetry operation copies
+only the atom at (0,0,0), not the atom at $(\frac{1}{2}, 0,
+\frac{1}{2})$, since this atom was created by the previous symmetry
+operation.
+
+
+\subsection{Using molecules \label{mol}}
+
+The keyword controlled structure file format of \Discus allows
+the definition of molecules using the {\tt molecule} keyword.  This
+keyword is allowed anywhere between the atoms of the unit cell file.
+It marks the beginning of a group of atoms that are grouped to form
+a molecule.  The individual atoms are listed in the usual way (see
+section \ref{struc-new}).  The keyword {\tt molecule end} signals
+the end of a molecule.  All atoms still listed in the unit cell file
+are treated as individual atoms.  The molecule related keywords are
+listed in table \ref{struc-mole-tab1}.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{35mm}|X|}
+  \hline
+  {\bf Keyword} & {\bf Description} \\
+  \hline\hline
+  molecule           & Defines the start of a molecule.\\
+  molecule atoms     & Lists atom numbers belonging to current molecule.\\
+  molecule biso      & Defines an overall B-value for the current molecule.\\
+  molecule character & Defines the character of a molecule.\\
+  molecule content   & Defines the start of particular molecule type.\\
+  molecule density   & Defines the density of molecules with "object"
+                       character.\\
+  molecule end       & Defines end of a molecule atom list.\\
+  \hline 
+                     & Starting with \Discus 3.6 the following 
+                       keywords have become obsolete.\\
+  molecule generator & Defines generators for the internal symmetry of
+                       the molecule.\\
+  molecule symmetry  & Defines internal symmetry operations for the molecule.\\
+  \hline
+\end{tabularx}
+\caption{\label{struc-mole-tab1} List of keywords molecules}
+\end{table}
+
+Starting with \Discus 3.6, the internal symmetry of a molecule
+is automatically determined from the Wyckoff position of the first
+atom. It is mandatory that this first atom is at a Wyckoff position,
+whose local site symmetry corresponds to the molecule symmetry. If 
+the molecules does not posses an atom at this site, insert a 
+"VOID" at the site.
+
+The internal symmetry of the molecule can be specified using the
+'generator' and 'symmetry' sub-keywords.  The generators are
+internal symmetry operations of the molecule.  \Discus compares
+the lists of atoms created by the space group and by the molecule
+generators.  Identical sections are linked to one molecule.  Atoms
+created by other symmetry operations, e.g.  lattice centering will
+form a new molecule of the same type.  The generators of the
+molecule symmetry should be the generators that create the site
+symmetry.  See the section on site symmetry in the International
+Tables A \cite{tables} for further details.  As in the previous
+section, symmetry operations will only act on the {\it original}
+atoms of the molecule whereas generators will operate on previously
+generated copies of atoms as well. There is one {\bf important
+restriction} how molecules are defined in {\discus}: The first
+atom of any molecule defines the origin of the molecule used by
+various subsequent commands.  In case the origin lies on a symmetry
+element of the space group it must be located at the point of
+highest symmetry of the molecule.  If the structure does not have an
+atom at this site you must include a {\it void} on this site.  This
+could be the case e.g.  if you have an empty triangle on a threefold
+axis.
+\par
+
+Alternatively to defining a molecule as discussed above, the command
+{\tt molecule content} and {\tt molecule atoms} might be used to
+define molecule types and the corresponding list of atom indices
+belonging to that molecule. This procedure is used to be able to
+save structures containing molecules since the order of the atoms
+required by various \Discus functions might prevent storing
+atoms in groups belonging to a particular molecule. Check section
+\ref {struc-save} for more details about saving structures.
+
+\subsection{Using occupancies \label{occ}}
+
+Occupancies are a concept that is not at the heart of \discus, as
+the program is intended to simulate an actual crystal structure. In
+a real crystal structure, a site in a given unit cell is occupied by 
+an actual atom or a void. Averaging all unit cells will result in 
+an occupancy that may deviate from 1.0. 
+
+The usual style for \Discus to deal with partial occupancies or
+with mixed occupancies by two or more atom types on a given site is
+to start with a fully ordered structure. In a second step atoms 
+can be replaced by another atom type with the build in command
+{\tt replace}. A random replacement will be performed by this 
+command. For a small crystal the actual occupancy after a {\tt replace} 
+command may deviate considerably from the intended occupancy. 
+At the extreme, it is impossible to have a real occupancy other than
+1.0 or 0.0 within a single unit cell at least for a site with 
+multiplicity of one. Even for a site with higher multiplicity the actual 
+distribution of the two or more atom types onto the site will in most cases 
+severely change the symmetry. 
+
+To deal with structures that do not posses disorder other than randomly
+distributed deviations from full occupancy, an occupancy parameter was
+added to \Discus in version 5.18.0. 
+
+The treatment of an occupancy parameter in the structure file
+depends on the input mode. 
+{\tt stru} If a structure is read with the {\tt stru} command, each
+atom type retains its occupancy value. The effect on a Fourier, 
+powder pattern and PDF is the same as if the actual structure would
+have been modified with the {\tt replace} command. If you plot the 
+structure no difference to a fully occupied structure will be 
+recognized.
+
+{\tt cell} The default behavior is to discard occupancies and to 
+reset all values to 1.0. To change this behavior \Discus offers
+an optional parameter to the {\tt cell} command. This parameter
+allows to instruct \Discus to {\tt apply} the occupancies, i.e.
+the atom type in question will be (partially) substituted by voids.
+Alternatively the occupancy parameter can be {\tt kept} to give
+the same result as if the structure were read with the {\tt stru}
+command.
+%------------------------------------------------------------------------
+
+\section{Freely generated structure      \label{struc-free}}
+
+As an alternative, \Discus can create a structure freely by the
+{\tt free} command. This alternative is helpful to avoid 
+disk I/O.
+
+\begin{MacVerbatim}
+    1  read
+    2  free    5.14,  5.14,  5.14,  90.00, 90.00, 90.00, Fm-3m
+    3  insert  Zr, 0.0000, 0.0000,  0.0000,  0.1
+    4  insert  O , 0.2500, 0.2500,  0.2500,  0.1
+\end{MacVerbatim}
+
+This example illustrates the alternative style to create the 
+asymmetric unit of cubic zirconia. The last parameter in line 2
+instructs \Discus that the freely read structure should belong 
+to space group $Fm\overline{3}m$. This parameter is optional
+and defaults to P1. After these four commands \Discus has
+created just the atoms within the asymmetric unit. To build 
+a full crystal, save this asymmetric unit (optionally save it
+as an internal file) and read it again with the {\tt cell} 
+command. See section \ref{struc-save} for more information on 
+the save procedure.
+
+%------------------------------------------------------------------------
+
+\section{Internal storage of a structure \label{struc-int}}
+
+All atoms are stored sequentially in an array.  If a complete
+structure is read using the {\tt stru} command, the atoms are stored
+in the same sequence as found on the input file. If several unit
+cells have been generated by the command {\tt cell} in the {\tt
+read} sub level, the contents of all unit cells are stored
+consecutively. The {\tt cell} command always generates a rectangular
+block of $nx, ny, nz$ unit cells along the direct axes.  The
+innermost, fastest loop is over x, the outermost, slowest loop is
+over z.  
+
+Within each unit cell, the atoms are stored in the sequence
+that they have been read from file. Each atom is multiplied by the
+symmetry generators of the respective space group.  The sequence of
+generators has been chosen identical to that in the International
+Tables for Crystallography \cite{tables}, Vol.  A.  The sequence of
+symmetrically equivalent atoms is therefore identical to that of the
+International Tables. 
+
+The generators of a space group are applied in the same order as
+given in Vol A of the International Tables. Thus the generated atoms
+will be in the same sequence as printed for each Wyckoff position of 
+each space group. 
+
+If the space group is centered, the generators
+that correspond to symmetry operations are applied first and then
+each block is repeated by application of the centering generators.
+This is illustrated by the following example:
+ 
+\begin{quote}
+  {\it Space group C2 No.5, Wycoff position 4(c) x,y,z \\
+       The atoms on this site are } \\
+       $(0,0,0; \frac{1}{2},\frac{1}{2},0)+$ \\
+       $x,y,z; \overline{x},y,\overline{z}$
+\end{quote}
+
+\Discus stores these four atoms on position 4(c) in the
+following sequence:
+
+\begin{quote}
+       $x,y,z$\\
+       $\overline{x},y,\overline{z}$\\
+       $x+\frac{1}{2},y+\frac{1}{2},z$\\
+       $\overline{x}+\frac{1}{2},y+\frac{1}{2},\overline{z}$
+\end{quote}
+
+Prior to \Discus 3.6, in accordance with the header lines in
+the International Tables,
+the generators required for centered space groups were applied first.
+The atoms generated by these generators immediately followed each
+position generated by the ordinary symmetry operators as illustrated
+for the following example:
+
+\begin{quote}
+       $x,y,z$\\
+       $x+\frac{1}{2},y+\frac{1}{2},z$\\
+       $\overline{x},y,\overline{z}$\\
+       $\overline{x}+\frac{1}{2},y+\frac{1}{2},\overline{z}$
+\end{quote}
+
+The old sequence caused problems for molecules in rhombohedrally
+centered space groups. 
+
+In order to provide backward compatibility, the {\tt define}
+command allows you to switch between the newer storage sequence
+and the older one.
+
+The origin within the model crystal is taken as the center of the
+simulated structure, i.e.  the coordinates of an atom on site
+(0,0,0) of a crystal 20x20x20 unit cells in size would range in x,y
+and z from -10.0 to 9.0.
+\par
+
+If the chemistry or position of an atom is modified, its position
+within the structure array remains the same.  If it is deleted, it
+is replaced by atom type VOID.  The position of all other atoms
+remains unchanged.  This feature enables the user to calculate the
+position of an atom in the structure array, irrespective of any
+changes that took place in the structure.  All new atoms are added
+at the end of the structure array. Their sequence is entirely based
+on the sequence of generation. \par
+
+The command {\tt trans} in the {\tt chem} sub level of \Discus
+allows to transform between the index of an atom and its unit cell
+and site number. Alternatively the atom index $l'$ for an atom on
+site $l$ in unit cell $i,j,k$ can be calculated using the following
+equation:
+
+\begin{equation}
+        l' = \{ (k-1) \cdot nx \cdot ny +
+                (j-1) \cdot nx +
+                (i-1) \} \cdot n[3] + l
+        \label{struc-store-eq}
+\end{equation}
+
+Here $nx,ny,nz$ are the crystals dimensions in unit cells and $n[3]$
+(see table \ref{v1-tab} in section \ref{get}) contains the number 
+of atoms per unit cell.
+Some calculations of \Discus (e.g.  usage of lots in Fourier
+sub level, quick mode for bond length calculations, ..) require this
+particular order of storage of the atoms.  However, in order to save
+CPU time for the Fourier transform and disk space when saving a
+structure, the {\tt purge} command may be applied which will delete
+all empty sites in the crystal and the given relation between atom
+index and unit cell/site is invalid.  The authors generally do {\bf
+not} recommend the usage of the 'purge' command.
+
+%------------------------------------------------------------------------
+
+\section{Saving structures \label{struc-save}}
+
+A particular structure stored in \Discus can be saved to a file
+using the {\tt save} command. In cases where {\tt save} is followed
+by a filename, the structure is directly saved using the currently
+set options. \par
+
+If {\tt save} is entered alone, \Discus will enter a {\tt save}
+sub level which allows the user to select various options and select
+all or only particular atoms to be saved. Note that the settings are
+valid for all subsequent calls of {\tt save filename}. Generally the
+user can choose between the old structure file format (see section
+\ref{struc-read}) and the new keyword controlled structure file
+format, which is the recommended format to be used. Beside the
+required keywords the user is able to select which additional
+keyword shall be written to the file. Note that in cases where a
+structure containing molecules is saved without selecting the {\tt
+molecule} keyword, the molecule information of the crystal will be
+lost. Check the online help for {\tt save} for a complete list of
+options.
+
+Starting with \Discus Version 5.0 you can save a structure into
+an internal memory location within the CPU instead of onto the disk.
+Simply prepend the filename with the characters "internal". \Discus
+will allocate memory to store  the structure. To recover the structure
+read it with {\tt read} {\tt cell} or {\tt stru}. The filename must
+of course start again with "internal". This internal storage is highly
+recommended for temporary or intermediate structures that you do not 
+really need. This holds especially during a refinement on a high 
+performance computer cluster.
+
+%------------------------------------------------------------------------
+
+\section{Exporting structures \label{struc-expo}}
+
+The structure, or parts thereof can be exported to file in formats
+suitable for display by corresponding programs.  Currently supported
+programs are \Kuplot which is part of the \Discus package
+and a number of structure plotting packages such as {\it ATOMS} and
+{\it DIAMOND}.  A simplified {\it CIF} file can be read by most
+crystallographic packages. 
+Check the online help for an up-to-date list of
+supported programs.
+\par
+
+Different export option are available in the {\tt plot} sub level of
+\discus.  Individual atom or molecule types to be included in
+the output might be selected.  The extend of the crystal to be
+exported as well as an optional limitation to a given slice within
+the crystal allow the user to select specific regions within the
+crystal.  Such a slice is defined by a point ${\bf v}$ in real space
+its thickness and its normal. For each atom in the crystal the
+vector from the point ${\bf v}$ to the atom is projected onto the
+real space normal to the slice. If the length of this projection is
+less than the thickness, the atom is plotted, else not. \Discus
+simply writes the coordinates of selected atoms.  The sequence of
+indices in the output file can be defined by the user as any
+permutation of x,y,z; x,z,y;...  The output for \Kuplot will
+result in a projection of the structure along one of the
+crystallographic axes or a projection along the normal of the slice
+onto the plane, while the {\it GNUPLOT} format can be used for a
+three dimensional viewing.  The file format for \Kuplot
+includes marker type, color and size for the individual atom or
+molecule representation.  These properties can be altered using the
+{\tt set} command within the {\tt plot} sub level.  Assuming the
+structure has been written to file {\it atoms.xy}, the following
+\Kuplot macro would be appropriate:
+
+\begin{MacVerbatim}
+    load cr,atoms.xy    ! loading the data file
+    plot                ! plot it
+\end{MacVerbatim}
+
+For more information about the program \Kuplot refer to the
+\Kuplot manual or online help.
+
+To import into a CIF file viewer export with the {\tt program cif}
+option:
+
+\begin{MacVerbatim}
+  plot
+    program cif
+    sel     all
+    outfile your_name.cif
+    run
+  exit
+\end{MacVerbatim}
+
+%------------------------------------------------------------------------
+
+\section{Importing structures \label{struc-import}}
+
+\Discus can import crystal structures from a few external file formats, 
+as listed
+in Table \ref{struc-imp-tab1}. The relevant commands are found in the 
+{\tt import} menu. \Discus will read the import structure and automatically
+save a \Discus type file, whose extension has been replaced by {\bf stru}.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Format } & {\bf Description} \\
+  \hline\hline
+  CIF         & The Crystallographic Information File format, as    
+                described in the International Tables 
+                \cite{tables} Vol. F.\\
+  \hline
+  RMCPROFILE  & Crystal structure storage format as used by RMCProfile\\
+  \hline
+  SHELX & Import a res or ins file as used by SHELX programs \\
+  \hline
+  CRYSTALMaker & Crystal structure storage format as used by CrystalMaker \\
+  \hline
+\end{tabularx}
+\caption{\label{struc-imp-tab1} List of supported import file formats}
+\end{table}
+
+%------------------------------------------------------------------------
+
+\section{Plotting / Visualization \label{struc-plot}}
+
+The main task of the \Discus section certainly is to create a wide 
+range of structure types, to modify these and to calculate the diffraction
+pattern respectively the Pair Distribution Function. It is of course 
+helpful to visualize a structure. The {\tt plot} menu in \Discus offers
+these possibilities. 
+
+Predominantly one will write an output file that can be interpreted 
+by appropriate crystal structure visualization programs. While 
+\Discus offers several output formats, probably the most widely accepted
+file format is the {\tt CIF} file format. As the {\tt CIF} file 
+format is restricted to a single unit cell, \Discus will transform the
+structure into a large unit cell that is an integer multiple of the current  
+unit cell dimensions. To deal with programs that like to wrap around
+atom positions, the structure is shifted to avoid atom coordinates that
+are equal to zero or one.
+
+Starting with version {\tt 5.22} \Discus offers the possibility to
+open JMOL, if JAVA and JMOL have been installed on your computer. 
+On computers with Linux or MacOS, you need to install JAVA and JMOL. 
+The Windows version includes a JMOL executable. You still need to 
+install the Java Run time Environment JRE. 
+
+To start a JMOL window, set the program to "jmol" and include 
+on the {\tt run} command line
+the optional parameter {\tt "plot:inter"} 
+. \Discus will still write a {\tt CIF} file to 
+the hard disk and pass a short script to JMOL to load this {\tt CIF} file.
+
+\begin{MacVerbatim}
+ 1  discus
+ 2  read
+ 3    cell quartz.cif, 2, 2, 2
+ 4  plot
+ 5    program   jmol
+ 6    outf      quartz_plot.cif
+ 7    extend    all
+ 8    select    all
+ 9    bond      Si, O, 1.2, 1.8, 0.1, 0.0, 0.0, 0.0
+10    polyhedra Si, O, nmin:4,nmax:4, dmin:1.2, dmax:1.8, face:flat, hue:solid, color:auto
+11    background 230, 230, 230
+12    run plot:inter, kill:yes
+13  exit
+14  exit  ! back to suite
+\end{MacVerbatim}
+
+In this example, \Discus reads a {\tt CIF} file of Quartz and expands the 
+structure to 2x2x2 unit cells. An output {\tt CIF} file is written as
+{\tt quartz\_plot.cif}. In order not to overwrite the input {\tt CIF} file,
+the name is modified to {\tt quartz\_plot.cif}. The {\tt bond} command
+defines bonds from a central Silicon atom to neighboring Oxygen atoms
+in a distance range from 1.2 to 1.8 \AA{}. The bonds will have a thickness
+of 0.a \AA. The RGB color triplet is currently ignored, as JMOL has a
+sensible standard color scheme. 
+
+The {\tt polyhedra} command tells JMOL to plot polyhedra with the 
+following (optional) properties:
+
+\begin{tabularx}{\textwidth}{p{40mm}X}
+nmin/nmax & Minimum/Maximum number of neighbors an atom must have to 
+      be inside a polyhedron.  \\
+dmin/dmax & Minimum/Maximum distance to the neighbors. Only neighbors
+      in this range are taken into account to build a polyhedron. \\
+face {"flat"|"collapsed"} & JMOL can draw a polyhedron with flat surfaces 
+      or with indented surfaces. \\
+hue {"solid"|"trans"} & A transparent polyhedron allows to see the 
+      central atom. \\
+color & With "auto" JMOL will take the color of the central atom 
+      as template for the surfaces. \\
+\end{tabularx}
+
+In this example the bond distances specified by the {\tt bond} and the
+{\tt polyhedra} command coincide. As JMOL takes only a single 
+polyhedron definition you can use the additional {\tt bond} command to 
+restrict more clearly, which polyhedra will be drawn.
+
+Finally the background can be set as an RGB triplet.
+
+The optional parameter {\tt plot:inter} initiates the JMOL plot. Omit this 
+or set it to {\tt plot:none} to skip the JMOL plot. 
+
+Every time you use the {\tt plot:inter} parameter, a new JMOL window 
+will be started. The optional parameter {\tt kill:yes} allows to
+close all previous JMOL windows.
+
+%------------------------------------------------------------------------
+
+\section{Properties \label{struc-properties}}
+
+Within a crystal you will typically have a lot of different atom types. 
+In addition to the type (Fe, Mn, Cl ...) atoms may be distinguished by
+further properties. An atom might be within a molecule or be a separate
+atom. \Discus labels these different properties as logical flags 
+and updates these 
+automatically if any changes occur. Many of the modification and output
+tool can utilize these properties to include or reject a specific atom.
+The properties are listed in table \ref{struc-prp-tab}:
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{25mm}|X|}
+  \hline
+  {\bf Keyword} & {\bf Description} \\
+  \hline\hline
+  Normal      & The atom is a normal atom or a void.\\
+  \hline
+  Molecule    & The atom is part of a molecule \\
+  \hline
+  Domain      & The atom is within a domain. \\
+  \hline
+  Outside     & The atom is outside the crystal, i.e. on the other
+                side of a limiting surface. Usually these atoms are
+                voids as well.\\
+  \hline
+  External    & The atom is within a user defined distance to an 
+                external boundary, either on the inside or outside.\\
+  \hline
+  Internal    & The atom is within a user defined distance to an 
+                internal boundary, either on the inside or outside.
+                Internal boundaries arise through domains.\\
+  \hline
+  Ligand      & The Atom is part of a ligand molecule that has been 
+                placed on top of the crystal.\\
+  \hline
+\end{tabularx}
+\caption{\label{struc-prp-tab} List of property flags}
+\end{table}
+
+In addition you can define further property like behaviour. 
+This behaviour is based on connectivities\ref{struc-connect} that have 
+been defined for an atom. These property like featureas allow to 
+restrict the selection of atoms to specific types that have 
+coordination numbers within a user defined range or whose 
+coordination numbers are outside an excluded range of coordination
+numbers.
+
+%------------------------------------------------------------------------
+
+\section{Connectivity \label{struc-connect}}
+
+Many of the tools in \Discus need to reference neighboring atoms around
+a given atom. It is very time consuming to search throughout the entire
+crystal if an atom fulfills the desired neighborhood conditions. To 
+avoid these length loops \Discus provides two styles to reference a 
+neighboring atom. 
+
+The first style is the fastest but it depends on the initial storage 
+order of the atoms, which was described in section \ref{struc-int}. As
+long as this sequence is maintained \Discus can reference a neighbor by
+a vector relationship:
+
+\begin{MacVerbatim} 
+  1   set vec, 1,  1, 1,   1, 0, 0
+  2   set vec, 2,  3, 4,   1,-2, 4
+\end{MacVerbatim} 
+
+The first parameter after the {\tt vec} keyword numbers the vector 
+relationships. The next two parameters describe which atom suites with
+a set of unit cells is related. The last three parameters describe the 
+relative shift of the unit cell in which the second site, the neighbor, 
+is found.  Line (1) would thus create a relationship between any atom
+on site one in a unit cell to the atom on site 1 in a unit cell 
+shifted by [1,0,0]. Line (2) creates a relationship between an atom
+on site 3 in a unit cell and an atom on site 4 in a unit cell shifted 
+by [1,$\overline{2}$,4] unit cells. These relationships hold for all
+pairs throughout the crystal. In order to quickly calculate which 
+atom in our internal sequence is referenced, the atoms must still be in 
+their original order.
+
+If you add a lot of atoms, or if you shape the crystal with the 
+boundary commands (see section \ref{mod-surface}) and remove 
+unnecessary outside voids, the internal sequence of atoms my change
+dramatically. Under these circumstances the vector relationships 
+to not work efficiently any longer. For that reason you will find 
+several warnings with respect to the {\tt purge} command. To allow
+a fast reference to neighboring atoms \Discus offers the 
+{\tt connectivity} menu. This menu allows you to define relationships
+between any pair of atoms through distance intervals:
+
+\begin{MacVerbatim} 
+  1   connectivity
+  2      reset
+  3      add  Zn, O , 1.90, 2.10, zn_o_short
+  4      add  Zn, Zn, 3.10, 3.30, zn_zn_second
+  5      add  O , Zn, 1.90, 2.10, o_o_short
+  6      add  O , O , 3.10, 3.30, o_o_second
+  7      create
+  8      show
+  9   exit
+ 10   ...
+ 11   connectivity
+ 12      recreate Zn, zn_zn_second
+ 13   exit
+\end{MacVerbatim} 
+
+In this example we clear all previous connectivity lists in line (2) and
+add two connectivities. The first (line 3) relates Zn and O atoms that are within 
+the interval 1.90 to 2.10\AA\  and provides a name {\tt zn\_o\_short} 
+for this relationship. This relationship is uni directional, Zn is 
+always at the center of the connectivity polyhedron. Thus to group 
+all pairs, lines 5 and 6 add the opposite relationships with the oxygen 
+as central atom.
+
+The {\tt add} command simply creates the definitions, the actual 
+lists are generated with the {\tt create} command. As the program 
+has to perform a double loop over all atom pairs this may take a bit 
+of time, but you will easily regain this time during a Monte-Carlo 
+simulation.
+
+In line 12 we recreate the connectivity {\tt zn\_zn\_second} around
+Zinc atoms. This might be necessary, if atoms have been moved around.
+
+Starting with version 5.14 two new optional features modify the 
+build up of a connectivity.
+
+The {\tt first} optional parameter {\tt first:<no>} allows you to limit
+the number of neighbors that will be included in a connectivity to
+the value <no>. This will include only the first <no> neighbors
+that are closest in distance to the central atom. 
+The string "first" is used to indicate that this 
+is an optional parameter. 
+
+This option might be needed, if you want to constrain the neighbors
+around a central atom to a specific shape. You would choose for 
+example {\tt first:4} to limit the connectivity to the four closest 
+neighbors.
+
+The optional parameter {\tt molescope:} allows to restrict the 
+connectivity for atoms that are located within a molecule. 
+Possible options are: {\tt ignore}, {\tt within} and {\tt outside}.
+With {\tt ignore} the molecular status of the central atom and its 
+neighbors is ignored. Any pair of atoms may be connected based on the
+distance shell only. With the {\tt within} option, the central atom 
+has to be within a molecule. Only those atoms within the distance shell
+will be included in the connectivity that are within the same molecule
+as the central atom. All other atoms are ignored, even if they are 
+within the distance specified by <rmin> and <rmax>. This is useful
+to constrain a covalent distance or bond angle in {\tt mmc}
+while ignoring other atoms that may be close by.
+The final option {\tt outside} acts in an opposite sense. The central 
+atom has to be within a molecule, while the neighbors have to be 
+outside this molecule. A typical use might be to build a connectivity
+between a Hydrogen atom within a molecule to Oxygen atoms outside 
+the molecule in order to establish a Hydrogen bond.
+
+%------------------------------------------------------------------------

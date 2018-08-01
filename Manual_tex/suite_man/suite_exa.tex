@@ -1,0 +1,123 @@
+%------------------------------------------------------------------------
+% Chapter:  Example
+%------------------------------------------------------------------------
+
+\chapter{Example \label{example}}
+
+This chapter takes you through all steps of a nanoparticle refinement.
+The example will use data published in \cite{chneko2007}, which describes 
+the refinement of ZnSe nanoparticles. We will quickly describe the main 
+aspects of the model that is used to describe the experimental data. 
+The main focus will be on the use of the \Suite and on the differences
+to a refinement with \diffev.
+
+The ZnSe nanoparticles can be described as a disordered Zincblende
+structure. Stacking faults introduce a local Wurtzite structure. TEM 
+images showed that the particles are of approximately ellipsoidal shape
+with one long and two short axes.
+Bulk ZnSe crystallizes in the Zincblende structure, and these nanoparticles
+show a typical high defect concentration. 
+For this example we choose to describe the structure as a stack of
+layers based on a hexagonal metric. Thus the stacking faults are restricted
+to one of the symmetrically equivalent [111] axes of the bulk cubic structure. 
+A perfect ABCABC sequence of these layers would correspond to the  cubic
+Zincblende structure, a perfect ABAB sequence would yield the hexagonal 
+Wurtzite structure. For further details see \cite{chneko2007} and 
+\cite{nedpro}.
+
+\section{Parallel refinement \label{exa-par}}
+
+A main advantage of \Suite compared to the stand alone programs is achieved 
+in a parallel refinement. A stand alone refinement with \Diffev needs to
+start \Discus and \Kuplot as slave programs within each refinement cycle.
+Thus at each program start, the macros and the experimental data need to 
+be read again. Furthermore, these separate programs need to communicate
+the results via files on the hard disk, which slows down the performance. 
+As the \Suite is a single program, internal communication is straightforward
+and the makes most disk I/O obsolete. The \Suite performs its tasks 
+within the individual sections and thus most parts of the actual refinement 
+macros do not need to be changed.
+
+To run in parallel mode, the \Suite must have been compiled with the MPI
+option. The suite will then be started with a command like:
+
+\begin{MacVerbatim}
+   mpiexec -n 192 discus_suite -macro suite.mac  > /dev/null
+\end{MacVerbatim}
+
+If you use the Windows operating system, start a parallel refinement via:
+
+\begin{MacVerbatim}
+   parallel suite.mac
+\end{MacVerbatim}
+
+see chapter \ref{intro-par} for further info on the invocation.
+
+
+The main \Suite macro can be very short:
+\begin{MacVerbatim}
+   1   diffev
+   2      @diffev.mac
+   3   exit
+   4   exit
+\end{MacVerbatim}
+
+In line 1 we switch to the \Diffev section, perform the -slightly modified -
+macro {\tt diffev.mac} and return to the main \Suite menu via the {\tt exit}
+in line 3. In line 4 we finally finish the suite itself. 
+
+This macro nesting is not a necessary feature. You could of 
+course place all these lines into the {\tt diffev.mac} macro as well.
+
+The {\tt diffev.mac} macro needs just few changes compared to a stand alone 
+version:
+\begin{MacVerbatim}
+   1    set error,exit
+   2    @cleanup.mac
+   3    #
+   4    @setup.mac
+   5    @diffev_setup.mac
+   6    #
+   7    init silent
+   8    #
+   9    do i[0]=1,100
+  10       echo "GENERATION %4d",REF_GENERATION
+  11       run_mpi discus, nano.znse.mac, repeat:REF_NINDIV , compute:serial, logfile:/dev/null
+  12       compare silent
+  13    enddo
+\end{MacVerbatim}
+
+In line 1 we instruct \Suite to be picky with errors and to stop the execution 
+is any error should occur. I do not want to run a refinement for several 
+hours just to find out that somewhere there there has been an erroneous 
+calculation.
+
+The {\it cleanup.mac} macro may be used to remove all files related to an 
+earlier refinement.
+
+The {\it setup.mac} macro is used to define the number of individual 
+repetitions that \Discus should perform for each member of the population.
+
+Macro {\it diffev\_setup.mac} defines the size of the population, the 
+number and range of the parameters to be refined etc.
+
+In line 7 we initialize the parameters to their starting values. The 
+qualifier {\it silent} instructs the \Suite not to write these 
+trial parameters onto the disk. They will instead be passed silently 
+between the \Diffev and \Discus sections.
+
+The {\it run\_mpi} command in line 11 starts the simulation and the
+assessment of the current agreement between experimental and calculated 
+data. The \Diffev section will start the \Discus section and within 
+\Discus operate the macro {\it nano.znse.mac}. The next parameter, here a
+zero, tells \Diffev if the individual repetitions are to be carried out
+in parallel or if they are to be done in serial operation by the 
+\Discus section. If the parameters is zero, as in this example, any 
+repetition is left to the \Discus section. If the parameter is larger than
+one, \Diffev will calculate the individual repetitions in parallel on 
+your system.
+
+Finally in line 12 we tell \Diffev that the final agreement factor 
+between experimental data and the calculated data shall not be read
+from a file on your disk. Instead \Kuplot will pass this parameters
+silently back to \diffev.

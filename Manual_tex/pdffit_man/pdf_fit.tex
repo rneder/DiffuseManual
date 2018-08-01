@@ -1,0 +1,405 @@
+%------------------------------------------------------------------------
+% Chapter:  Refining using PDFFIT
+%------------------------------------------------------------------------
+
+\chapter{Running a refinement \label{fit}}
+\section{Refinement variable coding \label{fit_code}}
+
+When using {\it PDFFIT} we have to distinguish between refinement
+parameters, called $p_{i}$ (or {\tt p[i]}) and experimental and structural
+parameters listed in Table \ref{tab_par}. The parameters that can be
+assigned to refinement parameters are a subset of all available variables
+discussed in section \ref{var}.
+
+\begin{table}[tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Structural}  & (Set phase using {\tt phase} command !) \\
+  \hline
+  {\tt x[n]}        & x-position of atom $n$ in fractional coordinates \\
+  {\tt y[n]}        & y-position of atom $n$ in fractional coordinates \\
+  {\tt z[n]}        & z-position of atom $n$ in fractional coordinates \\
+  {\tt o[n]}        & Occupancy for site $n$ \\
+  {\tt u[i,n]}      & Anisotropic thermal parameter $U_{ij}$ for atom
+                      $n$ ($i=1..6$ for $U_{11},U_{22},U_{33},U_{12},
+                      U_{13}$ and $U_{23}$) \\
+  {\tt lat[i]}      & Lattice parameters ($i=1..6$ for $a, b, c, \alpha,
+                      \beta$ and $\gamma$) \\
+  {\tt delt[p]}     & Quadratic correlation factor $\delta$ for phase $p$ \\
+  {\tt gamm[p]}     & Linear correlation factor $gamma$ for phase $p$ \\
+  {\tt srat[p]}     & Peak width ratio for $r<r_{cut}$ for phase $p$ \\
+  {\tt csca[p]}     & Scale factor $f_{p}$ for phase $p$ \\
+  \hline
+  {\bf Experimental}& \\
+  \hline
+  {\tt dsca[s]}     & Overall scale factor $f_{s}$ for data set $s$ \\
+  {\tt qalp[s]}     & Broadening factor $\alpha$ for data set $s$ \\
+  {\tt qsig[s]}     & Resolution factor $\sigma_{Q}$ for data set $s$ \\
+  \hline
+\end{tabularx}
+\caption{\label{tab_par}{\it PDFFIT} experimental and structural
+         refinement variables.}
+\end{table}
+
+Each experimental or structural parameter that needs to be refined must
+be assigned to one or more refinement parameters via the command
+{\tt par}. The maximum number of parameters $p_{i}$ allowed in a single
+{\tt par} command is defined by the variable MAXDPP in the file
+'{\it config.inc}' (see appendix \ref{app-install}). For each parameter
+$p_{i}$ that appears in the definition we have to also specify the
+derivative of the corresponding structural parameter with respect
+to all refinement parameters $p_{i}$. The value of $i$ of the
+refinement parameters can be freely chosen by the user, however
+there is of course an upper limit. This limit together with other program
+related limits can be determined via the command {\tt show config}. \par
+
+Let us consider a simple case like in the example given in section
+\ref{quick}.  The lattice parameters $a,b,c$ of $Ni$ shall be refined
+using a single refinement parameter since $Ni$ is cubic. The definitions
+we need to enter are listed below. In lines 1--3 refinement parameter
+$p_{1}$ is associated with the lattice constants $a,b,c$. It is important
+to remember, that one needs to assign a suitable starting value to
+$p_{1}$ as we have done in line 5 of our example.
+
+\footnotesize
+\begin{MacVerbatim}
+    1 par lat[1]=p[1],1.0
+    2 par lat[2]=p[1],1.0
+    3 par lat[3]=p[1],1.0
+    4 #
+    5 p[1]=lat[1]
+\end{MacVerbatim}
+\normalsize
+
+\noindent Next we consider a slightly more complicated
+construction. It is again taken from the example in section
+\ref{quick}. Assuming we want to refine a single isotropic
+temperature factor for all atoms within the unit cell, we can
+either type in all definitions explicitly of use a {\tt do} loop
+as in the example below. The loop index is {\tt i[1]} and {\tt
+n[1]} contains the total number of atoms for the currently active
+phase. Note that {\it PDFFIT} replaces all variables in the
+arguments, i.e. enclosed in {\tt [.]}, with the actual value at
+the time the command is processed. Try the example below and check
+the stored definitions using the command {\tt show const}. Again
+we need to set the used refinement parameters to a suitable
+stating value (line 7).
+
+\footnotesize
+\begin{MacVerbatim}
+    1 do i[1]=1,n[1]
+    2   par u[1,i[1]]=p[2],1.0
+    3   par u[2,i[1]]=p[2],1.0
+    4   par u[3,i[1]]=p[2],1.0
+    5 enddo
+    6 #
+    7 p[2]=u[1,1]
+\end{MacVerbatim}
+\normalsize
+
+\noindent As a final example we consider a (hypothetical) system
+containing a rigid molecule consisting of two atoms, one at
+$(\frac{1}{4}, 0,0)$ and one at $(-\frac{1}{4},0,0)$. Note that
+{\it DISCUS} supports the definition of molecules in its structure
+file. However, this extension is {\it not} supported by {\it
+PDFFIT}. The rotation of the molecule around the z-axis through
+the center of the molecule (conveniently located at $(0,0,0)$)
+shall be modelled by a single refinement parameter, the rotation
+angle $\psi$. This rotation can be described by the following
+matrix
+
+\begin{equation}
+R = \left ( \begin{array}{ccc}
+            \cos \psi & \sin \psi & 0 \\
+           -\sin \psi & \cos \psi & 0 \\
+            0         & 0         & 1 \\
+            \end{array} \right ).
+    \label{eq_rot}
+\end{equation}
+
+\noindent All we need to do now is to describe the new positions
+of the two atoms as a function of the rotation angle $\psi$ and
+specify the corresponding derivatives. One should keep in mind
+that the atom positions are in {\it fractional coordinates}.
+Furthermore one should {\it not} use definition of the type {\tt
+par x[1]=x[1]*..} since {\tt x[1]} is changing during the
+refinement. So we need to store the relevant information in some
+general variable {\tt r[n]}. The parameter coding for our example
+is shown below:
+
+\footnotesize
+\begin{MacVerbatim}
+    1 r[1]=x[1]
+    2 r[2]=y[1]
+    3 r[3]=x[2]
+    4 r[4]=y[2]
+    5 #
+    6 par x[1]=    r[1]*cosd(p[5])+r[2]*sind(p[5]),-1.*r[1]*sind(p[5])+r[2]*cosd(p[5])
+    7 par y[1]=-1.*r[1]*sind(p[5])+r[2]*cosd(p[5]),-1.*r[1]*cosd(p[5])-r[2]*sind(p[5])
+    8 par x[2]=    r[3]*cosd(p[5])+r[4]*sind(p[5]),-1.*r[3]*sind(p[5])+r[4]*cosd(p[5])
+    9 par y[2]=-1.*r[3]*sind(p[5])+r[4]*cosd(p[5]),-1.*r[3]*cosd(p[5])-r[4]*sind(p[5])
+   10 #
+   11 p[5]=4.5
+\end{MacVerbatim}
+\normalsize
+
+\noindent In lines 1--4 the $x$ and $y$ position of both atoms is
+stored in the variables {\tt r[1]} to {\tt r[4]}. Note that $z$ is
+not changing for our specific rotation. In lines 6--9 we give the
+equations according to (\ref{eq_rot}) and the corresponding
+derivative with respect to parameter $p_{5}$. The intrinsic
+functions {\tt sind} and {\tt cosd} will expect their argument to
+be in degrees whereas {\tt sin} and {\tt cos} need the argument to
+be specified in radian. We chose to use degrees in our example.
+More information about intrinsic functions can be found in section
+\ref{func}. Currently the command language interpreter will not
+accept expressions that start with '-' like {\tt -r[1]}, so one
+needs to specify more completely {\tt -1.*r[1]}. The command {\tt
+show const} will list all parameter definitions on the screen. The
+output for our example is listed below:
+
+\footnotesize
+\begin{MacVerbatim}
+     --------------------------------------------------------------------------
+     PARAMETER DEFINITIONS :
+     --------------------------------------------------------------------------
+
+     Definition  : x[1]=r[1]*cosd(p[5])+r[2]*sind(p[5])
+     Derivatives : d/d(p[   5]) = -1.*r[1]*sind(p[5])+r[2]*cosd(p[5])
+
+     Definition  : y[1]=-1.*r[1]*sind(p[5])+r[2]*cosd(p[5])
+     Derivatives : d/d(p[   5]) = -1.*r[1]*cosd(p[5])-r[2]*sind(p[5])
+
+     Definition  : x[2]=r[3]*cosd(p[5])+r[4]*sind(p[5])
+     Derivatives : d/d(p[   5]) = -1.*r[3]*sind(p[5])+r[4]*cosd(p[5])
+
+     Definition  : y[2]=-1.*r[3]*sind(p[5])+r[4]*cosd(p[5])
+     Derivatives : d/d(p[   5]) = -1.*r[3]*cosd(p[5])-r[4]*sind(p[5])
+\end{MacVerbatim}
+\normalsize
+
+\noindent Basically this type of assigning refinement parameters
+to structural parameters allows the user to realize nearly all
+type of constraint models. In the next sections specific details
+of structural parameters as well as refinement setting will be
+discussed.
+
+%------------------------------------------------------------------------
+\subsection{Structural parameters \label{fit_stru}}
+
+The structural parameters that can be refined using {\it PDFFIT}
+were already listed in Table \ref{tab_par} at the beginning of
+this chapter. Parameters {\tt x[n], y[n]} and {\tt z[n]} are the
+{\it fractional} coordinates of atom $n$ of the currently active
+structural phase (see section \ref{fit_mult}). The site occupancy
+is given by {\tt o[n]}. The anisotropic temperature factor
+$U_{lm}$ is stored in the variable {\tt u[i,n]} with $i=1..6$ for
+$U_{11}, U_{22}, U_{33}, U_{12}, U_{13}$ and $U_{23}$. Note that
+$U_{lm} = \langle u_{l}u_{m} \rangle$ and in particular $U_{ll} =
+\langle u_{ll}^{2} \rangle$.\footnote{The old {\it RESPAR} program
+was using $\langle u \rangle$ in its input file !} Two other forms
+of the temperature factor commonly used in the literature are:
+$B_{lm} = 8 \pi^{2}U_{lm} = 8 \pi^{2} \langle u_{l}u_{m} \rangle$
+and $\beta_{lm} = \frac{1}{4} {\bf a}^{*}_{l} {\bf a}^{*}_{m}
+B_{lm}$ where ${\bf a}^{*}$ are the reciprocal lattice parameters.
+\par The remaining parameters are the scale factor {\tt csca[p]}
+and the parameters {\tt delt[p]} and {\tt srat[p]} modelling the
+$r$ dependence of the PDF peak width as discussed in the next
+section. Note that these parameters take the number of the
+corresponding structural phase $p$ as argument.
+
+%------------------------------------------------------------------------
+\subsection{R-dependence of the PDF peak width \label{fit_pwid}}
+
+\begin{figure}[!t]
+   \centering
+   \includegraphics[scale=0.5, angle=270.0]{alp.1.eps}
+   \caption[Influence of PDF peak broadening $\alpha$]
+           {Result of PDF refinement of $Ni$ showing the influence
+            of the PDF peak broadening parameter, $\alpha$. The
+            filled circles are the data collected on the instrument
+            NPDF at the Lujan Center at Los Alamos National Laboratory.
+            The dotted line is a refinement without $\alpha$ and
+            the dashed line is a refinement using the PDF broadening
+            with $\alpha=0.002$. Note that the range displayed extends
+            from 80\AA\ to 90\AA.}
+   \label{fit-fig1}
+\end{figure}
+
+The PDF peak width contains contributions from thermal and zero
+point displacements as well as static disorder. For large
+distances $r$ the motion of the two contributing atoms is
+uncorrelated, for small distances, however, the motion can be
+strongly correlated leading to a sharpening of the first peak(s)
+in the observed PDF (see \cite{jeprmjbi98}). The program PDFFIT
+provides three different correction terms for the PDF peak width.
+The final width is given by
+
+\begin{equation}
+  \sigma_{ij}= \sqrt {\sigma_{ij}^{'2} -
+                      \frac{\delta}{r_{ij}^{2}} -
+                      \frac{\gamma}{r_{ij}} +
+                      \alpha^{2} r_{ij}^{2}}.
+  \label{eq_fitw}
+\end{equation}
+
+\noindent Here $\sigma'$ is the peak width without correlation
+given by the structural model. The first two terms correct for the
+effects of correlated motion. Details about these terms can be
+found in \cite{jehe02}. Within the scope of the users guide, we
+just mention that the term $\delta / r^{2}$ describes the low
+temperature behavior and the term $\gamma / r$ describes the high
+temperature case. Since the two parameters are highly correlated,
+one will in practice choose which one to refine. The last term in
+equation \ref{eq_fitw} models the PDF peak broadening as a result
+of the $Q$ resolution of the diffractometer. Details about this
+corrections can be found in \cite{thlele02}. In many cases this
+term will only be significant for refinements of wider ranges in
+$r$. Note that the $Q$ resolution also results in an exponential
+dampening of the PDF peaks which is modelled using the parameter
+$\sigma_{Q}$. Complete details of the equations used in PDFFIT,
+refer to appendix \ref{app-deriv}.
+\par
+
+The last mechanism to sharpen PDF peaks at low $r$ becomes
+necessary e.g. when a system has a static displacement component
+which is reflected by the structural model only up to a certain
+distance. In this case {\it PDFFIT} allows the user to sharpen the
+PDF peaks below a value of $r=r_{cut}$ by a factor $\phi < 1$.
+Thus below $r_{cut}$ the temperature factor reflect only thermal
+and zero-point motion whereas at higher $r$ a combination of
+static and dynamic displacements are modelled by the thermal
+parameters. The cutoff value is set using the variable {\tt
+rcut[p]} and the ratio $\phi$ is set by {\tt srat[p]} (read sigma
+ratio).
+
+%------------------------------------------------------------------------
+\subsection{Refining multiple phases or data sets \label{fit_mult}}
+
+{\it PDFFIT} is capable of refining multiple structural phases and
+multiple PDF data sets. Let us consider multiple data sets first.
+Simply read each data set using the command {\tt read data} after
+starting the program or using the command {\tt reset}. Assign a
+refinement parameter to the experimental variables of each data set.
+Setup the structural model as before and run the refinement. The
+calculated PDF for each data set needs to be saved using the
+command {\tt save pdf,n,file} where {\tt n} is the number of the
+data set. When refining a model with more than one structural phase
+read the corresponding structure using the command {\tt read stru}. Next
+the definition of a structural model needs to be done for each phase.
+Use the command {\tt phase} to make the phase active before entering
+the corresponding parameter definitions. Since the variables
+{\tt delt[p], rcut[p], srat[p]} and {\tt csca[p]} use the phase
+number as argument, the corresponding definitions can be entered
+without using the command {\tt phase}. Again after running the
+refinement, the resulting structure of each phase must be saved
+separately via {\tt save stru,p,file} where {\tt p} is the number of
+the phase. \par
+
+The new command {\tt psel} allows the user to associate certain phases
+$p_{i}, i=1..n$ with a given data set $s$. One extreme would be to have
+e.g. two data sets and one phase each completely separate which is
+not really different from running the refinements separately.
+However, by using identical refinement parameters one can constrain
+any structural parameters between the phases. The default is that all
+structural phases are associated with all loaded data sets.
+\par
+
+When using multiple phases and data sets one needs to be careful
+who to use the scale factors {\tt csca[p]} and {\tt dsca[s]}. The
+program makes no internal normalization and the scale factors might
+be highly correlated.
+
+%------------------------------------------------------------------------
+\subsection{Difference modeling \label{fit_diff}}
+
+Sometimes it might be beneficial to refine the {\it change} of
+a PDF e.g. when crossing a phase transition rather than the PDF
+itself. One advantage is that systematic errors might cancel when
+calculating the difference. {\it PDFFIT} has the option to refine
+a difference PDF $D(r) = G(r) - G_{r}(r)$. The normal PDF $G(r)$
+is derived from the model structure and subsequently a reference
+PDF $G_{r}(r)$ is subtracted. \par
+
+Difference modeling is enabled by using the command {\tt read
+diff} rather than {\tt read data} when reading the PDF data. The
+command {\tt read diff} requires an additional parameter containing
+the name of a file containing the reference PDF $G_{r}(r)$. The data
+file must now contain the difference between the observed and
+reference PDF. It is important that both PDFs cover identical points
+in $r$. The command {\tt save pdf} will save the resulting difference
+PDF and {\tt save dif} will save the difference between the calculated
+difference PDF and the experimental difference PDF, I hope this is
+not confusing.
+
+%------------------------------------------------------------------------
+\section{Setting refinement options \label{fit_opt}}
+
+There are only two settings the user can change before a refinement
+is started using the command {\tt run}: the maximum number of iterations
+({\tt cycle}) and the magic number URF (some German: Unterer Relaxations
+Faktor, command {\tt urf}). This value determines who 'fast' the fit
+will move to its minimum or how much the parameter values are changed
+in each cycle depending on the deviations. A small value (e.g. 0.1) might
+lead to a fast convergence but might also miss the minimum. A larger
+value (e.g. 100.0) will give a slow convergence which more certain
+finds the minimum, but might be caught in local minima rather than in
+the global one. Understood ? Well just try different values until your
+fit converges nicely to the global minimum. The convergence of a
+refinement can be judged by the final difference in the R-value displayed
+on the screen. Obviously a small difference is the goal. {\it PDFFIT}
+leaves the convergence criterion to the user. The command {\tt show fit}
+will list the current refinement settings and results. If the number of
+actually computed iteration is equal to the maximum number of iterations,
+the refinement needs to be continued by simply issuing the command
+{\tt run} again. One might also need to increase the maximum number
+of iterations using the command {\tt cycle}. \par
+
+When refining a model one can rarely refine all desired parameters
+from the start. So a good start is for example to refine the scale
+factor first followed by lattice parameters and so on. So one could
+add the parameter definitions gradually. However, {\it PDFFIT} offers
+refinement flags {\tt pf[n]}. To refine a certain parameter $n$ simply
+use {\tt pf[n]=1}, to keep it fixed use {\tt pf[n]=0}. The default is
+that all parameters that are used in any definition will be refined.
+
+%------------------------------------------------------------------------
+\section{Saving results \label{fit_save}}
+
+After a refinement has been carried out, the results must be
+saved before {\it PDFFIT} is terminated, otherwise {\bf all
+results will be lost}. The following sequence of command will
+save all results of a refinement:
+
+\footnotesize
+\begin{MacVerbatim}
+      1 save pdf,1,result.pdf
+      2 save dif,1,result.dif
+      3 save str,1,result.stru
+      4 save res,result.res
+\end{MacVerbatim}
+\normalsize
+
+\noindent In lines 1--2 the calculated PDF and the difference
+between observed and calculated PDF are written to the files {\it
+result.pdf} and {\it result.dif}. The file formats were already
+discussed in section \ref{file_pdf}. The parameter {\tt 1} stands
+for the PDF and difference corresponding to the experimental
+dataset one. In cases where multiple datasets are refined, the
+results for each set must be saved separately. In line 3 the
+resulting structure is saved using the {\it PDFFIT} structure file
+format. Here the {\tt 1} stands for structural phase one. Again
+for refinements using multiple phases, each resulting structural
+phase needs to be save separately. Finally the a summary of the
+refinement settings and results is saved to the file {\it
+result.res} (line 4). The resulting structure can alternatively be
+saved in the {\it DISCUS} structure file format using the command
+{\tt save disc,1,file.stru}. This allows one to used {\it DISCUS}
+for further analysis of the resulting structure. However, some
+information like the standard deviations and the anisotropic
+temperature factors $U_{ij}$ will be lost. Thus it is recommended
+to save the resulting structure always in {\it PDFFIT} format as
+well.
+
+%------------------------------------------------------------------------

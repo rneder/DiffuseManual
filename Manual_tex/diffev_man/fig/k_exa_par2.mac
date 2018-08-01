@@ -1,0 +1,24 @@
+rese
+@kpara 2
+#
+buff 0.08,0.05,0.12,0.08
+nfra 1
+sfra 1, 0.00, 0.00, 1.00, 1.00
+kfra 1,1,2,3
+#
+  skal 0,99,-50,ymax[3]*1.01
+  mark 10,20.
+  fnam off
+  achx Generation
+  achy Parameter 2
+  tit1
+  tit2 Development of Parameter 2
+  font size,1,18
+  font size,2,18
+  font size,3,18
+  font size,4,18
+plot
+#
+save ps, example.p2.ps
+sys ps2epsi example.p2.ps
+sys mv example.p2.epsi ../pic/example.p2.eps

@@ -1,0 +1,13 @@
+CVS/
+clean
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.lof
+*.log
+*.lot
+*.bak
+*.toc
+*.pdf
+*.ps

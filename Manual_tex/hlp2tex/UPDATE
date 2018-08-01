@@ -1,0 +1,27 @@
+#!/bin/sh
+
+#cd `dirname "$0"`
+rm -f *.hlp
+./LINK
+
+gfortran -o hlp2tex hlp2tex.f
+
+./hlp2tex appl_dif DIFFEV
+./hlp2tex appl_dis DISCUS
+./hlp2tex appl_kup KUPLOT
+./hlp2tex appl_mix MIXSCAT
+./hlp2tex appl_suite SUITE
+#./hlp2tex appl_pdf PDFFIT
+./hlp2tex lib_f90 'COMMON'
+
+mv ./appl_dis.tex ../discus_man/
+mv ./appl_dif.tex ../diffev_man/
+mv ./appl_kup.tex ../kuplot_man/
+mv ./appl_mix.tex ../mixscat_man/
+mv ./appl_suite.tex ../suite_man/
+#mv ./appl_pdf.tex ../pdffit_man/
+mv ./lib_f90.tex ../package_man/
+#
+rm -f *.hlp
+
+echo "Done .."

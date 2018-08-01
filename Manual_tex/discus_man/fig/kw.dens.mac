@@ -1,0 +1,20 @@
+orient port
+#
+fset 2
+rese
+load cr,dsin.plot
+#
+ccal add,wx,1,10.
+ccal add,wy,1,10.
+#
+fnam off
+achx x [l.u.]
+achy y [l.u.]
+font just,cent
+#
+msiz 1,0.24
+mark 5,5
+skal -0.5,19.5,-0.5,19.5
+aver 1.0
+tit2 Density wave
+

@@ -1,0 +1,17 @@
+orient port
+#
+rese
+load cr,stack.1.plot
+#
+#
+fnam off
+fset 2
+achx x [l.u.]
+achy y [l.u.]
+font just,cent
+#
+msiz 1,0.15
+mark 5,5
+skal -25.5,25.0,-0.5,49.5
+aver 1.0
+tit2 Stacking faults

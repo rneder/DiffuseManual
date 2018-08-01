@@ -1,0 +1,22 @@
+#
+# Demonstration macro for density waves
+#
+# longitudinal
+#
+read
+cell cmm2.cll,20,20,1
+#
+wave
+rot 0,0,1
+func sinus
+len 80.0
+amp 45.0
+phase 0.0
+shift 0.0
+vect 1,0,0
+msel 1
+show
+run
+exit
+#
+@plot rsin.plot

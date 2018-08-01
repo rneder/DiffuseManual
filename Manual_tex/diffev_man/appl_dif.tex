@@ -1,0 +1,1253 @@
+\chapter{DIFFEV commands}
+\section{News}
+\subsection*{2018\_June}
+\par
+Revised the reaction to a CTRL-C 
+\par
+Added a ==$> $ 'set error, ... , "save" option 
+\par
+Revised the internal workings of the distribution within 
+run\_mpi. This has no effects on the user. It should anable you, 
+however, to distribute the children much better on a system with 
+many nodes and many CPU's per node. See the manual for furtrher info. 
+\subsection*{2018\_Feb}
+\par
+Added an optional parameter "partial:$ <$value$> $" to the 
+==$> $ 'restrial' command. This parameter tells DIFFEV how many 
+partial R-values the slave program will calculate and return. 
+If set or if the value is larger than 1, DIFFEV will create 
+logfiles "Summary.Rvalue.0001", "Parameter.Rvalue.0001" and 
+"Current.Rvalue.0001" etc. for each partial R-value. 
+Use the KUPLOT commands 'rval' and 'cost' to set the 
+individual R-values and a (weighted) average. 
+You can display the development of the partial R-values within 
+KUPLOT" with the kuplot command 'kpara'. 
+\par
+removed 'read' command 
+\subsection*{2018\_Jan}
+\par
+The logical comparisons may now take the operators: 
+$ <$, $ <$=, ==, /=, $> $=, $> $/ 
+The classical fortran77 operators are still valid 
+\par
+New logical functions "isvar" and "isexp" can be used within an 
+"if" construction. See help entry ==$> $'function' in the 
+general "Command\_lang" section 
+\par
+The ==$> $ function par\_number($ <$char\_variable$> $) returns the 
+number for the refinement parameter in the character variable 
+$ <$char\_variable$> $. 
+\par
+The ==$> $ function par\_name($ <$number$> $) returns the name of the 
+refinement parameter number $ <$i$> $. 
+\par
+Finished the transformation from parameter numbers to 
+parameter names. All Log files now have an extension of the 
+parameter name instead the parameter number. 
+\par
+The new command ==$> $'reset' can be used to reset DIFFEV to the 
+conditions at program start. 
+\subsection*{2018\_Dec}
+\par
+Major revision of the refinement parameter handling. 
+The new command 'newparam' effectively replaces for most of the 
+common refinements the need of the individual commands to set the 
+parameter values. Throughout the command language much more 
+epmphasis is placed on the parameter names instead of the 
+parameter numbers. See ==$> $'refine' and 'init' commands. 
+The parameter names are alos placed into the user variable 
+environment and handed down to the slave program (discus or kuplot) 
+where they will have the appropriate values for the members of 
+the population. 
+\par
+Added a 'read' command that reads GENERATION and the ==$> $ 'logfile' 
+This allows for easier changes of the population size, see the 
+entry 'Description / Population\_size' 
+\subsection*{2017\_Sep}
+\par
+Throughout the program the internal calculation of random numbers 
+was changed to the FORTRAN 90 intrinsic function. 
+\subsection*{2017\_July}
+DIFFEV has been modified to log the status of the random number generator 
+at the beginning of each slave calculation. This status is documented 
+internally for the current best member of the population. Once an 'exit' 
+command is executed, DIFFEV will write a macro called "diffev\_best.mac" 
+that can be used to recreate the current best solution. 
+\subsection*{2017\_Jan}
+An unfortunate typing error in News/2016\_Oct regaring the new 
+refinement variable 
+ref\_para[1...]   ( was misspelled as ref\_param[1...] ) 
+is corrected in the  on-line help. 
+\par
+Another typing error caused a an error in the macro parameters 
+transferred with a NON MPI command: run\_mpi, making these 
+not backward compatible. This has been fixed. 
+\subsection*{2016\_Dec}
+\par
+At a few select points colors are introduced into the output. 
+Currently these are just the error messages. 
+\par
+\subsection*{2016\_Oct}
+\par
+Global variables have been introduced that use the same syntax as 
+user defined variables. This include just "pi" and variables related 
+to the refinement. 
+DIFFEV sets the value to these variables: 
+REF\_GENERATION  Current generation 
+REF\_MEMBER      Current population size 
+REF\_CHILDREN    Current children size 
+REF\_DIMENSION   Number of parameters 
+REF\_KID         Current child Updated for DISCUS and KUPLOT only 
+REF\_INDIV       Current individuum Updated for DISCUS and KUPLOT only 
+REF\_NINDIV      Number of individual repetitions 
+ref\_para[1..]   Current trial parameters for current child 
+\subsection*{2016\_june}
+\par
+DIFFEV may now be interruted gracefully with a CTRL-c. 
+This will cause DIFFEV to shut down MPI if active. 
+\par
+The 'run\_mpi' command can now be used as a generic interface to identical 
+slave macros, regardless of the MPI status. 
+\subsection*{2016\_april}
+\par
+The initialise command was augmented by a second form to  initialise 
+just the logfiles, see ==$> $ 'logfile', 'summary'. 
+This might be helpful if you want to reset the refinent cycle 
+to a smaller generation number. For very lengthy refinements with 
+a few thousand refinement cycles and many parameters, a continuation 
+will take appreciable time to read all previous cycles. If the 
+actual development accross the cycles is not relevant to you you 
+can reduces the file sizes drastically be a sequence like: 
+pop\_gen[1] = 1 
+initialise logfile 
+\par
+New command 'lastfile' 
+\par
+This new command creates a short copy of the ==$> $ 'logfiles'. 
+This short form contains the parameters just for the last 
+refinement generation. 
+\subsection*{2013\_May}
+\par
+The run\_mpi command has been augmented by a "socket" qualifier, which 
+will cause DIFFEV to run the application program controlled via a 
+socket. This should speed up the process on a multi-core/multi-cpu 
+system. 
+\subsection*{2011\_June}
+\par
+The program is now a fully functional fortran2003 program. 
+There are no changes that must be followed by the user, but important 
+differences exist in the memory allocation. The internal arrays that hold 
+the population are now all allocated automatically, when you define the 
+number of parameters to be refined, the size of the population and the 
+constraint equations. Most of the time you will not have to bother with 
+these computational details. If you whish, you can allocate appropriate 
+array sizes, see ==$> $ 'allocate', 'deallocate'. 
+\par
+With this version, the program allows the user to change the population 
+size and the number of parameters to be refined during a refinement cylce. 
+\par
+If the number of parameters to be refined in increased during a cycle, 
+the program will automatically write new child parameter sets and patch 
+the logfile and summary file. 
+\par
+See the entry ==$> $ "Description" ==$> $ "Increase\_Dimension" for an example. 
+\par
+Related to this new feature, the ==$> $ "initialize" command now allows to 
+(re-)initialise an individual parameter. 
+\par
+\section{Synopsis}
+\par
+\begin{MacVerbatim}
+Description ! A description of the program
+News        ! Information on recent changes
+allocate    ! Allocate array sizes
+adapt       ! Adaption of global/local search width
+backup      ! Backup current best solutions
+compare     ! Compares the results of the current population
+constraint  ! Defines a constraint condition
+deallocate  ! Deallocate array sizes
+dismiss     ! Dismiss the worst parents; replace by new children
+donor       ! Defines which donor to use
+fix         ! Fixes a parameter
+initialize  ! Initializes the generation zero
+lastfile    ! Defines a file name for the parameters for the last generation
+logfile     ! Defines the file name for the parameters for each generation
+newparam    ! Defines Ra new parameter or new values for a parameter
+pop_name    ! Defines names for the individual parameters
+refine      ! Defines which parameters are refined/fixed
+restrial    ! Defines the file name for the current R-values
+run_mpi     ! Run the cost function program in parallel through MPI
+selection   ! Defines how children/parents survive into next generation
+summary     ! Defines the file name for a summary of the parameter changes
+trialfile   ! Defines the file name for the current parameters
+type        ! Sets the numerical type for a parameter (integer or real)
+write       ! Writes new Children or new GENERATION file
+\end{MacVerbatim}
+\section{Description}
+\par
+The program DIFFEV uses the differential evolution algorithm to refine 
+a set of parameters to a set of observations. 
+\par
+DIFFEV provides the handling of the parameters and their evolution. 
+An external program must be used to calculate the cost function or 
+R-value that corresponds to a given set of parameters. 
+\par
+The differential evolution algorithm compares simultaneously the resulting 
+cost function for several sets of parameters. The number of parameter sets 
+is called the population. For each member of the population a set of 
+parameters is used. This is called a parameter vector. Its dimension 
+depends on the model that you need to describe. In order to describe 
+a parabola you would need three parameters. The whole set of parameters 
+is called a generation. 
+\par
+For each generation, the cost function is evaluated for each member of 
+the population. The next generation is determined from the current 
+parent generation through the following procedure: 
+\par
+Loop over all members 
+  - Choose a member (at random or at will), this will be the 
+    donor base. 
+  - Set a point along the line between current member and donor base 
+    to create the effective donor base ==$> $ diff\_k[1] 
+  - Select two other members by random choice 
+  - Loop over all parameters: 
+     - Take the difference between the corresponding parameters of the 
+       two other randomly chosen members. 
+     - Multiply this difference by a user provided value ==$> $ diff\_f[1]. 
+     - Add the difference vector to the effective donor base to 
+       create a parameter set called the donor. 
+       - One parameter of the donor is always chosen for the child. 
+         All other parameters are then randomly chosen from: 
+         Either:  the parent 
+         Or    :  the donor 
+       - The probability for this choice is weighted by a user provided 
+         probability ==$> $ diff\_cr[1]. 
+\par
+Once a new generation has been determined the corresponding cost function 
+is calculated. 
+\par
+Next the selection process determines, which current children survive 
+into the next generation. This is done either by: 
+- Direct comparison between a parent member and its immediate child. 
+  Only those new members survive, whose cost function is 
+  less than that of the parent. Otherwise the parent is retained. 
+- All parents and all children are pooled into one set. From this set 
+  the best members survive, irrespective whether they were a parent 
+  or a child. 
+\par
+Such an algorithm is able to search for parameters if a standard refinement 
+algorithm fails or is difficult to adapt. This might be the case for: 
+- Undefined parameter values within the possible range. The parameter 
+  P may for example NOT be equal to 1 for a function: 1/(1-P) but values 
+  larger AND smaller are allowed. 
+- The calculation of the cost function involves existing extensive 
+  algorithms or several different programs. 
+- The calculation involves the averaging of several calculations that 
+  rely on data created by (Gaussian-) randomly distributed parameters. 
+\par
+Files 
+\par
+DIFFEV uses several files to store the parameter values, the current 
+status etc these are: 
+\par
+"GENERATION"   Fixed file name in the current directory! 
+\par
+The file "GENERATION" contains twelve fixed lines with the current 
+generation number, and all relevant file names. 
+Further lines contain the backup file names if defined, the random 
+number seeds and the finally the parameter names and their allowed 
+numerical ranges. 
+\par
+\begin{MacVerbatim}
+ # generation members children parameters
+      158        45        90         4
+ # trial file
+ DIFFEV/Trials
+ # result file
+ DIFFEV/Results
+ # log file
+ DIFFEV/Parameter
+ # summary file
+ DIFFEV/Summary
+ # last    file
+ DIFFEV/Current
+\end{MacVerbatim}
+Trial files (obsolete) 
+\par
+DIFFEV writes a short file for each member that contains the current 
+parameters for one member. 
+The user defined filename is appended by a four digit member number. 
+The first lines contain the information 
+on current generation number, the number of members in the population, 
+the number of children and the number of parameters 
+\begin{MacVerbatim}
+# generation members children parameters
+     181        45        90         4
+# current member
+    1
+# parameter list
+    0.8284027688E-02
+    0.5815573883E+02
+    0.2050311089E+01
+    0.3000000000E+01
+\end{MacVerbatim}
+Result files (obsolete) 
+\par
+DIFFEV expects to read the R-values for each member from a short file. 
+The user defined filename is appended by a four digit member number. 
+\par
+The file must contain the member number and the R-value in free format 
+within the first line. 
+\par
+Parameter files 
+\par
+For the R-value and for each parameter a SPEC type file is written that 
+contains all old R-values and parameters, respectively. 
+Each generation makes up a scan. The first column is the member number, 
+the second column is the R-value and the third column is the respective 
+parameter value. 
+The base name of the parameter files can be set by the user via command 
+==$> $ 'logfile'. As of Version 5.16.1 the base name is appended by an 
+extension that is identical to the parameter name. Parameter file 
+$ <$name$> $.Rvalue has the same structure, except that both column two and 
+three are the R-values. 
+\par
+Prior to version 5.16.1 the base naem was appended by a four digit 
+number with leading zeros. Parameter file no 0000 has the same 
+structure, except that both column two and three are the R-values. 
+\par
+Last file 
+\par
+A short copy of the parameter file that contains the parameters 
+just for the last generation. 
+\par
+Summary files 
+\par
+For the R-value and for each parameter a SPEC type summary files 
+contains a single scan. Each generation creates one line within the 
+scan. Five values arew written to each line. The first column is the 
+generation number 
+For the R-value and each of the parameters four further columns are 
+written. The first of these is the average value, the second the 
+minium value, the third the maximum value and the fourth the sigma of 
+the parameter distribution. 
+The base name of the summary files can be set by the user via command 
+==$> $ 'summary'. This base name is appended by a four digit number with 
+leading zeros. Summary file no 0000 has the same structure, except that 
+both column two and three are the R-values. 
+\par
+Further help topics are: 
+\par
+\subsection*{Basic\_Example}
+\par
+This example illustrates the commands to refine the three parameters 
+that describe a parabola: y = P1*x**2 + P2*x + P3 
+\par
+You will find the data and the macros in the diffev/Example directory 
+within the program source directories. 
+\begin{MacVerbatim}
+======================diffev.mac======================================
+#
+#
+pop_gen[1]  = 0         # initialize the current generation to zero
+#
+pop_n[1]    = 15        # The population shall have 15 members
+pop_c[1]    = 15        # The population shall have 15 children
+pop_dimx[1] = 3         # We need three parameters
+#
+pop_name      1,square  # The parameter is called "square"
+#
+type          1,real    # Parameter 1 is a floating number
+#
+pop_xmin[1] = -1.0      # The first parameter is restricted to the
+pop_xmax[1] =  1.0      # range -1 to +1
+#
+pop_smin[1] = -0.8      # The starting parameters of the first parameter
+pop_smax[1] = +0.8      # are restricted to the range -0.8 to +0.8
+#
+pop_sig[1]  =  0.02     # The sigma of minimum parameter "noise".
+pop_lsig[1] =  0.002    # The sigma for local searches
+#
+adapt  sigma, 1, 0.025  # After generation 0 the value of pop_sig[1]
+#                       # is adjusted to 0.025*(largest parameter -
+#                       #                       smallest parameter )
+#
+adapt lsigma, 1, 0.0025 # After generation 0 the value of pop_lsig[1]
+#                       # is adjusted to 0.0025*(largest parameter -
+#                       #                        smallest parameter )
+#
+pop_name      2,linear
+pop_xmin[2] = -2.0
+pop_xmax[2] =  2.0
+pop_smin[2] = -1.8
+pop_smax[2] = +1.8
+#
+pop_name      3,constant
+pop_xmin[3] = -5.0
+pop_xmax[3] =  5.0
+pop_smin[3] = -4.8
+pop_smax[3] = +4.8
+#
+constraint  p[1].lt.1.3 # Several constraint may be imposed on the
+constraint  p[2]+p[3].gt.0.0
+#                       # parameters. Here the first parameter must be
+#                       # less than 1.3. In the second constraint condition,
+#                       # The sum of the second and third parameter must be
+#                       # greater than zero.
+#
+diff_cr[1]  = 0.9       # The cross over probability is 90%
+diff_f[1]   = 0.81      # The difference vectors are multiplied by 0.81
+diff_k[1]   = 1.0       # For diff_k = 1, the difference vector is added
+#                       # to the donor, for diff_k = 0 to the parent.
+diff_lo[1]  = 0.1       # In 10% of all cases, a member creates its child
+#                       # not by diffev algorithm, but from a local Gaussian
+#                       # distributed search.
+#
+trialfile  silent       # Instead of writing to a file DIFFEV will pass the
+#                       # values silently down to DISCUS/KUPLOT
+restrial   silent       # Instead of reading a resultfiel, DIFFEV wil
+#                       # obtain the cost function results directly from
+#                       # the slave program.
+logfile    Parameter    # The log file for the parameters
+summary    Summary      # A shorter log file
+#
+init       silent       # Initializes diffev, Generation zero is written.
+#
+do i[1]=1,15            # A loop over 15 generations
+  run_mpi kuplot, kcompare.mac, 0,  /dev/null
+#                       # diffev starts the kuplot program with input
+#                       # from file "kcompare.mac". This macro instructs
+#                       # kuplot to read the 'trialfiles', to calculate the
+#                       # cost function for each member and to write the
+#                       # results into the 'restrial' files.
+#
+  compare  silent       # diffev reads the 'restrial' files, compares the
+#                       # cost functions of children and parents and
+#                       # creates the next generation.
+#
+enddo                   # End of the loop
+\end{MacVerbatim}
+\subsection*{Increase\_Dimension}
+\par
+Here is an example for a macro that should be used to increase the 
+number of parameters to be refined: 
+\par
+\begin{MacVerbatim}
+newparam cube, -5.0, 5.0, -4.8, 4.8, keep:initialize
+#                                # Defines a new parameter called "cube"
+#                                # that is allowed to be in
+#                                # the range [-5:+5]
+#                                # It is initialized in the
+#                                # range [-4.8:+4.8]
+dismiss          pop_n[1]/2      # Set R-value of half the population
+                                 # to a very high value, thus they will
+                                 # be replaced in the next generation
+\end{MacVerbatim}
+Prior to version 5.19 the macro would have taken the following command: 
+\par
+\begin{MacVerbatim}
+variable integer, ipar           # just a nice variable name
+pop_dimx[1]    = pop_dimx[1] + 1 # increase dimension
+ipar           = pop_dimx[1]     # copy into variable
+
+pop_name         ipar,cube       # Define name etc for new parameter
+pop_xmin[ipar] = -5.0
+pop_xmax[ipar] =  5.0
+pop_smin[ipar] = -4.8
+pop_smax[ipar] = +4.8
+type real,       ipar
+refine           ipar            # Set refinement flag
+init             ipar            # Initialize just this new parameter
+dismiss          pop_n[1]/2      # Set R-value of half the population
+                                 # to a very high value, thus they will
+                                 # be replaced in the next generation
+\end{MacVerbatim}
+\subsection*{Hints}
+\par
+These are some hints regarding useful parameters. They are derived 
+from the authors experience and are to be carefully adopted. 
+\par
+The population size MUST be at least 4! 
+\par
+The population size should be at least about ten times as large as the 
+number of parameters, twenty times will give you a good sampling of the 
+parameter space. A smaller population runs the risk of converging into 
+a local minimum. 
+\par
+The cross over probability ==$> $diff\_cr[1] should be about 0.8 
+ A smaller value (lets say around 0.3), seems to prevent convergence, 
+   While a small value prevents the special properties of the 
+   differential algorithm to be applied at all. At diff\_cr[1]=0, 
+   all children would always be identical to their parents! 
+\par
+The multiplier for the difference vector ==$> $ diff\_f[1] should be 
+around 0.8 
+   A small value prevents the children from being very different 
+   from their parents, while a large value ~$> $ 1.5(?) seems to 
+   prevent convergence, since all children always jump too far away 
+   from their parents. 
+\par
+selection mode 
+   If the dependency of the cost function/R-value on the parameters 
+   is (or seems to be) fairly straightforward, the convergence is 
+   much faster if you choose the selection best,all scheme. By increasing 
+   the number of children in comparison to the parents, the selection 
+   pressure also increases and the algorithm will move faster into 
+   the minimum. This will, however, also happen if you happen to be close 
+   to a local minimum, instead of the global minimum! 
+\par
+I cannot give a hint regarding the number of generations required. 
+This depends too much on the problem at hand, parameter correlation, 
+the initial choice of parameters etc. 
+\subsection*{Population\_size}
+\par
+Usually the population size will remain fixed during the course of 
+a refinement. The population size is defined by setting appropriate 
+values to the variable 'pop\_n' and 'pop\_c' for the parent and 
+children respectively. 
+\par
+If you want to change the population size during a refinement, use 
+a sequence of commands as follows: 
+\par
+read         ! This forces DIFFEV to update the parameters from 
+             ! GENERATION and the logfiles 
+pop\_n[1] = $ <$new\_value$> $ 
+pop\_c[1] = $ <$new\_value$> $ 
+\par
+You may increase or decrease the population size as needed. 
+\section{allocate}
+{\bf allocate \par }
+{\bf allocate "default" \par }
+{\bf allocate "constraint", $ <$max\_constr$> $ \par }
+{\bf allocate "population", $ <$max\_members$> $, $ <$max\_parameters$> $ \par }
+{\bf allocate "show" \par }
+\par
+\vspace{3pt}
+DIFFEV allows to to allocate memory for the arrays needed to store the 
+population and the constraints. DIFFEV will dynamically allocate 
+the population size, the number of refinement parameters and the 
+number of constraints. 
+Thus one often may not have to use this command. 
+\par
+If previously allocated arrays are reallocated, DIFFEV tries to save 
+the old values and you can continue to use these. If the new array 
+sizes are smaller than the previous ones, this can obviously not be 
+done. DIFFEV will perform the new allocation, but all old data are lost. 
+A short warning will be printed. 
+\par
+{\bf allocate \par }
+{\bf allocate "show" \par }
+\par
+\vspace{3pt}
+Without parameter or with the parameter "show", the allocate command 
+shows the current memory allocations. 
+\par
+{\bf allocate "default" \par }
+\vspace{3pt}
+Allocates all array sizes to default values. 
+\par
+{\bf allocate "constraint", $ <$max\_constr$> $ \par }
+\par
+\vspace{3pt}
+Allocates the maximum number of constraints that DIFFEV shall handle. 
+\par
+{\bf allocate "population", $ <$max\_members$> $, $ <$max\_parameters$> $ \par }
+\vspace{3pt}
+Allocate the maximum population size and the maximum number of 
+parameters that can be refined. 
+\section{adapt}
+{\bf adapt "sigma" ,$ <$parameter\_number$> $,[,$ \{$"yes"$| $"no"$| $$ <$value$> $$\} $] \par }
+{\bf adapt "lsigma",$ <$parameter\_number$> $,[,$ \{$"yes"$| $"no"$| $$ <$value$> $$\} $] \par }
+\par
+\vspace{3pt}
+DIFFEV uses to "sigmas" to handle special situations. 
+\par
+The global sigma pop\_sig[$ <$i$> $] is used in the following two situations: 
+- a new parameter falls outside the range allowed by pop\_xmin[$ <$i$> $] and 
+  pop\_xmax[$ <$i$> $]. In this case the new parameter is chosen by adding a 
+  Gaussian random distributed value with sigma pop\_sig[$ <$i$> $] next to the 
+  respective boundary. 
+- the difference between two parameters is zero. This will usually 
+  occur for integer parameters only. In this case the new parameter is 
+  chosen by adding a Gaussian random distributed value with sigma 
+  pop\_sig[$ <$i$> $] to the value of the effective donor. 
+\par
+If sigma is allowed to adapt during the fit, its value is set to 
+(maximum parameter value - minimum parameter value) * $ <$value$> $ 
+Thus, as the population converges to a smaller parameter spread, sigma 
+dynamically becomes smaller as well. 
+\par
+The adaptation can be set for each parameter $ <$parameter\_number$> $ 
+separately. 
+\par
+The local sigma is used to modify a member not by differential evolution, 
+but by a adding a local shift to the member. The local shift is a 
+Gaussian distributed random value with sigma = $ <$lsigma$> $. 
+Whether DIFFEV uses this mode, is determined  by the ==$> $ variable 
+diff\_lo[1]. This gives the probability, that a given member will be 
+modified by the local change instead of differential evolution. 
+\section{backup}
+{\bf backup "NONE" \par }
+{\bf backup $ <$input$> $ [,$ <$extension] , $ <$output$> $ \par }
+\par
+\vspace{3pt}
+This command allows you to back up the current best solutions. 
+Diffev expects that the current trial solutions are called 
+inputfile.???? 
+or 
+inputfile.????.extension 
+where "????" is a four digit integer number with leading zeros. 
+Note that the '.' before the number "????" and before the extension 
+are mandatory parts of the filename. You need to ensure that your 
+version of "kup.diffev.mac" adheres to this standard. 
+If the output file name includes a path, make sure that the output 
+directory does exist. DIFFEV does not create the output directory. 
+\par
+\par
+Examples 
+backup CALC/calc, FINAL/final 
+This form will back up the files 
+      "CALC/calc.????" as "FINAL/final.????" 
+backup TEMP/calc, tth, FINAL/final 
+This form will back up the files 
+      "TEMP/calc.????.tth" as "FINAL/final.????.tth" 
+\par
+If multiple files need to be backed up, use the 'backup' command 
+repeatedly: 
+\par
+backup TEMP/calc, tth,    FINAL/final 
+backup TEMP/calc, grcalc, FINAL/final 
+These two lines will back up the files 
+      "TEMP/calc.????.tth"    as "FINAL/final.????.tth" 
+      "TEMP/calc.????.grcalc" as "FINAL/final.????.grcalc" 
+\par
+backup NONE 
+  Turns off the back up option 
+\par
+The backup option is useful, if the calculation of the solutions 
+takes a long time and involves random configurations. In these cases, 
+the extra time required to copy the files may outway the time to 
+calculates these again after the end of the refinement. 
+If the calculation involves random configurations, a repeated 
+calculation of the solutions on which the cost function depends 
+may not yield exactly the same result. With the backup option you 
+ensure that you always have those backed up solutions correspond 
+to the actual cost function values that DIFFEV used. 
+\par
+If the calculation of the solutions is quick or if it does not 
+involve random configurations it is faster not to run the backup 
+during the refinements. 
+\section{branch}
+{\bf branch kuplot [, "-macro" $ <$macro\_name$> $ [ $ <$par1$> $ [ , $ <$par2$> $ ...]]] \par }
+{\bf branch discus [, "-macro" $ <$macro\_name$> $ [ $ <$par1$> $ [ , $ <$par2$> $ ...]]] \par }
+\par
+\vspace{3pt}
+Active within the discus suite only! 
+\par
+Branches to the "kuplot" or "discus" section. 
+\par
+Within this section any standard KUPLOT command can be 
+given. The behaviour of "kuplot" is essentially the same 
+as in the stand alone version. Likewise for DISCUS. 
+\par
+The main use will branch to KUPLOT while the discus section 
+is run via run\_mpi from a DIFFEV slave. 
+\par
+Optionally the "-macro" qualifier instructs the suite to run the 
+macro $ <$macro\_name$> $ (with its optional parameters) before the 
+interactive session is started. 
+\section{compare}
+{\bf compare ["silent"] \par }
+\par
+\vspace{3pt}
+This is the main part of the differential evolution section. 
+This command reads the current results that the slave program stored 
+in files ==$> $ 'restrial' and compares these to the results of the 
+parent generation. A new set of children is calculated according to 
+the differential evolution algorithm. The successful parents are 
+written to the file ==$> $ 'logfile', which stores their respective cost 
+function, and the full parameter set. At the same time the short summary 
+file ==$> $ 'summary' is appended with abbreviated information about the 
+last generation.  The new children parameters are 
+written to the temporary files ==$> $ 'trialfile'. The current 
+generation is increased in file 'GENERATION'. 
+\par
+If the optional "silent" qualifier is specified, DIFFEV will not read 
+the result files. Instead, DIFFEV must have received the current results 
+by explicitly setting the values of child\_val[*] for all children. 
+This option will work only within the discus\_suite, which is a 
+collection of DIFFEV, DISCUS, and KUPLOT into a common program. 
+\section{constraint}
+{\bf constraint $ <$logical expression$> $ \par }
+\par
+\vspace{3pt}
+The parameter range may be restricted by defining one or several constraint 
+conditions. Each condition must be a valid logical expression. For 
+details of the syntax see the manual entry under ==$> $ Command language. 
+The parameters within the condition are referred to by p[$ <$i$> $], where 
+$ <$i$> $ is parameter number, 1 up to the dimension of the problem at hand. 
+The dimension is fixed through parameter ==$> $ 'pop\_dimx', see the 
+variable entry. 
+\par
+Example 
+\par
+\begin{MacVerbatim}
+constraint  p[1].gt.2   # The first parameter must be larger than 2
+constraint  4.le. p[2]**2 + p[3]**2
+                        # The sum of parameters 2 and 3 squared must be
+                        #  equal or greater than 4.
+\end{MacVerbatim}
+If a constraint equation is not met, DIFFEV will create a new parameter 
+set. This process is repeated until a valid parameter set is found, or 
+until DIFFEV has tried so for MAX\_CONSTR\_TRIAL times. In this latter 
+case the program stops. 
+\section{deallocate}
+{\bf deallocate $ \{$"all" $| $ "constraint" $| $ "population"$\} $ \par }
+\par
+\vspace{3pt}
+This command allows to deallocate memory for the specified program 
+segments. This helps to conserve memory, if program sections are no 
+longer needed. 
+\par
+This deallocation applies to memory that you allocated yourself 
+and also to memory that DIFFEV has allocated automatically during 
+runtime. As DIFFEV does not necessarily know, when you do not need 
+the results of certain calculations any longer, it does not 
+deallocate the automatically allocated memory sections unless you 
+tell DIFFEV to do so. 
+\par
+\begin{MacVerbatim}
+"constraint"
+\end{MacVerbatim}
+   Free memory associated to the maximum number of constraints. 
+\par
+\begin{MacVerbatim}
+"population"
+\end{MacVerbatim}
+   Free memory associated to the population size and maximum number 
+   of refineable parameters. 
+\section{dismiss}
+{\bf dismiss $ \{$$ <$n$> $ $| $ "all" $\} $ \par }
+\par
+\vspace{3pt}
+Set the R-value of the worst $ <$n$> $ parents to a very high value. 
+Thus $ <$n$> $ of the next children will definetly have a better R-value 
+and replace these parents. 
+\par
+This command should be used after you changed the parameter dimension 
+and initialised ==$> $ 'init' some or all of the trial values. 
+Otherwise, many or eval all of the new children might not have 
+a better R-value than their parents, and as a consequence the 
+(re-)initilization of the trial values may get lost. 
+\section{donor}
+{\bf donor $ \{$"best" $| $ "random"$\} $ \par }
+\par
+\vspace{3pt}
+The donor vector may be chosen in two different ways. 
+"best" chooses the parent member that has the best parameter set. 
+"random" chooses at random one of the parent vectors as donor vector. 
+Two other parent vectors are always chosen at random to form the 
+difference vector that is added to the donor vector. 
+DIFFEV chooses the effective donor base along the straight line 
+from the current parent vector to the donor. The point along this 
+line is determined by the value of "diff\_k[1]" (==$> $ variables). 
+For diff\_k[1] = 0  the effective donor is the parent vector, 
+for diff\_k[1] = 1  the effective donor is the donor vector itself. 
+\section{fix}
+{\bf fix $ <$parameter\_no$> $, $ \{$$ <$value$> $ $| $ "best"$\} $ \par }
+{\bf fix $ <$parameter\_name$> $, $ \{$$ <$value$> $ $| $ "best"$\} $ \par }
+\par
+\vspace{3pt}
+This command fixes the value of parameter $ <$parameter\_no$> $ or 
+$ <$parameter\_name$> $ to 
+$ <$value$> $ for all members of the population. The ==$> $ refine 
+flag is turned of for this parameter. 
+If the second parameter is "best", the parameter is set to the 
+corresponding value of the current member with the best R-value. 
+\section{functions}
+\par
+The following DISCUS specific functions exist. For a listing 
+of general intrinsic functions see help entry 'functions' in 
+the 'Command language' section of the online help. 
+\par
+{\bf par\_number($ <$char\_variable$> $) \par }
+\par
+\vspace{3pt}
+Returns the number of the refinement parameter whose name is 
+encoded in the character variable. 
+Example: 
+line = 'P\_length' 
+eval par\_number(line) 
+\par
+{\bf par\_name($ <$number$> $) \par }
+\par
+\vspace{3pt}
+Returns the name of the refinement variable number $ <$number$> $ 
+\section{initialize}
+{\bf initialize [ $ <$par\_number1$> $ [, $ <$par\_number2$> $]] [, "silent"] \par }
+{\bf initialise "logfile" \par }
+\par
+\vspace{3pt}
+This command initializes the differential evolution sequence. 
+\par
+Before using this command, you must have defined: 
+\begin{MacVerbatim}
+Number of parameters to be defined ==> 'pop_dimx'
+Size of the parent population      ==> 'pop_n'
+Size of the children population    ==> 'pop_c'
+Boundaries for each parameter      ==> 'pop_xmin'
+                                   ==> 'pop_xmax'
+Starting intervals for parameters  ==> 'pop_smin'
+                                   ==> 'pop_smax'
+Sigmas for parameter adjustment    ==> 'pop_sig'
+Local sigmas                       ==> 'pop_lsig'
+Cross over probability             ==> 'diff_cr'
+Fraction of the difference vector  ==> 'diff_f'
+Point between parent an donor base ==> 'diff_k'
+Local search probability           ==> 'diff_lo'
+\end{MacVerbatim}
+Without the optional parameters, 'initialize' is used to start 
+the generation zero. 
+\par
+'Initialize' will use this information to generate the zero's generation. 
+The file 'GENERATION' is set to generation zero, the population size 
+and the number of parameters is written. 
+The files ==$> $ 'logfile' and 'summary' are initialized. Old versions 
+with the same name are overwritten! 
+The starting parameter values are written to files ==$> $ 'trialfile' 
+After the header, each line contains a one parameter, 
+'pop\_n' (i.e. the size of the population) lines are written. 
+\par
+If you want to reinitialize one or several parameters, the 
+'initialize' command may be used with the optional parameter(s). 
+In this case 'initialize' will simply set the corresponding 
+parameter, or parameter range from $ <$par\_number1$> $ to $ <$par\_number2$> $ 
+to the range defined by the values of pop\_smin[*] and pop\_smax[*]. 
+A new set of children and the GENERATION file is written. 
+\par
+If the last parameter is the string "silent", the trial files are 
+note written to your disk. DIFFEV expects to be part of a suite 
+program and will transfer the trial parameters directly to the 
+slave program. See also ==$> $ 'trialfile', 'run\_mpi', 'compare' 
+This option will work only within the discus\_suite, which is a 
+collection of DIFFEV, DISCUS, and KUPLOT into a common program. 
+\par
+The second form of the command can be used to initialize just 
+the logfiles, see ==$> $ 'logfile', 'summary'. 
+This might be helpful if you want to reset the refinent cycle 
+to a smaller generation number. For very length refinements with 
+a few thousand refinement cycles and many parameters, a continuation 
+will take appreciable time to read all previous cycles. If the 
+actual development accross the cycles is not relevant to you you 
+can reduces the file sizes drastically be a sequence like: 
+pop\_gen[1] = 1 
+initialise logfile 
+\section{lastfile}
+{\bf lastfile $ <$filename$> $ \par }
+\par
+\vspace{3pt}
+This defines the short log file of the parameter evolution. 
+\par
+After each generation, the short lastfile $ <$filename$> $ is overwritten 
+by the parameters of the current generation. 
+\par
+It is a SPEC type file that contains all old R-values and parameters. 
+Only this last generation makes up a scan. The first column is the 
+member number, the second the R-value and all further columns the 
+respective parameter values. 
+\section{logfile}
+{\bf logfile $ <$filename$> $ \par }
+\par
+\vspace{3pt}
+This defines the log file of the parameter evolution. 
+\par
+After each generation, the logfile $ <$filename$> $ is appended by the 
+parameters of the current generation. 
+\par
+It is a SPEC type file that contains all old R-values and parameters. 
+Each generation makes up a scan. The first column is the member number, 
+the second the R-value and all further columns the respective parameter 
+values. 
+\section{newparam}
+{\bf newparam $ <$name$> $, $ <$xmin$> $, $ <$xmax$> $,$ <$smin$> $, $ <$smax$> $ \par }
+\vspace{3pt}
+         [,init:$ \{$"keep"$| $"initialize"$\} $ 
+         [,real:$ \{$"real"$| $"integer"$\} $ 
+\par
+This command defines a new parameter name or changes the setting for 
+an existig parameter name. 
+$ <$xmin$> $, $ <$xmax$> $ are the absolute lower and upper windows for the 
+               parameter. DIFFEV restricts the refinement to this 
+               interval. 
+$ <$smin$> $, $ <$smax$> $ are the lower and uper limit of the starting 
+               window that is used when a parameter is initialized. 
+\par
+The optional parameter "init" defines if the current parameter 
+values for the population are kept at their current values or if 
+this parameter shall be initialized within the start window 
+$ <$smin$> $, $ <$smax$> $. 
+\par
+The optional parameter "type" defines if the current parameter 
+shall be treated as a real valued number (the default) or as a 
+whole, integer number. 
+\par
+The command summarizes the individual commands 
+  par\_name $ <$name$> $ 
+  pop\_xmin[$ <$ipar$> $] = $ <$xmin$> $ 
+  pop\_xmax[$ <$ipar$> $] = $ <$xmax$> $ 
+  pop\_smin[$ <$ipar$> $] = $ <$smin$> $ 
+  pop\_smax[$ <$ipar$> $] = $ <$smax$> $ 
+  pop\_sig[$ <$ipar$> $]  = 0.001 
+  pop\_lsig[$ <$ipar$> $] = 0.0001 
+  type $ \{$"real"$ <$"integer"$\} $.$ <$ipar$> $ 
+\par
+\section{read}
+{\bf read \par }
+\par
+\vspace{3pt}
+This command has been removed. 
+\section{refine}
+{\bf refine $ \{$"all"$| $"none"$| $$ <$number$> $ [,$ <$number$> $...]$\} $ \par }
+{\bf refine $ \{$"all"$| $"none"$| $$ <$par\_name$> $ [,$ <$par\_name$> $...]$\} $ \par }
+\par
+\vspace{3pt}
+This command allows you to set, which of the variables are refined. 
+If you give the parameter number as negative number, the corresponding 
+parameter is not refined. 
+\par
+Currently you can only specify up to 20 variable numbers on 
+one "refine" command line. If you need to specify the behaviour 
+for more than 20 variables, please use several "refine" commands. 
+\section{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Resets DIIFEV to the conditions at program start. The generation 
+number is set to zero, the population size, children size and the 
+number of parameters is set to the default value of one. All parameter 
+names are removed from the list of user variables. 
+\par
+Use this command if you want to combine several refinements 
+for different experimental data to be executed one after the other. 
+Without the reset, the old parameters would persist and may 
+interfere with your new parameters. 
+\section{summary}
+{\bf summary $ <$filename$> $ \par }
+\par
+\vspace{3pt}
+This defines the log file of the R-value/cost function evolution. 
+\par
+The SPEC type summary files contains a single scan. Each generation 
+creates one line within the scan. The first columns is the generation 
+number. For the R-value and each of the parameters four columns are 
+written. The first of these is the average value, the second the 
+minium value, the third the maximum value and the fourth the sigma of 
+the parameter distribution. 
+\section{restrial}
+{\bf restrial "silent" $ \{$,partial:$ <$no$> $$\} $ \par }
+{\bf restrial $ <$result$> $ $ \{$,partial:$ <$no$> $$\} $ \par }
+\par
+\vspace{3pt}
+Within the discus\_suite always use the "silent" mode! 
+\par
+These temporary files are used to communicate the R-value from the 
+slave program back to DIFFEV. 
+DIFFEV expects a separate file for each member of the population. 
+The filename $ <$result$> $ is automatically augmented by a four digit 
+member number. Thus, if the filename is Results, DIFFEV expects to 
+find the files: 
+\begin{MacVerbatim}
+Results.0001
+Results.0002
+etc.
+\end{MacVerbatim}
+The file contains one line with two numbers, the member number and 
+the R-value obtained for the corresponding set of parameters in 
+file ==$> $ 'trialfile'. 
+\par
+If the file name is the string "silent", the result files are 
+note read from your disk. DIFFEV expects to be part of a suite 
+program and will expect that the result values have been transfered 
+directly from the slave program. See also ==$> $ 'trialfile', 
+'run\_mpi', 'compare' 
+\par
+The optional parameter "partial:$ <$no$> $" tells DIFFEV how many 
+partial R-values to expect from the the slave program. 
+Within DIFFEV the parrtial R-values are just archived, the slave 
+program has to provide the properly weighted average R-value. 
+\par
+\section{run\_mpi}
+{\bf run\_mpi $ <$program\_name$> $, $ <$macro\_name$> $, $ <$no\_repetitions$> $, $ <$output\_base$> $ [,"socket"] \par }
+\par
+\vspace{3pt}
+This command starts the processing of the slave program $ <$program\_name$> $. 
+If the program has been compiled with MPI and started with mpiexec, 
+a parallel computation is started. Otherwise the slave program is 
+executed in a serial loop over all children and individual repatitions. 
+\par
+This command starts parallel processing of program $ <$program\_name$> $. 
+The program will be executed $ <$pop\_c$> $*$ <$no\_repetitions$> $ times. 
+$ <$pop\_c$> $ is the number of children for the current refinement and 
+each child corresponds to one ==$> $ trialfile. 
+The calculations can be repeated $ <$no\_repetions$> $ times, with the identical 
+parameter set. This may be necessary, if you need to average several 
+calculations. 
+\par
+MPI option: 
+The standard output of the program will be directed into a file 
+$ <$output\_base$> $. The current child number ( and the current repeat 
+number, if present) will be appended as four digit wide field. 
+On a UNIX system you can redirect the output to /dev/null. 
+\par
+NON MPI option: 
+Regardless of the value of $ <$output\_base$> $, the output is displayed 
+at the screen. The usual options for the ==$> $ 'set prompt,' command 
+do hold. 
+\par
+Starting with version 5.7 the communication between the diffev section 
+and the discus or kuplot section is done via internal variables. 
+These are: 
+REF\_GENERATION  : the current generation number 
+REF\_MEMBER      : the number of members in the population 
+REF\_CHILDREN    : the number of children in the population 
+REF\_DIMENSION   : the number of parameters defined in DIFFEV 
+REF\_KID         : the current child 
+REF\_INDIV       : the current repetition for the current child REF\_KID 
+REF\_NINDIV      : the intended total number of repetitions 
+\par
+The actual parameters are transferred to DISCUS/KUPLOT via variables 
+ref\_para[...]   : Indices from 1 to REF\_DIMENSION 
+\par
+The capitalization of the refinement variables is intended to 
+distinguish these from user variables. other than that they should be 
+used just as any user defined variable, with no square brackets: 
+kid = REF\_KID 
+\par
+IN a similar fashion, the KUPLOT rvalue command transfers its 
+result back to DIFFEV internally. See 'resfile silent' 
+\par
+Essentially, DIFFEV branches to the section, executes the macro file 
+and returns to DIFFEV. As the communication is done via the internal 
+variables, the need for the macro parameters included in previous 
+version 5.5 and earlier has ceased. You are encouraged not to rely 
+on macro parameters but to use the refinement variables. 
+\par
+\par
+If the last optional parameter is "socket", the program will be 
+started via a socket connection, else via a single "system" call. 
+\par
+system == non-socket option: 
+\par
+Relevant for older verions (5.6 an earleir only): 
+\par
+The actual line that starts the program has syntax: 
+"program\_name" -macro $ <$macro.name$> $ $ <$cwd$> $ $ <$child$> $ $ <$indiv$> $ $> $ $ <$output$> $ 
+\par
+$ <$macro\_name$> $ name of the macro file to be executed 
+$ <$cwd$> $        1st macro parameter string with current directory 
+$ <$child$> $      current child number (1 to pop\_c) 
+$ <$indiv$> $      current repetion number (1 to $ <$no\_repetions$> $) 
+             This parameter is omitted, if $ <$no\_repetions$> $ is zero 
+$ <$output$> $     File for standard output written by $ <$program\_name$> $ 
+\par
+Example 
+run\_mpi discus, discus.mac, 5, LOGFILES/d 
+        Runs discus with macro "discus.mac". For each child the 
+        calculation is repeated 5 times. DISCUS output is written 
+        into files "LOGFILES/d.xxxx.yyyy", where "xxxx" is the 
+        child number and "yyyy" the repetion number. 
+run\_mpi discus, discus.mac, 5, /dev/null 
+        Same, except that the output is written to "/dev/null" 
+        i.e. it is thrown away. 
+run\_mpi discus, discus.mac, 0, LOGFILES/d 
+        Same, except that no repetions are requested. Only one 
+        calculation is performed per child and the output is 
+        written to "LOGFILES/d.xxxx". 
+\par
+socket option: 
+\par
+The program is startet via socket at the beginning of a refinement. It 
+remains active until diffev is terminated. A second, third program may 
+be started as well, such as a discus run followed by kuplot. 
+\par
+The socket option starts the program via the line: 
+\par
+"program\_name" -remote -access=127.0.0.0 -port=$ <$port$> $ $> $ $ <$output$> $ 
+\par
+Thereafter the vatiables generation, member, children, parameters, 
+kid, indiv, nindiv are defined and placed at their proper values. 
+The corresponding lines are 
+variable integer,generation 
+generation = $ <$value$> $ 
+And so on for the other variables. 
+For each calculation i.e. combination of kid, indiv the current 
+values are sent for "kid" and "indiv". All corresponding trial 
+values are placed into the array "r[*]", into entries 201 to 
+201 + $ <$parameters$> $. Then the calculation macro is started, which 
+does of course not have to read the GENERATION and the trial file. 
+\section{selection}
+{\bf selection $ \{$"compare" $| $ "best","all"$\} $ \par }
+\par
+\vspace{3pt}
+This command governs the selection criterium that determines which 
+children and parents survive into the next generation. 
+\par
+\begin{MacVerbatim}
+"compare"    Each child is compared to its immediate parent. The better
+             of these two will survive into the next generation. It will
+             serve as one of the parents from which the next children
+             are derived using the Differential Evolution Algorithm.
+             The number of children ==> 'variables' pop_c, should be
+             identical to the number of members i.e. parents
+             ==> 'variables' pop_n.
+"best","all" All parents and all children are put into a single list.
+             Of this list the best <pop_n[1]> members survive into
+             the next generation. No restriction applies to keep any
+             parent or any children.
+             You are free to use any number of children. If the number of
+             children is increased compared to the number of parents, the
+             selection becomes "tougher" since a smaller percentage of the
+             whole population survives into the next generation. This will
+             speed up convergence, yet run a higher risk of getting stuck
+             in a local minimum.
+\end{MacVerbatim}
+\section{trialfile}
+{\bf trialfile $ <$filename$> $$| $"silent" \par }
+\par
+\vspace{3pt}
+These temporary files are used to communicate the current set of parameters 
+between DIFFEV and the slave program. 
+\par
+DIFFEV writes a separate file for each member of the population. 
+The filename $ <$filename$> $ is automatically augmented by a four digit 
+member number. The if the filename is Trials, DIFFEV expects to 
+find the files: 
+\begin{MacVerbatim}
+Trials.0001
+Trials.0002
+etc.
+\end{MacVerbatim}
+The file has format: 
+\par
+\begin{MacVerbatim}
+# generation members children parameters
+     181        45        90         4
+# current member
+    1
+# parameter list
+    0.8284027688E-02
+    0.5815573883E+02
+    0.2050311089E+01
+    0.3000000000E+01
+\end{MacVerbatim}
+The first states the current generation, the number of members in 
+the population, the number of children in each population, and the 
+number of parameters. 
+The next two lines states the number of the current member. 
+This is followed by a list of all parameter values, each in a separate 
+line. 
+\par
+If the file name is the string "silent", the trial files are 
+note written to your disk. DIFFEV expects to be part of a suite 
+program and will transfer the trial parameters directly to the 
+slave program. See also ==$> $ 'trialfile', 'run\_mpi', 'compare' 
+This option will work only within the discus\_suite, which is a 
+collection of DIFFEV, DISCUS, and KUPLOT into a common program. 
+\section{type}
+{\bf type $ \{$"integer" $| $ "real"$\} $,$ <$number$> $ \par }
+\par
+\vspace{3pt}
+Defines the number that the parameter $ <$number$> $ assumes. Valid options 
+are: 
+\begin{MacVerbatim}
+"integer" The parameter is restricted to integer numbers.
+"real"    The parameter may take on any real,floating number.
+\end{MacVerbatim}
+See the entry on 'variables' regarding options to limit the allowed range, 
+and the entry ==$> $ 'constraint' on possible constraints. 
+\section{variables}
+\par
+Like all programs of the Diffuse suite, diffev offers integer and 
+real variable for standard calculations == Command Language/variables 
+\par
+Unique diffev variables are: 
+\par
+\begin{MacVerbatim}
+pop_gen[1]    The number of the current generation
+pop_n[1]      The size of the parent population
+              The size of the population may be changed during a
+              refinement. In this case the GENERATION file is updated
+              automatically. If the population is increased, the R-values
+              for the new members are set to ten times the maximum
+              current R-value. Parameter values are copied from old
+              member no. one.
+pop_c[1]      The size of the children population
+              The size of the children population may be changed during a
+              refinement. In this case, a new set of trial files is
+              automatically generated and the GENERATION file is updated
+              as well.
+pop_dimx[1]   The dimension, i.e. the number of parameters
+              The dimension may be increased during a refinement. To do
+              so you need to increase pop_dimx[1], set all parameter
+              related values for tis new parameter and run the
+              ==> 'init <par_number>' command. This will initialize the
+              parameter to the starting range and update the trial files
+              and the generation file.
+
+pop_xmin[<i>] Minimum allowed value for parameter <i>
+pop_xmax[<i>] Maximum allowed value for parameter <i>
+
+pop_smin[<i>] Minimum starting value for parameter <i>
+pop_smax[<i>] Maximum starting value for parameter <i>
+
+pop_sig[<i>]  Sigma of Gaussian distribution for parameter <i>. If the
+              difference between two parent parameters is zero, or if a
+              child parameter is outside the limits defined by pop_xmin
+              and pop_xmax, the corresponding parameter is modified by
+              a Gaussian distributed random number.
+              Set pop_sig to zero to switch off this option.
+
+pop_lsig[<i>] Sigma of local Gaussian distribution for parameter <i>.
+              The probability diff_lo[1] determines if a given member
+              is changed locally only or takes part in the usual
+              differential evolution algorithm. If it is changed only
+              locally, the parent parameters are modified by adding
+              a Gaussian distributed random number, with mean zero
+              and sigma pop_lsig.
+
+pop_v[<i>,<j>] Value of parameter <i> for member <j>
+              This parameter is read only.
+
+pop_t[<i>,<j>] Current trial value of parameter <i> for child <j>
+
+rvalue[<i>]   R-value for member <j>. This is the R-value for the
+              current parent generation.
+
+bestm[1]      Parent member that currently has the lowest R-value
+
+bestr[1]      Currently lowest R-value.
+
+worstm[1]     Parent member that currently has the highest R-value
+
+worstr[1]     Currently highest R-value.
+
+p[<i>]        Parameter symbol used in the constraint conditions.
+
+diff_cr[1]    Cross over probability
+diff_f[1]     Multiplier for difference vector
+diff_k[1]     Multiplier for vector between parent vector and donor
+diff_lo[1]    Probability for local refinement of a population member
+diff_sel[1]   Selection mode for compare command, READ_ONLY
+\end{MacVerbatim}
+\section{write}
+{\bf write $ \{$"children" $| $ "generation"$\} $ \par }
+\par
+{\bf write "children" \par }
+\vspace{3pt}
+The write command will generate a new set of child values and update 
+the corresponding trial files and the GENERATION file. The generation 
+number is not changed. 
+\par
+{\bf write "generation" \par }
+\vspace{3pt}
+Writes the GENERATION file. No changes are done to the file. 

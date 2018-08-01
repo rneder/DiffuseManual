@@ -1,0 +1,815 @@
+%------------------------------------------------------------------------
+% Chapter:  FORTRAN interpreter
+%------------------------------------------------------------------------
+
+\chapter{FORTRAN style interpreter \label{fort}}
+
+The programs include a FORTRAN style interpreter that allows the
+user to program complex modifications.  The interpreter provides
+variables, linked to data sets and free variables, loops, logical
+construction, basic arithmetic and built in functions.  Commands
+related to the FORTRAN interpreter are {\tt =, break, do, else,
+elseif, enddo, endif, eval, if} and {\tt variable}. The command {\tt
+eval} allows to examine the contents of a variable or to evaluate an
+expression, e.g. {\tt eval r[1]*0.5}. \par
+
+%------------------------------------------------------------------------
+
+\section{Variables \label{var}}
+
+The programs in the {\it DISCUS} suite use variables to store 
+data. The programs distinguish three types of variables:
+\begin{itemize}
+  \item Variables with fixed name for general use
+  \item Variables with user defined names for general use
+  \item Variables with fixed name that carry program information
+\end{itemize}
+
+{\bf Variables with fixed name for general use}
+
+There are two types of variables: variables of type integer or real, 
+denoted by their fixed names "i" and "r", immediately followed by a left square bracket [, 
+one or more indices (separated by a comma), and finally a right square bracket ]. 
+
+Examples for build in variables are given next.
+
+\begin{quote}
+  {\it Example :\/} i[1], r[0], i[i[1]], x[2]
+\end{quote}
+
+The build-in variables {\tt i[n]} and {\tt r[n]} are general purpose 
+variables. The index {\tt n} can take integer values from zero to a 
+maximum value defined at program compilation, usually 500. In addition,
+ each of the program has a number of build-in
+variables related to its function. \Discus for example has a number of 
+variables related to the structure that the user is using, like unit cell 
+dimensions, atom positions etc. For a list of these variables,
+please refer to the respective program users guides.
+\par
+\par
+
+{\bf Variables with user defined names for general use}\\
+The second set of variables are single valued variables with user
+defined names. These allow the user to use more obvious variable 
+names. The programs allow to define real valued, integer valued
+and character variables.
+With almost identical syntax, the user can provide 1-D and 2-D
+integer and real valued arrays. Currently no Character arrays are provided.
+
+An example of the use of defined variables is shown here:
+%
+\begin{MacVerbatim}
+   1  variable real,alpha,90.0
+   2  variable real,beta
+   3  variable real,diff
+   4  beta = 94.0
+   5  diff = alpha - beta
+   6  eval diff
+\end{MacVerbatim}
+%
+In line one we define a real variable {\tt alpha} with an initial
+value of 90. Next, two more variables are defined and the difference
+between {\tt alpha} and {\tt beta} is calculated (line 5) and the
+result displayed on the screen (line 6). 
+
+Recently another type of variables was added to the command language:
+character variables. These can be used in conjunction with format 
+statements (see command reference under \textit{expressions}). An example 
+setting the plot title in \textsc{Kuplot} to the current date is listed
+below.
+%
+\begin{MacVerbatim}
+   1  variable character,datum
+   2  #
+   3  datum="%c",fdate(0)
+   4  tit2 "Plotted on %c",datum
+\end{MacVerbatim}
+%
+Note the slightly different way character intrinsic functions are used.
+A complete list of character functions can be found in Table
+\ref{func-char}.
+
+To define 1-D or 2-d arrays, simply add the optional parameter "dim"
+to the variable definition.
+\begin{MacVerbatim}
+   1  variable real, mat_a, dim:[3:3]
+   2  variable real, vec_a, dim:[3]
+\end{MacVerbatim}
+
+To work on user supplied matrices, the \Suite provides several commands:
+\begin{itemize}
+  \item matmul: Multiply matrices
+  \item matadd: Add      matrices
+  \item detmat: Calculate the determinant
+  \item mattrans: Calculate the transposed matrix
+\end{itemize}
+%
+\par
+
+{\bf Variables with predefined name }\\
+
+Starting with version 5.7.0 system wide variables with fixed name 
+were introduced. Currently these are mostly related to the refinement,
+see the \Diffev manual for details. 
+
+The general predefined variables are explained in the following list:
+
+\begin{itemize}
+  \item UNDEF = -1  A status is undefined
+  \item TRUE  = 1   A status is true
+  \item FALSE = 0   A status is false
+  \item IS\_TOP = 0 Possible value for STATE, if you are currently at the
+                    top program level. This will be the case within the
+                    suite. If the individual programs DISCUS, KUPLOT
+                    or DIFFEV are used as stand alone programs you will 
+                    be in a STATE=IS\_TOP in their main menu.
+  \item IS\_SECTION = 1  Possible value for STATE, if you are currently at
+                    one of the three sections DISCUS, DIFFEV, KUPLOT
+                    within the suite.
+  \item IS\_BRANCH = 2  Possible value for STATE, if you are currently in
+                    a section after a "branch" command. 
+  \item SUITE = 0   Possible value for PROGRAM, if you are within the suite.
+  \item DISCUS = 1   Possible value for PROGRAM, if you are within discus.
+  \item DIFFEV = 2   Possible value for PROGRAM, if you are within diffev.
+  \item KUPLOT = 3   Possible value for PROGRAM, if you are within kuplot.
+  \item MPI\_OFF = 0 Possible value for MPI, if the program was not started
+                     with mpi.
+  \item MPI\_ON  = 1 Possible value for MPI, if the program was started
+                     with mpi.
+  \item PROGRAM      Receives a value of (SUITE, DISCUS, DIFFEV, KUPLOT)
+                     depending on which part you are currently within.
+  \item STATE        Receives a value (IS\_TOP, IS\_SECTION, IS\_BRANCH),
+                     depending on the way this section was entered.
+  \item MPI\_FIRST   Relevant to \Diffev only. The value will be UNDEFined
+                     in the other sections. Within \Diffev it tells a 
+                     slave program if the slave was invoked as the first
+                     'run\_mpi' command within the current refinement generation.
+  \item MPI          Receives a value of MPI\_OFF or MPI\_ON. 
+  \item PI           Pi = 3.1415... 
+\end{itemize}  
+
+One further system variable is {\tt PI}. The capitalization is mandatory.
+
+{\bf Variables with fixed name that carry program information}
+
+These variables, which are common to the whole program suite are 
+used by the programs to return information to the user.
+
+Currently just one such variable {\tt res[n]} exists. It is used
+in a wide variety of commands and functions to return a successful
+operation or to contain result values.
+
+As an example see:
+%
+\begin{MacVerbatim}
+   1  fexist dummy.file
+   2  eval res[0]
+   2  eval res[1]
+\end{MacVerbatim}
+%
+Here the {\tt res} variable is used to flag the existence of the file
+called "dummy.file". {\tt res[0]} usually carries the number of 
+results returned, in this special case one. Here {\tt res[1]} would
+be equal to one if the file exists and zero if it does not exist.
+
+
+%------------------------------------------------------------------------
+
+\section{Arithmetic expressions \label{arith-exp}}
+
+The language allows the use of arithmetic expressions using the same
+notation as in FORTRAN. Valid operators are {\tt +, -, *, /} and
+for the exponentiation {\tt **}. Expressions can be grouped by 
+round brackets ( and ). The
+usual hierarchy for the operators holds. Values of expressions can
+be assigned to any modifiable variable. If you know FORTRAN (or
+another programming language) you will have no problems with these
+examples.
+
+\begin{quote}
+  i[0] = 1 \\
+  r[3] = 3.1415 \\
+  r[i[1]] = 2.0*(i[5]-5.0/6.5)
+\end{quote}
+
+%------------------------------------------------------------------------
+
+\section{Logical expressions \label{log-exp}}
+
+Logical expressions are formed similar to FORTRAN. They may contain
+numerical comparisons using the syntax: {\it $<$arithmetic
+expression$><$operator$><$arithmetic expression$>$}. The allowed
+operators are 
+
+{\tt <, <=, >, >=, ==, /=}
+
+or in the older Fortran77 style:
+
+{\tt .lt., .le., .gt., .ge., .eq., .ne.} 
+
+for operations less than, less equal, greater than,
+greater equal, equal and not equal, respectively. Logical
+expressions can be combined by the logical operators:
+
+ {\tt .not., .and., .or., .xor., .eqv.}.
+
+The following example shows an
+expression that is true for values of {\tt i[1]} within the interval
+of 3 and 11, false otherwise.
+
+\begin{quote}
+  i[1] >= 3 .and. i[1] <= 11 \\
+  i[1].ge.3 .and. i[1].le.11
+\end{quote}
+
+Logical operations may be nested and grouped using round
+brackets ( and ). For more examples see section \ref{if}.
+
+%------------------------------------------------------------------------
+
+\section{Character expressions\label{char-exp}}
+
+Character expressions allow you to write annotations in \kuplot, nicely 
+formatted comments in the output of any section or complex filenames.
+
+The first use might be that of character variables within the sections 
+of the \Discus suite. The simplest assignment of values to a character 
+variable takes the form:
+\begin{MacVerbatim}
+  character variable, string
+  string = 'This is a string'
+\end{MacVerbatim}
+
+In order to concatenate strings, or to place numerical values into a 
+string three format specifiers are provided:
+
+\begin{MacVerbatim}
+  "%c"   or "%10c"
+  "%d"   or "%10d"
+  "%f"   or "%10.4f"
+\end{MacVerbatim}
+
+All specifiers require the leading {\tt \%} as control character. 
+The {\tt \%c} specifier allows to place the value of a character value or 
+a character string into the expression. A number between the {\tt \%} and 
+the {\tt c} signifies the width of the string that will be placed. If the 
+incoming string is too long it will be truncated as in the following 
+examples:
+\begin{MacVerbatim}
+  character variable, string
+  character variable, line
+  string = 'abcdefghij'
+  line   = "%c", string    ! place at variable length 
+  echo "%c",line
+  abcdefghij               ! This will be shown on screen
+  line   = "%c5", string   ! place as 5 character long string
+  echo "%c",line
+  abcde                    ! This will be shown on screen
+  line   = "%5c", string(4:8)  ! take a sub string 
+  echo "%c",line
+  defgh                    ! This will be shown on screen
+\end{MacVerbatim}
+
+The {\tt \%d} specifier allows to write the value of an integer expression
+into a character string. The optional number between the {\tt \%} and the 
+{\tt d} specifies the number of digits that will be printed. If a 
+capital {\tt D} is used in combination with the the width defining 
+number, any leading digits are printed as zeros.
+
+\begin{MacVerbatim}
+  echo "%d more %d", 1, 2
+  1 more 2                ! This will be shown on screen
+  echo "%4D more %4d", 1, 2
+  0001 more    2          ! This will be shown on screen
+\end{MacVerbatim}
+
+The {\tt \%f} specifier allows to write the value of a real valued expression
+into a character string. The optional number between the {\tt \%} and the 
+{\tt f} specifies the width of the field printed and the number of 
+digits that follow the decimal point. If a  
+capital {\tt F} is used in combination with the the width defining
+number, any leading digits are printed as zeros.
+
+\begin{MacVerbatim}
+  echo "%f more %d", 1.1, 20.2
+  1.000000 more 20.0000000 ! This will be shown on screen
+  echo "%4.1F more %6.2f", 1.1, 20.2
+  01.0 more   20.20        ! This will be shown on screen
+\end{MacVerbatim}
+%------------------------------------------------------------------------
+%------------------------------------------------------------------------
+
+\section{Intrinsic functions \label{func}}
+
+Several intrinsic functions are defined.  Each function is
+referenced, as in FORTRAN, by its name followed by a pair of
+parentheses ( and ) that include the list of arguments. The ( does
+not have to immediately follow the function name.  Trigonometric and
+arithmetic functions are listed in table \ref{func-trig}.  Table
+\ref{func-ran} contains various random number generating functions.
+Some programs such as \Discus have a set of specific intrinsic 
+functions allowing one to for example calculate bond length. Again 
+each individual users guide will contain a table of these specific
+functions.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{12mm}|p{45mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline\hline
+  real & sin(r) cos(r) tan(r) &
+         Sine, cosine and tangent of $<$r$>$ in radian \\
+  real & sind(r) cosd(r) tand(r) &
+         Sine, cosine and tangent of $<$r$>$ in degrees \\
+  real & asin(r) acos(r) atan(r) &
+         Arc sin, cosine, tangent of $<$r$>$, result in radian \\
+  real & asind(r) acosd(r) atand(r) &
+         Arc sin, cosine, tangent of $<$r$>$, result in degrees \\
+  \hline
+  real & sqrt(r) & Square root of $<$r$>$ \\
+  real & exp(r) &  Exponential of $<$r$>$, base e \\
+  real & ln(r) &   Logarithm of $<$r$>$ \\
+  real & sinh(r) cosh(r) tanh(r) &
+                   Hyperbolic sine, cosine and tangent of $<$r$>$ \\
+  \hline
+  real    & abs(r)      &  Absolute value of $<$r$>$ \\
+  integer & mod(r1, r2) &  Modulo $<$r1$>$ of $<$r2$>$ \\
+  integer & int(r)      &  Convert $<$r$>$ to integer \\
+  integer & nint(r)     &  Convert $<$r$>$ to nearest integer \\
+  real    & frac(r)     &  Returns fractional part of $<$r$>$ \\
+  \hline
+  real    & min(r1, r2) &  Smaller number of $<$r1$>$ and $<$r2$>$ \\
+  real    & max(r1, r2) &  Larger number of $<$r1$>$ and $<$r2$>$ \\
+  \hline
+\end{tabularx}
+\caption{\label{func-trig}Trigonometric and arithmetic functions}
+\end{table}
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{12mm}|p{30mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline\hline
+  real & ran(r) &         Uniformly distributed pseudo random number
+                          between 0.0 inclusively and 1.0 exclusively.
+                          Argument $<$r$>$ is a dummy\\
+  real & gran(r1, typ) &   Gaussian distributed random number with mean
+                          0 and a width given by $<$r1$>$. If $<$typ$>$
+                          is "s" $<$r1$>$ is taken as sigma, if
+                          $<$typ$>$ is "f" $<$r1$>$ is taken as
+                          FWHM. \\
+  real & gbox(r1, r2, r3) & Returns pseudo random number with
+                          distribution given by a box centered
+                          at 0 with a width of $<$r2$>$ and two half
+                          Gaussian distributions with individual
+                          sigmas of $<$r1$>$ and $<$r3$>$ to the left
+                          and right, respectively. \\
+  real & gskew(r1,typ) &  Skewed Gaussian distributed random number 
+                          with mean
+                          \\
+  real & logn(r1,r2)      & Returns a lognormal distributed number
+                          with mean $<$r1$>$ and sigma $<$r2$>$ of
+                          the underlying
+                          Gaussian distribution.\\
+  integer & pois(r1)      & Returns a Poisson distributed random
+                          number with mean $<$r1$>$.\\
+  \hline
+\end{tabularx}
+\caption{\label{func-ran}Random number functions}
+\end{table}
+
+Finally the available functions returning a character string are
+listed in Table \ref{func-char}.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Name} & {\bf Description} \\
+  \hline\hline
+  date(0)        & Returns current date as {\tt CCYYMMDDhhmmss.sss}.\\
+  fdate(0)       & Returns current date as character string {\tt Day Mon dd hh:mm.ss yyyy}.\\
+  fmodt(0)       & Returns modification date of the last file opened 
+                   as character string {\tt Day Mon dd hh:mm.ss yyyy}.\\
+  cdate(0)       & Returns current date as {\tt Day Mon DD hh:mm:ss CCYY}.\\
+  getcwd(0)      & Returns the current working directory.\\
+  getenv('VAR')  & Returns the value of the environment variable
+                   {\tt VAR}.\\
+  \hline
+\end{tabularx}
+\caption{\label{func-char}String functions}
+\end{table}
+
+
+%------------------------------------------------------------------------
+
+\section{Intrinsic commands  \label{cmds}}
+
+To operate on user variables that are 1-D or 2-D matrices, the \Suite 
+provides a couple of standard operations. These are listed in Table \ref{cmds-cmds}:
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Name} & {\bf Description} \\
+  \hline\hline
+  matmul         & multiplies two matrices or a matrix by a scalar  \\
+  matadd         & Adds two matrices. The second matrix can be multiplied by a scalar. \\
+  detmat         & Calculates the determinant of the input matrix and stores this in 
+                   the output matrix. \\
+  mattrans       & Calculates the transpose of the input matrix and stores this in 
+                   the output matrix. \\
+  \hline
+\end{tabularx}
+\caption{\label{cmds-cmds}Matrix commands}
+\end{table}
+
+%------------------------------------------------------------------------
+
+\section{Loops \label{do}}
+
+Loops can be programmed using the {\tt do} command.
+Three different types of loops are implemented. The first type
+executes a predefined number of times. The syntax for this type of
+loop is
+
+\begin{quote}
+{\it do $<$variable$>$ = $<$start$>$,$<$end$>$ [,$<$increment$>$] \\
+     \ldots commands to be executed \ldots \\
+     enddo }
+\end{quote}
+
+Loops may contain constants or arithmetic expressions for
+$<$start$>$, $<$end$>$, and $<$increment$>$.  $<$increment$>$
+defaults to 1.  The internal type of the variables is real.  The
+loop counter is evaluated from {\it ($<$end$>$ -
+$<$start$>$)/$<$increment$>$ + 1}. If this is negative, the loop is
+not executed at all.  The parameters for the counter variable, start
+end and increment variables are evaluated only at the beginning of
+the do - loop and stored in internal variables.  It is possible to
+change the values of $<$variable$>$, $<$start$>$ and/or $<$end$>$
+within the loop without any effect on the performance of the loop.
+This practice is not encouraged, could, however, be an unexpected
+source of errors. \par
+
+The second type of loop is executed while $<$logical expression$>$ is
+true. Thus it might not be executed at all. The syntax for this type
+of loop is
+
+\begin{quote}
+{\it do while $<$logical expression$>$ \\
+     \ldots commands to be executed \ldots \\
+     enddo }
+\end{quote}
+
+The last type of loop is executed until $<$logical expression$>$ is
+true. This loop, however, is always executed once and has the
+following syntax
+
+\begin{quote}
+{\it do \\
+     \ldots commands to be executed \ldots \\
+     enddo until $<$logical expression$>$ }
+\end{quote}
+
+In the body of commands any valid program commands can be used.
+This includes calls to the sub levels, further do loops or macros,
+even if these macros contain do loops themselves.  The maximum level
+of nesting is limited by the parameter {\it MAXLEV} in the file {\it
+doloop\_mod.f90}.  If necessary adjust this parameter to allow for deeper
+nesting.  All commands from the first {\tt do} command to the
+corresponding 'enddo' are read and stored in an internal array. This
+array can take at most {\it MAXCOM} (defined in file {\it
+doloop\_mod.f90} as well) commands at every level of nesting.  If lengthy
+macro files are included in the do loop, this parameter might have
+to be adjusted.  \par
+
+If a do loop (or an if block) needs to be terminated, the {\tt
+break} command will perform this function.  The parameter on the
+{\tt break'} command line gives the number of nested levels of {\tt
+do} and {\tt if} blocks to be terminated. The interpreter will
+continue execution with the first command following the
+corresponding {\tt enddo} or {\tt endif} command.  An example is
+given below, note, that the line numbers are only given for better
+orientation and are no actual part of the listed commands. \par
+
+\begin{MacVerbatim}
+     1  do i[2]=1,5
+     2     do i[1]=1,5
+     3        if ((i[1]+i[2]) .eq 6) then
+     4           break 2
+     5        endif
+     6     enddo
+     7  enddo
+\end{MacVerbatim}
+
+In this example, the execution of the inner do-loop will stop as
+soon as the sum of the two increment variables {\tt i[1]} and {\tt
+i[2]} is equal to 6.  The program continues with the {\tt enddo}
+line of the outer do - loop.  Notice that two levels need to be
+interrupted, the if block and the innermost do loop.  If the
+parameter had been equal to one, only the if block would have been
+interrupted, while the innermost do loop would have continued
+without break.\par
+
+%------------------------------------------------------------------------
+
+\section{Conditional statements \label{if}}
+
+Commands can be executed conditionally by using the {\tt if}
+command. Analogous to FORTRAN, the if-control structure takes the
+following form:
+
+\begin{quote}
+{\it if ( $<$logical expression$>$ ) then \\
+     \ldots commands to be executed \ldots \\
+     elseif ( $<$logical expression$>$ ) then \\
+     \ldots commands to be executed \ldots \\
+     else \\
+     \ldots commands to be executed \ldots \\
+     endif }
+\end{quote}
+
+The logical expressions are explained in section \ref{log-exp}.
+Enclosed within an if block any valid program command can be
+used.  This includes calls to the sub levels further if blocks, do
+loops or macros, even if these macros contain if blocks or do loops
+themselves.  The {\tt elseif} and {\tt else} section is optional.
+The maximum level of nesting is limited by the parameter {\it
+MAXLEV} in the file {\it doloop\_mod.f90}.  If necessary adjust this
+parameter to allow for deeper nesting.  All commands from the first
+{\tt if} command to the corresponding {\tt endif} are read and
+stored in an internal array.  This array can take at most {\it
+MAXCOM} (defined in file {\it doloop\_mod.f90} as well) commands at every
+level of nesting.  If lengthy macro files are included in the do
+loop, this parameter might have to be adjusted.  \par
+
+If an if block (or a do loop) needs to be terminated, the {\tt
+break} command will perform this function.  The parameter on the
+{\tt break} command line gives the number of nested levels of {\tt
+do} and {\tt if} blocks to be terminated. The interpreter will
+continue execution with the first command following the
+corresponding {\tt enddo} or {\tt endif} command.  See the example
+in section \ref{do} for further explanations. \par
+
+\begin{MacVerbatim}
+     1  #
+     2  # Read crystal file
+     3  #
+     4  read
+     5  cell cell.cll,10,10,10
+     6  #
+     7  # Remove atoms with probability 0.3
+     8  #
+     9  do i[0]=1,n[1]
+    10     if(ran(0).lt.0.3) then
+    11        remove i[0]
+    12     endif
+    13  enddo
+\end{MacVerbatim}
+
+The example listed above illustrates the use of loops and
+conditional statements within {\it DISCUS}. Again, the line number
+are given for easy reference and not part of the actual
+input. The first three lines are just comments. In lines 4 and 5 an
+asymmetric unit is read from the file {\it cell.cll} and expanded to
+a crystal size of 10x10x10 unit cells. In line 9 starts a do-loop
+over all atoms within the crystal. The variable n[1] contains this
+information (see \Discus users guide). Since
+the function {\tt ran} produces a uniformly distributed pseudo
+random number in the range 0.0 to 1.0, the if statement in line 10
+is true in about 30\% of its calls, at least for sufficiently large 
+crystal sizes. Thus approximately 30\% of the atoms are removed
+(line 11), and the corresponding amount of vacancies (VOID) created
+within the crystal.
+
+%------------------------------------------------------------------------
+
+\section{Filenames \label{fnames}}
+
+Usually, file names are understood as typed, including capital
+letters. Unix operating systems distinguish between upper and lower
+case typing ! However, sometimes it is required to be able to alter
+a file name e.g. within a loop.  Thus, the command language allows the 
+user to construct file names by writing additional (integer) numerical
+input into the filename.  The syntax for this is:
+
+\begin{quote}
+  {\it "string\%dstring",$<$integer expression$>$}
+\end{quote}
+
+The file format MUST be enclosed in quotation marks.  The position
+of each integer must be characterized by a {\tt \%d}.  The sequence
+of strings and '\%d's can be mixed at will.  The corresponding
+integer expressions must follow after the closing quotation mark. If
+the command line requires further parameters (like {\tt addfile} for
+example) they must be given after the format-parameters.  The
+interpretation of the '\%d's follows the C syntax. Up to 10 numbers
+can be written into a filename.  All of the following examples will
+result in the file name {\it a1.1}:
+
+\begin{MacVerbatim}
+     i[5]=1
+     outfile a1.1
+     outfile "a%1d.%1d",1,1
+     outfile "a%1d.%1d",4-3,i[5]
+\end{MacVerbatim}
+
+The second example shows how filenames are changed within a loop.
+Here the output (e.g. Fourier transform) will be written to the
+files {\it data1.calc} to {\it data11.calc}.
+
+\begin{MacVerbatim}
+     do i[1]=1,11
+       ..
+       outfile "data%d.calc",i[1]
+       ..
+     enddo
+\end{MacVerbatim}
+
+As personal style you might find it best to label the files 
+{\it data01.calc} to {\it data11.calc} i.e. with leading zeros 
+and a fixed number of digits that are used for the number.
+This is readily achieved with the {\tt \%D} format specifier.
+
+\begin{MacVerbatim}
+     do i[1]=1,11
+       ..
+       outfile "data%2D.calc",i[1]
+       ..
+     enddo
+\end{MacVerbatim}
+%------------------------------------------------------------------------
+
+\section{Macros \label{mac}}
+
+Any list of valid program commands can be written to an ASCII
+file and executed indirectly by the command {\tt @$<$filename$>$}.
+The commands are executed as typed.  Macro files can be written by any
+editor on your system or be generated by the 'learn' command.
+'learn' starts to remember all the commands that follow and saves
+them into the file given on the {\tt learn} command.  The learn
+sequence is terminated by the {\tt lend} command.  The default
+extension of the macro file is {\it .mac}.  Macro files can be
+nested and even reference themselves directly or indirectly.  This
+referencing of macro files is, however, just a nesting of the
+corresponding text of each macro, not a call to a function.  All
+variable retain their values.  If an error occurs while executing a
+macro, the program immediately stops execution of all macros and
+returns to the interactive prompt.  If the macro switched to a
+sub level, and the error occurred inside of this sub level, the program
+will remain within this sub level the interactive prompt
+corresponding to this sub level is returned. The command {\tt stop}
+allows the user to interrupt the execution of a macro, enter
+commands and continue the macro using the command {\tt cont}. Note,
+that the macro needs to continued in the same sub level it was
+interrupted.
+\par
+
+On the command line of the macro command {\tt @}, optional
+parameters can be supplied.  Within the macro these have to be
+referenced as \$1, \$2 etc.  Upon execution of the macro the formal
+parameters \$n are replaced by the character string of the actual
+values from the command line. Parameter \$0 contains the number of
+parameters specified on the command line. As any other command
+parameters, these parameters must be separated by comma.  If a
+formal parameter is referenced inside a macro without a
+corresponding parameter on the command line, an error message is
+given.  An example is given below:
+
+\begin{MacVerbatim}
+     # Adds two numbers supplied as command line parameters.
+     # The value is stored in variable defined by parameter three
+     #
+     $3 = $1 + $2
+     eval $3
+\end{MacVerbatim}
+
+If this macro is called with the following line, {\tt @add
+1,2,i[4]}, the result is stored in variable i[4] which now has the
+integer value 3.
+\par
+
+If the program is started with command line parameters,
+e.g. {\tt discus 1.mac 2.mac}, the program will execute the given
+macros in the specified order, in our example first {\tt 1.mac} then
+{\tt 2.mac}. You cannot, however, provide parameters to these macros.
+
+Alternatively a single macro can be executed by starting the program
+with the command line option 
+{\tt -macro macro\_file\_name parameter(s)}
+
+If a macro is not found in the current working
+directory, a system macro director is searched. This system macro
+directory is located at {\tt path\_to\_binary/sysmac/discus/}.
+Commonly used macro files might be installed in this directory.
+If a macro file is not found, an error message is displayed.
+
+%------------------------------------------------------------------------
+
+\section{Working with files \label{io}}
+
+The command language offers the user several commands to write
+variables to a file or read values from a file. First a file needs
+to be opened using the command {\tt fopen}. An optional parameter
+{\tt append} allows one to append data to an existing file. Once the
+task is finished, the file must be closed via {\tt fclose}. In the
+standard configuration, the program can open five files at the same
+time. The first parameter of all file input/output related commands
+is the unit number which can range from 1 to 5. The commands {\tt
+fget} and {\tt fput} are used to read and write data, respectively.
+The following example illustrates the usage of these commands:
+
+\footnotesize
+\begin{MacVerbatim}
+      1  fopen 1,sin.dat
+      2  fput 1,'Cool sinus function'
+      3  #
+      4  do i[1]=1,50
+      5     r[1]=i[1]*0.1
+      6     r[2]=sin(r[1])
+      7     fput 1,r[1],r[2]
+      8  enddo
+      9  #
+     10  fclose 1
+\end{MacVerbatim}
+\normalsize
+
+In line 1 we open the file {\it sin.dat} and write a title (line 2).
+If the file already exists it will be overwritten. Note that the
+text must be given in {\it single} quotes. Text and variables may be
+mixed in a single line. Next we have a loop calculating $y=\sin(x)$
+and writing the resulting $x$ and $y$ values to the open file (line
+7). Finally the file is closed (line 10). To read values from a file
+use simply the command {\tt fget} and the read numbers will be
+stored in the specified variables. In contrast to writing to a file,
+mixing of text and number is not allowed when reading data. However,
+complete lines will be skipped when the command {\tt fget} is
+entered without any parameters.
+
+%------------------------------------------------------------------------
+
+\section{Remote control\label{remote}}
+
+It is possible to remote control the programs in the \Discus package
+using so called sockets. One program acts as server and receives and 
+executes commands. In order to enable the server feature, the program
+needs to be started using the {\tt -remote} command line switch as in
+the example below:
+%
+\begin{MacVerbatim}
+dhcp165057:prog> ./discus -remote
+
+          ***********************************************************
+          *               D I S C U S   Version 5.22.0              *
+          *                                                         *
+          *         Created : Thu Jun 28 10:00:00 JST 2018          *
+          *---------------------------------------------------------*
+          * (c) R.B. Neder  (reinhard.neder@fau.de)                 *
+          *     Th. Proffen (tproffen@lanl.gov)                     *
+          ***********************************************************
+          *                                                         *
+          * For information on current changes type: help News      *
+          *                                                         *
+          ***********************************************************
+
+ Command line editing enabled ..
+
+ User macros in   : /Users/thomasproffen/mac/discus/
+ System macros in : /Users/thomasproffen/mac/discus/
+ Start directory  : /Users/thomasproffen/Code/Diffuse/discus/prog
+
+ ------ > Running in SERVER mode
+ Running in local mode (127.0.0.1) ..
+ Listening to port 3330 ..
+ Allowing connections from 127.0.0.1 ..
+\end{MacVerbatim}
+%
+Note that the host IP address and port number are given at the end
+of the startup output. This information is needed to connect to this 
+running version of in our case \discus. To allow connections from
+computers other than 127.0.0.1 (localhost) or using a different port,
+use the command line options {\tt -access} and {\tt -port}.
+
+In order to connect to the \Discus server, we use the command 
+{\tt socket} as in this example:
+%
+\begin{MacVerbatim}
+ discus > socket open,127.0.0.1,3330
+ Connecting to 127.0.0.1:3330 ..
+ Server : ready
+ Connected ..
+ discus > socket send,echo This is cool
+ Server :  This is cool
+ Server : ready
+ discus > 
+\end{MacVerbatim}
+%
+Of course any program or script that can use sockets is able to connect
+to the \Discus package programs in this way. For more details refer
+to the {\tt socket} command reference later in this guide.
+
+%------------------------------------------------------------------------

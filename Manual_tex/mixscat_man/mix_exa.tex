@@ -1,0 +1,183 @@
+%------------------------------------------------------------------------
+% Example
+%------------------------------------------------------------------------
+
+\chapter{Example: CeF$_3$\label{s:exa}}
+
+In this chapter we will illustrate the use of \Mixscat using the example 
+of CeF$_3$. The neutron data were collected on the NPDF neutron powder
+diffractometer NPDF at the Lujan Neutron Scattering Center. The x-ray data
+were collected at beamline ID11-B at the Advanced Photon Source. The 
+data are shown in Fig. \ref{f:data}. All input and macro files used 
+in this example are included in the program distribution and can be found 
+in the directory {\tt examples/mixscat} in the installation directory.
+
+%------------------------------------------------------------------------
+\section{Preparing the data\label{s:exa:dat}}
+
+As we discussed in the introduction, \Mixscat used the real space 
+pair distribution function, $G(r)$ and calculates the desired differential
+PDF, $G_{\overline{AB}}(r)$. For details on the related notation and 
+equations, refer to Appendix \ref{app}. \Mixscat can read files produced by 
+\textsc{PDFgetN}\,\citep{pdfgetn} and \textsc{PDFgetX2}\,\citep{pdfgetx2} 
+directly and extract some information such as $Q_{\mbox{\footnotesize{max}}}
+$ from the header. Alternatively data files are simple multi column ASCII
+files containing $r$, $G(r)$ and an optional $\sigma(G(r))$.
+
+Since we are taking a difference of $G(r)$ data, it is important to process 
+the PDFs as similar as possible. In particular the truncation value $Q_
+{\mbox{\footnotesize{max}}}$ should be the same for both data sets.
+
+\begin{figure}[!bt]
+  \centering
+  \includegraphics[angle=270.0,width=0.9\linewidth]{cef-data.eps}
+  \caption{The top panel shows the experimental neutron PDF of CeF$_3$
+  collected on the instrument NPDF at the Lujan Center. The bottom
+  panel shows the x-ray data of the same sample collected at beamline
+  11ID-B at the Advanced Photon Source.}
+  \label{f:data}
+\end{figure}
+
+%------------------------------------------------------------------------
+\section{Extracting differential PDFs\label{s:exa:calc}}
+
+\begin{figure}[!bt]
+  \centering
+  \includegraphics[angle=270.0,width=0.9\linewidth]{cef-result.eps}
+  \caption{The plot shows the three extracted differential 
+  $G_{\overline{mn}}$ for CeF$_3$. The line with error bars is the
+  extracted differential PDF form the neutron and x-ray data. The
+  solid thick line is calculated from a model using DISCUS (see
+  next section).}
+  \label{f:res}
+\end{figure}
+
+As the other programs of the \textsc{Discus} package, \Mixscat is controlled by a command language which is described in more detail in the \textsc{Discus} reference guide included in the package. Let us go through the CeF$_3$ example in detail. The resulting differential PDFs as well as model calculations are shown in Fig. \ref{f:res}.
+
+\begin{MacVerbatim}
+ reset
+ read dat,x,CeF3_bulk_binned.gr
+ read dat,n,CeF3_Bulk_npdf_03902.gr
+\end{MacVerbatim}
+
+First we use the command {\tt reset} to put \Mixscat in its initial state. 
+Next the x-ray and neutron data files are imported using the command {\tt 
+read}. Note the first parameter specifying the type of data.
+
+\begin{MacVerbatim}  
+ match 0.5,2.0,24./320.864
+ elem Ce,1,F,3
+ remove Ce,Ce
+ show
+ calc
+\end{MacVerbatim}
+
+The section above contains the setup. The command {\tt match} allows to 
+automatically scale the data, so the slopes $-4 \pi r \rho_0$ match. The 
+first two parameters specify the range, here $0.5 < r < 2.0$\AA. The last 
+value is the number density $\rho_0$ calculated as the number of atoms in 
+the unit cell divided by the unit cell volume. As an alternative individual 
+scale factors for each data set can be specified using the command {\tt scal}. 
+In a perfect world, of course, non of this is needed. The command {\tt elem} 
+specifies the elements and their abundance (CeF$_3$). Next we specify the 
+contribution {\tt Ce-Ce} to be removed. Finally {\tt show} will list the 
+current settings and {\tt calc} execute the calculation.
+
+\begin{MacVerbatim}  
+ save pdf,CeCe_new_diff.gr
+ save wei,w_CeCe.mac
+ save res,CeCe.res
+\end{MacVerbatim}
+
+This section saves different data and results. The command {\tt save pdf} saves 
+the extracted differential PDF, $G_{\overline{CeCe}}(r)$. Next {\tt save wei} 
+saves a macro file for the program \textsc{Discus} containing the weights for 
+the remaining pairs. This way \textsc{Discus} can calculate the corresponding 
+differential PDF from a structural model. The output in our example is shown 
+below.
+
+\begin{MacVerbatim}  
+ set partial,CE  ,CE  ,       0.0000000    
+ set partial,CE  ,F   ,       16.266106    
+ set partial,F   ,F   ,       21.585993    
+ set rden,       18.241911 
+\end{MacVerbatim}
+
+Finally the command {\tt save res} will save a text file with the setup similar 
+to the information shown on the screen by the command {\tt show}. The output for 
+our example is shown below.
+
+\begin{MacVerbatim}
+ ------------------------------------------------------------------------------
+ Program MIXSCAT - Version 1.0.0     
+ ------------------------------------------------------------------------------
+ Build date : Tue Jan  5 21:02:52 JST 2010       
+ Save date  : Tue Jan  5 21:06:04 2010
+ Homepage   : http://discus.sourceforge.net
+ ------------------------------------------------------------------------------
+
+ ------------------------------------------------------------------------------
+ DATA SETS
+ ------------------------------------------------------------------------------
+ Data set    :                         1                           2
+ Filename    :       CeF3_bulk_binned.gr     CeF3_Bulk_npdf_03902.gr
+ Radiation   :       x-rays (  0.0 A^-1)                    Neutrons
+ Rmin (A)    :                     0.010                       0.010
+ Rmax (A)    :                    99.990                      20.000
+ Dr (A)      :                     0.010                       0.010
+ Qmax (A^-1) :                     0.000                      35.000
+ Scale       :                1.42648721                  0.05844205
+ ------------------------------------------------------------------------------
+ SETUP - Removing contribution : CE - CE
+ ------------------------------------------------------------------------------
+ Data set    :                         1                           2
+ Weight w_mn :                0.46553183                  0.04904367
+ <b>^2       :              451.33862305                  0.29729757
+ b(CE  )     :               57.98102951                  0.48300001    c=0.250
+ b(F   )     :                8.99930000                  0.56599998    c=0.750
+ ------------------------------------------------------------------------------
+ DIFFERENTIAL WEIGHTS
+ ------------------------------------------------------------------------------
+ w(CE  -CE  ):                0.00000000
+ w(CE  -F   ):                3.04989457
+ w(F   -F   ):               12.14212132
+ w(rho_0)    :               18.24191093
+ ------------------------------------------------------------------------------
+\end{MacVerbatim}
+
+The output contains information about the data sets and the respective weights 
+for each atom and atom pair. The bottom of the output file shows the result from 
+a simple error estimate of the differential PDF (see below).
+
+\begin{MacVerbatim}
+ ------------------------------------------------------------------------------
+ ERROR ANALYSIS - Removed contribution :   CE -   CE        Difference:  2 -  1
+ ------------------------------------------------------------------------------
+ Data                       File      Average data      Average sigma  Relative
+    1        CeF3_bulk_binned.gr        2.75641990         0.00012269     0.00%
+    2    CeF3_Bulk_npdf_03902.gr       29.27724457         5.72750998    19.56%
+ ------------------------------------------------------------------------------
+          Extracted differential       30.33419609         6.82508755    22.50%
+ ------------------------------------------------------------------------------
+\end{MacVerbatim}
+
+The other differential PDFs, $G_{\overline{CeF}}(r)$ and $G_{\overline{FF}}(r)$ 
+can be calculated in a similar way.
+
+%------------------------------------------------------------------------
+\section{Calculating differential PDFs from a model\label{s:exa:model}}
+
+As shown in Fig. \ref{f:res} one can calculate the corresponding differential PDF  
+from a structural model. The program \textsc{Discus} allows to read custom 
+weights to be used in the PDF calculation. These weights are set using the macro 
+file {\tt w\_CeCe.mac} we saved earlier. Simply add the line below in the {\tt 
+pdf} module of \textsc{Discus}.
+
+\begin{MacVerbatim}  
+  @w_CeCe.mac 
+\end{MacVerbatim}
+
+Details about the underlying equations as well as information how to calculate 
+differential PDFs with other programs such as \textsc{PDFgui} are given in 
+Appendix \ref{app-mod}.
+

@@ -1,0 +1,353 @@
+%------------------------------------------------------------------------
+% Chapter:  Concepts
+%------------------------------------------------------------------------
+
+\chapter{Concepts \label{concepts}}
+\section{Quick overview } 
+
+The purpose of the \Suite is to run a combination of 
+\href{./diffev\_man.pdf}\diffev, 
+\href{./discus\_man.pdf}\discus,
+and 
+\href{./kuplot\_man.pdf}\Kuplot within a single program. The \Suite 
+should for all practical reasons be the main program you start.
+It main application  will be a 
+run on a massive parallel system, but it will already pose an 
+improvement on a multi-core laptop. \Suite uses MPI to distribute 
+a part of its workload onto several processes. The original \Diffev
+starts \Discus as a separate slave program. This means that at each refinement
+cycle \Discus has to read all macros, and other relevant information over and 
+over again. This causes a lot of unnecessary I/O, which puts a considerable
+burden onto the central disk system.
+
+As \Suite includes \diffev, \discus, and \Kuplot within one single program,
+all relevant input can be read once at the beginning of the refinement cycle.
+It will from there on be kept in internal memory, thus eliminating the need of
+further input. This includes the trial parameters as well as the result values.
+In the stand alone program \diffev, these values are passed from \Diffev to
+and forth between \Discus and \Kuplot via (small) files on the disk. Within
+\suite, the need to write these files onto the disk no longer exists and 
+\Suite instructs \Diffev to store these values only internally.  
+
+As the main tasks are still performed within the sections \diffev, \discus,
+and \kuplot, the actual set of commands within \Suite is very limited. 
+Besides the general command of the common command language the commands are
+just the names of the three sections, Table \ref{cmd-tab}.
+
+\begin{table}[!b]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Command } & {\bf Description} \\
+  \hline
+  diffev & Switch to the {\tt diffev} section. in many cases this
+           will be the only command used within the top menu of
+           the suite.\\
+  \hline
+  discus & Switch to the {\tt discus} section.\\
+  \hline
+  kuplot & Switch to the {\tt kuplot} section.\\
+  \hline
+  parallel & Run a parallel refinement. \\
+  \hline
+\end{tabularx}
+\caption[\Suite command verbs ]
+        {\label{cmd-tab}\Suite command verbs.}
+\end{table}
+
+Within the three sections, a few details are slightly different compared to 
+their stand alone versions. The main command syntax and typical command 
+sequences are, however, identical. As \Suite is a single program, the 
+global variables {\tt i[], r[], res[]} are identical throughout all 
+sections. The same holds for user defined variables. Thus, for example,
+if {\tt i[0]} is set to one value in any section, all other sections will
+see this new value. Be careful when you combine old \Discus and \Kuplot 
+macros. Their local variables my interfere with each other. 
+
+Besides the three variables {\tt i[], r[], res[]} and the user defined
+variables, each of the three section includes specific variables that are
+valid and meaningful within this section only. These variables 
+specific to any of the sections are visible within that section only.
+
+\section{Modified concepts}
+
+In order to fully utilize the common program architecture, a few details
+should be used in a modified way within the different sections. These details
+mostly concern disk I/O related parts. 
+
+
+\subsection{\diffev}
+
+The stand alone \Diffev communicates with \Discus and \Kuplot via (small) 
+files that contain the trial parameters and the cost function results.
+To avoid writing these to disk use:
+\begin{MacVerbatim}
+  init silent
+\end{MacVerbatim}
+The new {\tt silent} parameter tells the \Diffev section with the \Suite 
+not to write an initial set of
+trial parameters to disk. These values are automatically transferred to the 
+slave sections.
+
+Closely related is the modified command:
+\begin{MacVerbatim}
+  trialfile silent
+\end{MacVerbatim}
+which likewise tells \Diffev not to write trial files during the refinement
+cycles.
+
+In both cases the \Suite will use the internal variables 
+to communicate the trial parameters to the slave sections. 
+The trial parameters are set up within 
+\href{./diffev\_man.pdf}\Diffev as variable names and can 
+be referenced with these names within the other sections.
+Likewise, the information on the current generation is transferred with 
+special variable names. See the 
+\href{./diffev\_man.pdf}{\Diffev}  
+manual for full details.
+
+As an example, to define the a and c lattice parameters for a 
+Wurtzite type structure use the commands:
+\begin{MacVerbatim}
+newpara P_lata,  3.85, 3.95, 3.88, 3.92
+newpara P_latc,  6.45, 6.55, 6.48, 6.52
+\end{MacVerbatim}
+
+See the chapter Example in the \Diffev manual for a fully documented
+example. The remainder of this section is obsolete for versions 5.22 and 
+later.
+
+For backwards compatibility the variables {\tt ref\_para[entry\_number]}
+are retained.
+  Entries in this array
+range from 1 to the number of parameters to be refined, as defined
+by {tt pop\_dimx} in \diffev.
+As of Versions 5.7 the data are still written to the array, {\tt r} as 
+well. As a deliberate break compared
+to the general flexibility in all \Suite sections, the trial values are 
+stored in entries starting at {\tt r[201]}. Use of these entries is meant 
+to preserve backwards compatibility but will be discontinued in 
+future releases.
+
+Another predefined section of the internal variables is the range:\\
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Entry } & {\bf Description} \\
+  \hline
+  {\tt i[201]} & Current generation number \\
+  \hline
+  {\tt i[202]} & Size of the population \\
+  \hline
+  {\tt i[203]} & Size of the child population \\
+  \hline
+  {\tt i[204]} & Number of parameters \\
+  \hline
+\end{tabularx}
+{ } \\
+The use of this predefined  section of the internal variables 
+is discouraged and has been replaced by the variables:\\
+\begin{tabularx}{\textwidth}{|p{35mm}|X|}
+  \hline
+  {\bf Entry } & {\bf Description} \\
+  \hline
+  {\tt REF\_GENERATION} & Current generation number \\
+  \hline
+  {\tt REF\_MEMBER} & Size of the population \\
+  \hline
+  {\tt REF\_CHILDREN} & Size of the child population \\
+  \hline
+  {\tt REF\_DIMENSION} & Number of parameters \\
+  \hline
+  {\tt REF\_KID} & Current child to work on \\
+  \hline
+  {\tt REF\_INDIV} & Current individual repetition of the current child \\
+  \hline
+\end{tabularx}
+{ } \\
+To retain the backwards compatibility, the actual child number and the number 
+of the individual repetition are transferred as parameters on 
+the {\tt run\_mpi} command line.
+
+In the \Suite version of \kuplot, a new internal variable is used to store
+and transfer the weighted R-value from \Kuplot to \diffev. Thus, the need
+to write and read the result file ceases to exist. Do this via the commands:
+
+\begin{MacVerbatim}
+resultfile  silent
+...                ! further initialization
+run_mpi ...        ! Calculate with Discus and Kuplot
+compare silent
+\end{MacVerbatim}
+
+The first and last lines instruct the \Diffev section not to read the 
+resultfile but to use the value that is transferred internally.
+
+MPI has been implemented in the current Windows installation as well
+starting with Version 5.7.
+Use the icon {\tt DISCUS\_Suite Parallel\_Version} for parallel 
+refinements. 
+
+Even in the single session version of  the \suite, the refinement
+should use the {\tt run\_mpi} command in an identical fashion.
+
+In order to use the suite efficiently, the 
+{\tt branch} command is available within \diffev as well, and you
+can branch to either \discus or \Kuplot. This command should replace the 
+{\tt system discus < discus\_macro\_name} construction that is used in a
+serial refinement set up:
+
+
+\begin{MacVerbatim}
+   1  diffev
+   2     ... SETUP ...
+   3     init silent
+   4     branch discus
+   5        @discus_macro.mac
+   6        exit
+   7     branch kuplot
+   8        @kuplot_macro.mac
+   9        exit
+  10     compare silent
+  11  exit
+\end{MacVerbatim}
+
+In this simplified example, we switch to the diffev section with 
+the {\tt diffev} command in line 1. After initial setup done by 
+\Diffev and the initialization of generation zero in line 3, 
+the \Diffev section branches off to the \Discus section in line 4.
+Now control is at \Discus and the loop over all children and all
+calculations are performed by the macro {\tt diffev\_macro.mac} in 
+line 5. The {\tt exit} command in line 5 returns to the \Diffev section. 
+If you use a previous \Discus macro, the {\tt exit} line might 
+be part of the \Discus macro! Lines 7 to 9 do the same for 
+\kuplot. The {\tt compare} command (line 10) at the \Diffev level does 
+the comparison between the generations, and finally we leave the 
+\Diffev section in line 11. In a full refinement there would be a loop 
+over all refinement cycles that includes lines 4 to 10 of this example.
+
+\subsection{\discus}
+
+The performance of \Discus is not directly affected by the \suite. To make 
+full use of the \suite, a couple of concepts should be adhered to.
+
+Use the trial parameter value through the variable names that are defined
+within \Diffev. 
+Use the variables
+REF\_GENERATION, REF\_MEMBER, REF\_CHILDREN, REF\_KID, REF\_INDIV 
+to obtain the current
+generation number, the size of the population, the number of children 
+and the number of trial parameters.  Do not open and read the file GENERATION.
+This file is created within each refinement cycle, and has been augmented 
+by a lot of information that \Diffev reads to continue an interrupted refinement.
+Withinhte sections \Discus and \Kuplot there is, however, 
+no longer any need to read it.
+
+
+%{\it Read} the trial values from the real valued array {\tt ref\_para[]}, where 
+%the trial values are stored in elements 1 and following. 
+%Use the variables
+%REF\_GENERATION, REF\_MEMBER, REF\_CHILDREN, REF\_KID, REF\_INDIV 
+%to obtain the current
+%generation number, the size of the population, the number of children 
+%and the number of trial parameters.  Do not open and read the file GENERATION.
+%This file is still created within each refinement cycle, there is, however, 
+%no longer any need to read it.
+
+If the initial asymmetric unit is not extremely long, it is best to build
+the initial asymmetric unit from scratch. To build a Wurtzite type asymmetric
+unit use the following command sequence:
+
+\begin{MacVerbatim}
+1   read
+2      free P_lata, P_lata, P_latc, 90.00, 90.00, 120.00, P63mc
+3   insert Zn, 1./3.,  2./3, P_zn_z, P-biso
+4   insert S , 1./3.,  2./3, 0.00  , P-biso
+5   save
+6      outf internal.wurtzite.cell
+7      omit all
+8      write scat
+9      write adp
+10     run
+11  exit
+12  read
+13     cell internal.wurtzite.cell, 5,5,5
+\end{MacVerbatim}
+
+In this example it is assumed that P\_lata      contains the a lattice parameter 
+value, P\_latc      the c lattice parameter, P\_zn\_z     the z-position of Zn 
+and P\_biso     
+a common atomic displacement parameter B. The last parameter in line 2 tells
+\Discus that the structure belongs to space group P63mc. The asymmetric unit
+is stored internally into computer memory  in lines 5 to 11, and then expanded
+into a block of 5x5x5 unit cells in lines 12 and 13. By providing the space
+group symbol as last parameter to the {\tt free} command, the expansion in line
+13 will ensure that the two atoms Zn and O are properly copied to create all
+atoms in the unit cell. This macro section does not perform any disk I/O and
+will be much more efficient on a large parallel system.
+
+Do use the internal storage whenever you need to save a temporary crystal 
+structure. Every time a file name is preceded with the string {\tt internal},
+\Discus will save / read the structure to / from internal memory.
+
+To perform any further manipulations with the calculated data like 
+multiplication by a scale factor, the addition of a background etc., \Kuplot
+needs to be executed once the \Discus section is finished. To allow
+efficient use of massive parallel systems the new {\tt branch} command has 
+been added to \Discus and \kuplot. It allows to switch directly from the
+\Discus section to the \Kuplot section within \suite. 
+
+\begin{MacVerbatim}
+0   ...                        ! Discus initialization
+1   do indiv=1,nindiv          ! Repeat nanoparticle generation nindiv times
+2      @discus.zno.mac kid     ! do the actual simulation
+3   enddo
+4   branch   kuplot            ! Switch to KUPLOT
+5      @kup.diffev.mac ., kid  ! Contains a final exit
+6   exit                       ! Finish DISCUS
+\end{MacVerbatim}
+
+In this \Discus macro section the simulation of nanoparticles is repeated
+several (nindiv) times. This might be necessary to average out the defect
+distribution within the nanoparticles. Under these circumstances the individual
+calculated diffraction pattern / PDFs need to be averaged after the \Discus 
+section is finished. The branch to the \Kuplot section in line 4 allows
+\Discus to do this while remaining on the identical slave process and thus 
+on the identical compute node. On many massive parallel systems data transfer 
+from a compute node to the central disk is time consuming and many of these 
+systems have local fast (RAM) disks. The \Discus section can write the 
+individual diffraction pattern / PDF to this local disk without much of a
+penalty. But then, \Kuplot needs to operate on the same node in order to 
+find the data. This is ensured by the {\tt branch} construct. 
+
+In the alternative set up :
+\begin{MacVerbatim}
+0   ...                         ! Diffev initialization
+1   run\_mpi discus, discus\_macro.mac  " Discus calculation
+2   run\_mpi kuplot, kuplot\_macro.mac  ! Kuplot calculation
+\end{MacVerbatim}
+
+\Diffev will distribute the \Discus jobs onto all nodes, and then do 
+the same with the \Kuplot jobs. As of version 5.18 the \Suite will ensure
+taht 
+the two jobs for a given child are performed on the identical node. 
+
+\subsection{\kuplot}
+
+In the same fashion as \Discus, the \Kuplot section should rely 
+on the variables {\tt ref\_para[]}
+REF\_GENERATION REF\_MEMBER, REF\_CHILDREN, REF\_KID, ref\_INDIV 
+to determine the population size and if necessary the 
+trial parameters. Do not read the GENERATION file.
+
+Do not write a result file. The \Kuplot instruction:
+\begin{MacVerbatim}
+rvalue 1, 2
+\end{MacVerbatim}
+
+stores the weighted R-value internally and instructs the \Suite to
+transfer the value from the slave process back to the master process.
+The master process can then use this in the {\tt compare silent} command.
+
+The {\tt branch} command is available within \Kuplot as well, and you
+can branch to either \Diffev or \Discus. Most application will probably 
+not need to do this.

@@ -1,0 +1,840 @@
+\chapter{PDFFIT commands}
+\section{Summary}
+Here is a short summary of the PDFFIT specific commands currently 
+available: 
+\par
+\begin{MacVerbatim}
+alloc   : Allocates space for calculating PDFs without reading data
+bang    : Calculates bond angles with standard deviations
+blen    : Calculates bond lengths with standard deviations
+calc    : Calculates PDF from current structure
+cycle   : Sets the maximum number of refinement cycles
+i/jdese : Selects atoms used for calculating the PDF
+i/jsele : Deselects atoms used for calculating the PDF
+occ     : Sets occupancy for a given site
+par     : Sets a parameter definition
+phase   : Switches active structural phase
+psel    : Associates structural phases with data sets
+range   : Sets r-range used for refinement
+read    : Reads structure and PDF data files
+reset   : Resets PDFFIT
+run     : Starts a refinement
+save    : Saves resulting structure, PDF data and fit results
+scat    : Overwrites internal scattering factor for given element
+shape   : Sets particle shape parameters
+show    : Shows various information
+temp    : Sets anisotropic temperature factor
+urf     : Sets URF (magic refinement number)
+xray    : Specifies Q-value for calculating X-ray form factors
+\end{MacVerbatim}
+\section{alloc}
+{\bf alloc $ \{$"x"$| $"n"$\} $,$ <$qmax$> $,$ <$qsig$> $,$ <$rmin$> $,$ <$rmax$> $,$ <$np$> $ \par }
+\par
+\vspace{3pt}
+This command allows the user to allocate space when just calculating 
+a PDF. The first three parameters are similar to 'read data' and 
+the next three parameters specify the range in r to be from $ <$rmin$> $ 
+to $ <$rmax$> $ and the number of points $ <$np$> $. Note that this command 
+allocates the space for one data set without actually reading any 
+data ! Use the command 'reset' before reading "real" data for a 
+refinement. 
+\section{bang}
+{\bf bang $ <$a1$> $,$ <$a2$> $,$ <$a3$> $ \par }
+\par
+\vspace{3pt}
+This command calculates the bond angle and its standard deviation 
+for the atoms numbered $ <$a1$> $, $ <$a2$> $ and $ <$a3$> $. The angle is measured 
+at $ <$a2$> $. Note that no periodic boundaries are applied and it might 
+be necessary to add +-1 to the coordinates of some of the atoms to 
+get the desired angle (-$> $ variables). 
+\section{blen}
+{\bf blen $ <$a1$> $,$ <$a2$> $ \par }
+{\bf blen $ \{$"all"$| $$ <$name$> $$| $$ <$number$> $$\} $,$ \{$"all"$| $$ <$name$> $$| $$ <$number$> $$\} $,$ <$b1$> $,$ <$b2$> $ \par }
+\par
+\vspace{3pt}
+The simple form of this command calculates the bond length and its 
+standard deviation between the atoms number $ <$a1$> $ and $ <$a2$> $. Note 
+that the 'real' distance within the crystal is given and *no* 
+periodic boundary conditions are applied. 
+\par
+The second command calculates the bond lengths between the atoms selected 
+by the first two parameters that fall in the range specified by 
+$ <$b1$> $ and $ <$b2$> $. As usual atoms can be selected by name or type number 
+or simply use "all" to select all atoms. Here periodic boundaries 
+are applied like for the PDF calculation itself. Thus the results 
+of the two versions of 'blen' might be different for the same atom 
+number pair ! 
+\section{calc}
+{\bf calc \par }
+\par
+\vspace{3pt}
+This command starts the calculation of the PDF for the current 
+settings. Note that the current refinement parameter settings are 
+applied before the PDFs corresponding to all currently loaded data 
+sets are calculated. Note that the command 'save' must be used 
+to save the result(s). 
+\section{cycle}
+{\bf cycle $ <$n$> $ \par }
+\par
+\vspace{3pt}
+This command sets the maximum number of refinement cycles to $ <$n$> $. 
+If a minimum is found in less cycles, the fit will stop before $ <$n$> $ 
+cycles are finished. 
+\section{functions}
+\par
+The following PDFFIT specific functions exist. For a listing 
+of general intrinsic functions see help entry 'functions' in 
+the 'command language' section of the online help. 
+\par
+\begin{MacVerbatim}
+bang(u1,u2,u3,v1,v2,v3[,w1,w2,w3]) :
+    Returns the bond angle at the site v. If only vectors u and v
+    are given, the angle between u and v is returned.
+
+blen(u1,u2,u3[,v1,v2,v3]) :
+    Returns the length of vector v-u. Vector v defaults to zero.
+
+dstar(h1,h2,h2[,k1,k2,k3]) :
+    Returns the length of reciprocal vector k-h. Vector k defaults
+    to zero.
+
+rang(h1,h2,h3,k1,k2,k3[,l1,l2,l3]) :
+    Returns the angle between vectors k-h and k-l at reciprocal site k.
+    If l is omitted, the angle between the reciprocal vectors h and k
+    is returned.
+
+gran(val,typ) :
+    Returns Gaussian distributed pseudo random number with mean zero
+    an a width given by parameter <val>. If <typ> is "s" <val> is taken
+    as sigma, if <typ> is "f", <val> is taken as FWHM.
+
+gbox(r1,r2,r3) :
+    Returns pseudo random number with distribution given by a box
+    centered at 0 with a width of <r2> and two half Gaussian
+    distributions with individual sigmas of <r1> and <r3> to the
+    left and right, respectively.
+rval(s [,rmin,rmax])
+    Returns the weighted R-value corresponding to data set <s>.
+    The optional parameters allow the user to calculate the R-value
+    for a specific region in r.
+\end{MacVerbatim}
+\section{i/jdese}
+{\bf idese $ <$is$> $, $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $, [ ... ] \par }
+{\bf jdese $ <$is$> $, $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $, [ ... ] \par }
+\par
+\vspace{3pt}
+This command deselects atom types given either by $ <$name$> $ or $ <$number$> $ 
+for the PDF calculation. The two commands allow one to deselect 
+atom types for each atom in a pair 'ij' contributing to the PDF 
+calculation. The first parameters $ <$is$> $ specifies the number of the 
+corresponding data set. 
+\section{i/jsele}
+{\bf isele $ <$is$> $, $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $, [ ... ] \par }
+{\bf jsele $ <$is$> $, $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $, [ ... ] \par }
+\par
+\vspace{3pt}
+This command selects atom types given either by $ <$name$> $ or $ <$number$> $ 
+for the PDF calculation. All other atoms are ignored. This allows 
+the calculation of differential or partial PDFs. The two commands 
+allow one to select atom types for each atom in a pair 'ij' 
+contributing to the PDF calculation. The first parameters $ <$is$> $ 
+specifies the number of the corresponding data set. 
+\section{occ}
+{\bf occ $ \{$"all" $| $ $ <$name$> $ $| $ $ <$number$> $$\} $,$ <$o$> $ \par }
+\par
+\vspace{3pt}
+This command allows the user to set the occupancy of a given 
+site. The parameter "all" will result in the assignment of 
+the occupancy $ <$o$> $ to all atoms of the currently active phase 
+(-$> $ phase). Alternatively a specific atom name $ <$name$> $ or even 
+more specific the number $ <$number$> $ of a single atom type can be 
+used. Note that for DISCUS compatibility the occupancies are 
+not part of the structure file and must be set separately. 
+The default value is 1.0. 
+\section{par}
+{\bf par $ <$x=f(p(i))$> $,$ <$dx/dp1$> $,$ <$dx/dp2$> $,... \par }
+{\bf par "reset" \par }
+\par
+\vspace{3pt}
+This command defines the relation between fit parameters (p[i]) 
+and experimental and structural parameters, e.g. x[i]. There is 
+no predefined sequence or order. For each parameter p[i] that is 
+used in the definition, the corresponding partial derivative must 
+be given. The user has also to take care of proper starting 
+values for the parameters which can be assigned with p[i]=$ <$expr$> $. 
+The parameter settings can be deleted using the argument "reset". 
+Note that all expressions within arguments ([]) are evaluated 
+after the command is entered, thus parameter definitions can be 
+made using loops. However, other variables are saves as variables 
+and may change during the fit. For a detailed discussion refer to 
+the PDFFIT users guide. Here are some examples. 
+\par
+\begin{MacVerbatim}
+Examples
+par x[1]=p[1],1.0        : x of atom 1 is refined using p[1]
+par o[1]=r[1]*p[5],r[1]  : occupancy of atom 1 is r[1]*p[5] and
+                           the derivative is r[1] (simple isn't it)
+\end{MacVerbatim}
+\section{phase}
+{\bf phase [$ <$ip$> $] \par }
+\par
+\vspace{3pt}
+PDFFIT allows the usage of multiple phases. All structural 
+commands and setting will affect the currently active phase. 
+The command 'phase' allows the user to set the active phase 
+to $ <$ip$> $. Alternatively the command can be used without a 
+parameter in which case the current setting will be displayed. 
+\section{psel}
+{\bf psel $ <$is$> $,"all" \par }
+{\bf psel $ <$is$> $,$ <$ip1$> $ [,$ <$ip2$> $, ...] \par }
+\par
+\vspace{3pt}
+This command allows the user to associate certain phases $ <$ip1$> $ 
+to $ <$ipn$> $ with a given data set $ <$is$> $. One extreme would be to have 
+e.g. two data sets and one phase each completely separate which is 
+not really different from running the refinements separately. 
+However, by using identical refinement parameters one can constrain 
+any structural parameters between the phases. An example is given 
+in the Users Guide. The default is that all structural phases are 
+associated with all loaded data sets. 
+\section{range}
+{\bf range $ \{$"all" $| $ $ <$is$> $$\} $,$ <$rmin$> $,$ <$rmax$> $ \par }
+\par
+\vspace{3pt}
+This command sets the range in R that is used for fitting 
+either for "all" read data sets or for just the specified 
+data set $ <$is$> $. The limits $ <$rmin$> $ and $ <$rmax$> $ are given in 
+A. 
+\section{read}
+This command reads various information from a specified file. 
+The following formats are currently supported: 
+\par
+\subsection*{stru}
+{\bf read "stru",$ <$file$> $ \par }
+\par
+\vspace{3pt}
+The command 'read stru' allows the user to read a DISCUS 
+type structure from the file $ <$file$> $. Note that some DISCUS 
+keywords and the use of molecules are not supported by 
+PDFFIT. To read structural information for multiple phases 
+simply repeat the 'read' command. In order to discard 
+the current structure use the command -$> $ 'reset'. Note that 
+DISCUS only supports an isotropic temperature factor B. 
+When reading a DISCUS structure the temperature factor is 
+converted according to: $ <$u(ii)$> $ = Bglm-1/(8pi**2al*am*). 
+PDFFIT automatically recognizes the structure file format 
+of the input file ! 
+\subsection*{data}
+{\bf read "data",$ \{$"n" $| $ "x"$\} $,$ <$qmax$> $,$ <$qsig$> $,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+The command 'read data' reads the observed PDF. The file 
+format is ASCII and contains 'r G(r) dummy dG(r)' in each line. 
+The value of 'r' is in A, G(r) is the reduced PDF. The 
+third column is ignored (needed for KUPLOT) and the last 
+value 'dG' is the error of the PDF used to calculate the 
+weight (w=1/dg**2) for this point to be used for the 
+refinement. Alternative formats are 'r G(r) dG(r)' in each 
+line or simple 'r G(r)'. In the later case, the weights are 
+set to unity. This is also done in case the value of dG(r) 
+is found as zero. Additional to the filename $ <$file$> $ the commands 
+needs the following parameters: First the type of radiation 
+is specified, "n" stands for neutrons and "x" for X-rays. 
+Next the maximum value of Q $ <$qmax$> $ is given followed by the 
+value of $ <$qsig$> $ defining the Q resolution. To read multiple 
+data sets just repeat the 'read' command. 
+\par
+If the data file contains a history part created by PDFgetN, 
+some of the information is returned in the res[n] variables. 
+Currently the following information is available after the 
+'read data' command: 
+\par
+\begin{MacVerbatim}
+res[1]   : Temperature where the data were collected (in K)
+res[2]   : Qmax (only AFTER the data were read !)
+\end{MacVerbatim}
+\subsection*{diff}
+{\bf read "diff",$ \{$"n" $| $ "x"$\} $,$ <$qmax$> $,$ <$qsig$> $,$ <$file$> $,$ <$rfile$> $ \par }
+\par
+\vspace{3pt}
+This command is similar to 'read data' but rather than reading 
+a PDF, a difference PDF is read from file $ <$file$> $. The format 
+is identical to the PDF file format. The additional parameter 
+$ <$rfile$> $ specifies a reference PDF, so that the model PDF fitted 
+to the read data becomes CALC - REFERENCE. See Users Guide for 
+more details. 
+\section{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+This command resets PDFFIT, e.g. all current structural and 
+PDF information is lost. 
+\section{run}
+{\bf run \par }
+\par
+\vspace{3pt}
+This command starts the least square refinement ... 
+\section{save}
+{\bf save $ <$subcommand$> $ \par }
+\par
+\vspace{3pt}
+This command allows to write different information to a file. 
+The valid subcommands are: 
+\par
+\subsection*{atoms}
+{\bf save "atoms",$ <$ip$> $,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+This command saves the structure of phase $ <$ip$> $ in a format suitable 
+for import into ATOMS using the 'File - Import - Free Form' function. 
+In case of multiple unit cells, a supercell containing the complete 
+crystal is created. Anisotropic thermal parameters are exported and 
+thermal ellipsoids can be viewed using ATOMS. 
+\subsection*{const}
+{\bf save "const",$ <$file$> $ \par }
+\par
+\vspace{3pt}
+This command saves the parameter constraints to a text file. 
+The output is similar to the screen output created by 'show const'. 
+\subsection*{dif}
+{\bf save "dif",$ <$is$> $,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+This command saves the difference between observed and calculated 
+PDF of data set $ <$is$> $ to a file named $ <$file$> $. 
+\subsection*{discus}
+{\bf save "discus",$ <$ip$> $,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+This command saves the structural phase $ <$ip$> $ to the file named 
+$ <$file$> $ in DISCUS format. Note that DISCUS uses only an isotropic 
+B value which is computed according to B=8pi**2/3(u11+u22+u33). 
+The information about anisotropic temperature factors, occupancies 
+and standard deviations is NOT saved. 
+\subsection*{mark}
+{\bf save "mark", $ <$ip$> $,$ <$is$> $,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+This commands saves the positions and frequency of atom pairs 
+for phase $ <$ip$> $ in the r-range given by data set $ <$is$> $ to file $ <$file$> $. 
+The file is a simple two column ASCII file with columns "r" and 
+"Number", giving the distance "r" and the amoutn of pairs "Number". 
+This can be used to plot distance markers. 
+\subsection*{pdf}
+{\bf save "pdf" ,$ <$is$> $,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+The command 'save pdf' saves the calculated PDF corresponding 
+to the given data set $ <$is$> $ to the file $ <$file$> $. The format 
+is identical to the input format (-$> $ read). 
+\subsection*{result}
+{\bf save "result",$ <$file$> $ \par }
+\par
+\vspace{3pt}
+This command saves all information about the refinement to 
+a text file named $ <$file$> $. The output is similar to the screen 
+output of the 'show' commands. 
+\subsection*{stru}
+{\bf save "stru",$ <$ip$> $,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+The command 'save stru' saves the structure of the phase 
+specified by $ <$ip$> $ to the file $ <$file$> $. The file format is 
+related to the DISCUS format. However it contains additional 
+information like anisotropic temperature factors, occupancies 
+and standard deviations for all values. These files can be 
+read again by PDFFIT. To save a structural phase in DISCUS 
+format use -$> $ 'save discus,...'. 
+\section{scat}
+{\bf scat $ <$s$> $,$ \{$$ <$name$> $$| $$ <$number$> $$\} $,$ <$a1$> $,$ <$b1$> $,$ <$a2$> $,$ <$b2$> $,$ <$a3$> $,$ <$b3$> $,$ <$a4$> $,$ <$b4$> $,$ <$c$> $ \par }
+{\bf scat $ <$s$> $,$ \{$$ <$name$> $$| $$ <$number$> $$\} $,$ <$c$> $ \par }
+{\bf scat $ <$s$> $,$ \{$$ <$name$> $$| $$ <$number$> $$\} $,"internal" \par }
+\par
+\vspace{3pt}
+This command allows the user to specify a new scattering factor 
+for data set $ <$s$> $ and atom $ <$name$> $ (or $ <$number$> $) of the current 
+phase. In case data set $ <$s$> $ are neutron scattering data just a 
+single scattering length $ <$c$> $ is needed, in case of X-rays, the 
+scattering factor is given in exponential form. Finally if the 
+last parameter is "internal", the internal scattering factor 
+are used again. 
+\section{shape}
+{\bf shape $ \{$'none','sphere'$\} $,[$ <$s1$> $, $ <$s2$> $, ..] \par }
+\par
+\vspace{3pt}
+ This commands allows one to set parameters when calculating the 
+ PDF of a finite particle. The fist parameter is describing the 
+ particle shape, following parameters are related to the selected 
+ shape. 
+\par
+\begin{MacVerbatim}
+ none     This deselects any particle shape.
+ sphere   This selects a shperical particle. The only parameter <s1>
+\end{MacVerbatim}
+          is the radius of the particle. 
+\section{show}
+{\bf show $ <$subcommand$> $,.. \par }
+\par
+\vspace{3pt}
+This command allows to obtain various information about the 
+model crystal, PDFFIT settings etc. 
+\par
+Valid subcommands are : 
+\par
+\subsection*{atom}
+{\bf show "atom",$ <$number$> $ [,$ <$end$> $] \par }
+{\bf show "atom","all" \par }
+{\bf show "atom","last" \par }
+\par
+\vspace{3pt}
+Information about the atom(s) such as position, thermal factors, 
+atom type and occupancy are listed for the current phase (-$> $ phase). 
+If the optional second parameter $ <$end$> $ is given, all atoms in the 
+range $ <$number$> $ to $ <$end$> $ are shown.  If the second parameter is "all", 
+all atoms in the crystal are shown.  WARNING, this could last a while 
+:-) If the second parameter is "last", only the last atom of the 
+crystal is shown. This is identical to setting the second parameter 
+to "n[1]", which contains the number of atoms in the crystal. 
+\subsection*{config}
+{\bf show "config" \par }
+\par
+\vspace{3pt}
+This commands lists the limits of various arrays like the maximum 
+number of phases, atoms, parameters etc. In case one of the limits 
+is not sufficient, PDFFIT needs to be recompiled with adjusted 
+limits. 
+\subsection*{const}
+{\bf show "const" [,$ <$ip$> $] \par }
+\par
+\vspace{3pt}
+This command displays all constraint equations and derivatives 
+that contain parameter $ <$ip$> $. If $ <$ip$> $ is omitted, all definitions 
+are show, which can be quite a long list ! 
+\subsection*{elem}
+{\bf show "elem" [,$ <$ip$> $] \par }
+\par
+\vspace{3pt}
+This command lists information about the elements within the 
+crystal. If the parameters $ <$ip$> $ is omitted, the corresponding 
+information for all phases is shown, otherwise just for the 
+specified phase $ <$ip$> $. 
+\subsection*{fit}
+{\bf show "fit" \par }
+\par
+\vspace{3pt}
+This command outputs refinement information such as R-values 
+and the correlation matrix. 
+\subsection*{metric}
+{\bf show "metric" \par }
+\par
+\vspace{3pt}
+This command show the current lattice parameters, metric tensor 
+as well as reciprocal lattice parameters and the reciprocal 
+metric tensor for the currently active structural phase 
+(-$> $ phase). 
+\subsection*{par}
+{\bf show "par" \par }
+\par
+\vspace{3pt}
+This command lists the current fit parameters on the screen. 
+\subsection*{pdf}
+{\bf show "pdf" [,$ <$is$> $] \par }
+\par
+\vspace{3pt}
+This command lists information about PDF related settings. 
+If the parameters $ <$is$> $ is omitted, the corresponding 
+information for all data sets is shown, otherwise just for the 
+specified set $ <$is$> $. 
+\subsection*{phase}
+{\bf show "phase" \par }
+\par
+\vspace{3pt}
+This command displays all information about the currently 
+active phase on the screen. 
+\subsection*{scat}
+{\bf show "scat",$ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $ \par }
+\par
+\vspace{3pt}
+This command allows the user to display the scattering lengths 
+for all or just a specific atom within the currently selected 
+phase (-$> $ phase). 
+\section{temp}
+{\bf temp $ \{$"all"$| $$ <$name$> $$| $$ <$number$> $$\} $,$ <$u11$> $ \par }
+{\bf temp $ \{$"all"$| $$ <$name$> $$| $$ <$number$> $$\} $,$ <$u11$> $,$ <$u22$> $,$ <$u33$> $ \par }
+{\bf temp $ \{$"all"$| $$ <$name$> $$| $$ <$number$> $$\} $,$ <$u11$> $,$ <$u22$> $,$ <$u33$> $,$ <$u12$> $,$ <$u13$> $,$ <$u23$> $ \par }
+\par
+\vspace{3pt}
+This command sets the anisotropic temperature factor U(ij) for 
+"all" or the atoms specified either by $ <$name$> $ or atom type 
+$ <$number$> $. If just a single further parameter $ <$u11$> $ is given, 
+an isotropic temperature factor is assumed. Otherwise just 
+the diagonal or all elements of the tensor can be specified. 
+Note that U(i,j)=$ <$u(i)u(j)$> $ and specifically for the diagonal 
+elements U(ii)=$ <$u(i)**2$> $ ! 
+\section{urf}
+{\bf urf $ <$u$> $ \par }
+\par
+\vspace{3pt}
+This command sets the URF (some German: Unterer Relaxations Faktor) 
+for the fit. This value determines who 'fast' the fit will move to 
+its minimum or how much the parameter values are changed in each 
+cycle depending on the deviations. A small value (e.g. 0.1) might 
+lead to a fast convergence but might also miss the minimum. A larger 
+value (e.g. 100.0) will give a slow convergence which more certain 
+finds the minimum, but might be caught in local minima rather than in 
+the global one. 
+\par
+Understood ? Well just try different values until your fit converges 
+nicely to the global minimum. 
+\section{variables}
+{\bf Variables \par }
+\par
+\vspace{3pt}
+PDFFIT allows the usage of variables. The general variables 
+i[n], r[n] and res[n] are explained in the 'command language' 
+section of the online help (-$> $ command language). The variables 
+marked with RO below are READONLY. 
+\begin{MacVerbatim}
+
+x[n]      : x-position of atom n of current phase (-> phase)
+y[n]      : y-position of atom n of current phase (-> phase)
+z[n]      : z-position of atom n of current phase (-> phase)
+m[n]      : Number of atom type on site n (current phase)
+u[6,n]    : Aniso. thermal factor U(ij) for site n (curr. phase)
+o[n]      : Occupancy of site n (current phase)
+
+lat[6]    : Lattice parameters (a,b,c,alpha,beta,gamma) f. phase
+delt[n]   : Value of DELTA (sharpening !) for phase 'n'
+gamm[n]   : Value of GAMMA (sharpening !) for phase 'n'
+rcut[n]   : Cutoff r-value for additional sharpening for phase 'n'
+srat[n]   : Ratio of peak width below and above 'rcut' for phase 'n'
+csca[n]   : Value of scaling factor for phase 'n'
+rhoz[n]   : Value of number density RHO0 phase 'n' (RO)
+cmax[n]   : Maximum correlation 'r' for phase 'n'
+shap[n,i] : Particle shape parameter 'i' for phase 'n'
+
+qsig[s]   : Value of QSIGMA (resolution dampening) for data set 's'
+qalp[s]   : Value of QALPHA (resolution broadening) for data set 's'
+dsca[s]   : Value of scaling factor for data set 's'
+bave[s]   : Average scatt. length <b> data set 's' (current phase)
+
+dx[n]     : Standard deviation of x-position
+dy[n]     : Standard deviation of y-position
+dz[n]     : Standard deviation of z-position
+du[6,n]   : Standard deviation of u[6,n]  (RO)
+do[n]     : Standard deviation of o[n]    (RO)
+dlat[6]   : Standard deviation of lat[6]
+ddelt[n]  : Standard deviation of delt[n] (RO)
+dgamm[n]  : Standard deviation of gamm[n] (RO)
+dsrat[n]  : Standard deviation of srat[n] (RO)
+dcsca[n]  : Standard deviation of csca[n] (RO)
+drhoz[n]  : Standard deviation of rho0[n] (RO)
+ddsca[s]  : Standard deviation of dsca[s] (RO)
+dqsig[s]  : Standard deviation of qsig[s] (RO)
+dqalp[s]  : Standard deviation of qalp[s] (RO)
+dshap[n,i]: Standard deviation of shap[p,i]  (RO)
+
+n[1]      : Total number of atoms of current phase (RO)
+n[2]      : Number of different atoms of current phase (RO)
+n[3]      : Number of atoms per unit cell (current phase) (RO)
+n[4]      : Number of phases (RO)
+n[5]      : Number of current phase (change with -> phase) (RO)
+n[6]      : Number of loaded experimental PDFs (RO)
+n[7]      : Number of possible parameters (RO)
+n[8]      : Number of used refinement parameters (RO)
+
+p[n]      : Value of fit parameter n
+dp[n]     : Value of standard deviation for parameter n (RO)
+pf[n]     : Refinement flag for parameter n, 1=refine 0=fixed
+cl[n,m]   : Correlation matrix element n,m (RO)
+
+rw[1]     : expected R-value (after refinement) (RO)
+rw[2]     : achieved R-value (after refinement) (RO)
+rw[3]     : achieved weighted R-value (after refinement) (RO)
+
+np[s]     : Number of data points of data set 's' (RO)
+pc[n,s]   : Value of calculated PDF point 'n' of data set 's'
+po[n,s]   : Value of observed PDF point 'n' of data set 's'
+pw[n,s]   : Weight for PDF point 'n' of data set 's'
+delr[s]   : Value of DELTAR of data set 's'
+qmax[s]   : Value of QMAX for data set 's'
+rang[2,s] : Value of minimum (1) and maximum (2) R for refinement
+rmin[s]   : Value of maximum R of data set 's'
+rmax[s]   : Value of maximum R of data set 's'
+
+fa[i,s,p] : Value of matrix A(i,s,p) (see Users Guide)
+fb[i,s,p] : Value of matrix B(i,s,p)
+fc[p,dp]  : Value of matrix C(p,dp)
+\end{MacVerbatim}
+\section{xray}
+\begin{MacVerbatim}
+xray [<xq>]
+\end{MacVerbatim}
+This command sets the Q-value used to calculate the scattering 
+length used in the PDF calculation. The default value is xq=0 
+which results in a weight corresponding to the number of electrons 
+of the contributing atoms. Other settings could be the Q value 
+of the first Bragg peak or the average Q value of the data set. 
+Calling the command without parameters prints the current setting 
+on the screen. 
+\section{errors}
+\par
+The program has been written such that it should handle almost 
+any typing error when giving commands and hopefully all errors 
+that result from calculation with erroneous data. When an error 
+is found an error message is displayed that should get you back 
+on track. See the manual for a complete list of error messages. 
+\par
+Error messages concerning the command language are explained in 
+the -$> $ command language section of the online help. Application 
+specific commands are described here and are grouped as follows: 
+\par
+\begin{MacVerbatim}
+APPL   Errors specific to PDFFIT structure functions
+PDF    Errors specific to PDFFIT PDF calculation and fit func.
+\end{MacVerbatim}
+Each error message is displayed together with the corresponding 
+category $ <$cccc$> $ and the error number $ <$numb$> $ in the form: 
+\par
+{\bf ****CCCC****message                    **** numb **** \par }
+\par
+\vspace{3pt}
+Type help error $ <$cccc$> $ $ <$numb$> $ to get an explanation for the error 
+message and hints for possible steps to correct the situation. 
+\par
+In the default mode PDFFIT returns the standard prompt and you can 
+continue the execution from this point. You can set the error status 
+to "exit" by the ==$> $'set' command. In this case PDFFIT terminates 
+if an error is detected. This option is useful to terminate a faulty 
+sequence of commands when running PDFFIT in the batch mode of your 
+operating system. 
+\par
+\subsection*{appl}
+\par
+This category lists error messages that are specific to 
+structure related functions of PDFFIT. 
+\par
+\subsubsection{Error -2: Improper limits for atom number}
+\par
+Either of the upper or lower limits used on the 'append' command is 
+outside the range of atoms present in the crystal. Check whether 
+the limits are both positive, the upper limit is higher or equal to 
+the lower limit and whether both limits are less or equal to the 
+number of atoms present in the crystal. The number of atoms in the 
+crystal can be checked with the command: "eval n[1]". 
+\subsubsection{Error -3: No atoms selected yet}
+\par
+The plot and waves can only be run for selected atoms. Use the 'select' 
+command to select individual atom types or to select all atoms present 
+in the crystal. 
+\subsubsection{Error -7: Unknown space group symbol}
+\par
+The crystal file contains an unknown space group. Check the spelling of 
+the space group symbol. The allowed space groups are all 230 space 
+groups in the Int. Tables for Crystallography plus the space groups 
+given for alternative settings and cell choices of the monoclinic 
+space groups. 
+\subsubsection{Error -10: Too many Atoms in crystal}
+\par
+The maximum number of atoms that can be stored in the structure 
+is determined by the parameter NMAX in the file "crystal.inc". 
+By inserting new atoms or by defining too large a crystal on the 
+'read' command, this number was exceeded. If necessary, change the 
+value of the parameter NMAX and recompile the program. 
+\subsubsection{Error -12: Number of points must be $> $ zero}
+\par
+The value of the parameter given on the 'abs' or 'ord' command is 
+less than one. This value represents the number of data points 
+calculated along the respective direction. 
+The value must be at least one or higher. 
+\subsubsection{Error -14: Invalid space group \& lattice constants}
+\par
+While reading a new cell the program checks the space group and the 
+lattice constants for consistency. Either a space group was given 
+that is not included in the program, or the lattice constants do 
+not fulfill the constraints imposed by the space group. Check the 
+space group symbol and the lattice constants given in the input file. 
+\subsubsection{Error -19: Atom number outside limits}
+\par
+The number of the atom is either less than one, larger than the current 
+number of atoms in the crystal or even larger than the maximum 
+number of atoms allowed in your implementation. 
+Check the value of the parameter(s) on the 'remove' and 'switch' 
+commands or check the index of the variables "m", "x", "y" or "z". 
+Check the number of atoms present in the crystal by the command: 
+'eval n[1]'. 
+\subsubsection{Error -20: Unknown element, no Fourier calculated}
+\par
+An element was detected in the list of atoms for which there is no 
+scattering curve available. The Fourier transform is not calculated 
+at all. Check the name of all atoms present in the crystal using 
+the 'asym' and 'chem' commands. If a charged ion was given, this 
+valence might not be present in the list of scattering curves. 
+Refer to Appendix b of the manual for a list of internally stored 
+names. 
+If the 'scat' and/or 'delf' commands were used, any name may be used. 
+Check whether the commands were used properly. 
+\subsubsection{Error -21: No element present, no Fourier calculated}
+\par
+There are no elements present at all in the crystal. The Fourier 
+transform is not calculated at all. Most likely, the Fourier 
+was called before a structure or unit cell was read, or an error 
+occurred during the reading of the structure or unit cell. 
+\subsubsection{Error -26: Too many different atoms in crystal}
+\par
+The maximum number of different atoms allowed in your implementation 
+was exceeded. No more new types of atoms can be inserted into the 
+structure. Check the chemistry of your crystal by the 'asym' and 
+'chem' commands. All atoms are considered different types that are 
+chemically different, have different charge or a different temperature 
+coefficient. If all types are needed, modify the parameter "maxscat" 
+in the file "param.inc" and recompile the program. See chapter 9.1 
+of the manual for further information. 
+\subsubsection{Error -27: No atom of this type present in crystal}
+\par
+An atom was selected for displacement by a wave or for plotting that 
+does not exist within the crystal. Check the spelling of the atom 
+name, and the chemistry of the crystal by the 'asym' and 'chem' 
+commands. 
+\subsubsection{Error -28: Input parameters must be $> $ zero}
+\par
+This function/command requires non-negative parameters. 
+Check the values of the parameters and the explanation for the function 
+or command used for valid ranges of numerical input. 
+\subsubsection{Error -32: Length of vector is zero}
+\par
+An attempt was made to calculate the angle between two vectors 
+while one of them is of length zero. Check the parameters given 
+on the 'bang' or 'rang' command for proper numbers. 
+\subsubsection{Error -35: Volume of unit cell $ <$= zero}
+\par
+The volume of the unit cell was calculated as zero or a negative 
+value. 
+Check the lattice parameters given in the input file. Are there 
+any accidental "-" signs ? Do the angles form an impossible shape ? 
+\subsubsection{Error -37: No filename defined yet}
+\par
+An attempt was made to write output to or read from a file without 
+defining a file name. PDFFIT does not provide default names for the 
+output of the 'plot' command or the input filenames. Check the 
+'outfile' command at sublevels 'output' and 'plot' or the 'content' 
+command at sublevel 'microdomains'. 
+\subsubsection{Error -43: Not enough parameter for filename format}
+\par
+An attempt was made to generate a file name from a string like 
+"text\%dtext" without supplying enough numerical parameters. 
+Check that the spelling of the sting within " " is correct. Are 
+there any unwanted \%d combinations?. Check the number and type 
+of parameters following the file name. 
+\subsubsection{Error -44: Right quotation mark missing in format}
+\par
+An attempt was made to generate a file name from a string like 
+"text\%dtext" without supplying the right quotation mark. 
+Check the line and provide the missing ". 
+\subsubsection{Error -45: Too many atoms in environment}
+\par
+The indices of all atoms found are stored in the internal variable 
+"res". More atoms were found that fit into the dimensions of "res". 
+Restrict the search for the environment to a smaller shell or 
+change the dimension of "res\_para" in file "param.inc". 
+\subsubsection{Error -46: Error reading title of structure}
+\par
+An error occurred while reading the title line of a structure or 
+unit cell file. Check the file for any garbage. 
+\subsubsection{Error -47: Error reading space group symbol}
+\par
+An error occured while reading the space group  line of a structure or 
+unit cell file. Check the file for any garbage. 
+\subsubsection{Error -48: Error reading lattice constants}
+\par
+An error occured while reading the lattice constants of a structure 
+or unit cell file. Check the file for any garbage or accidental letters. 
+\subsubsection{Error -49: Error reading atom coordinates}
+\par
+An error occured while reading the atom coordinates of the atom 
+listed.  Check the file for any garbage. Is the line of the type 
+Name x y z B 
+Are there letters among the numerical values? 
+\subsubsection{Error -54: Index outside limits}
+\par
+The value given is outside the proper limits allowed by this command. 
+This usually means that an array element is outside the current 
+dimension of an array, for example a correlation matrix or you are 
+trying to include too many atoms in the crystal. Check the section 
+on dimensions in the manual. 
+\subsection*{pdf}
+\par
+This category lists error messages that are specific PDF 
+and refinement functions of PDFFIT. 
+\par
+\subsubsection{Error -1: Invalid structure phase selected}
+\par
+The number of an invalid phase was given. One can only enter 
+phase specific commands when the corresponding structure was 
+actually read via 'read stru'. 
+\subsubsection{Error -2: Number of phases outside limits}
+\par
+When trying to read another structural phase, the maximum number 
+of phases was exceeded. You might need to adjust the parameter 
+MAXPHA in 'config.inc' and recompile PDFFIT. 
+\subsubsection{Error -3: Invalid occupancy specified}
+\par
+A site occupancy not in the range 0 to 1 was specified for an 
+atomic site. Check your input. 
+\subsubsection{Error -4: Maximum number of data sets exceeded}
+\par
+When reading a PDF data set, the maximum number of data sets was 
+exceeded. You might need to adjust the parameter MAXDSET in the 
+file 'config.inc' and recompile PDFFIT. 
+\subsubsection{Error -5: Invalid radiation type selected}
+\par
+The only radiation types allowed as parameter for the 'read data' 
+command are 'n' for neutrons and 'x' for X-rays. Check your input. 
+\subsubsection{Error -6: Invalid data set specified}
+\par
+The number of an invalid data set was given. One can only enter 
+data set specific commands when the corresponding data file was 
+actually read via 'read data'. 
+\subsubsection{Error -7: Invalid parameter constraint specified}
+\par
+The parameter constraint specified using 'par' is invalid. Either 
+it contains no "=" or tries to assign a non refinable variable to 
+a refinement parameter. 
+\subsubsection{Error -8: Too many different parameters in constr.}
+\par
+You have entered a definition, that depends on too many different 
+refinement parameters. You might need to adjust the variable 
+MAXDPP in the file 'config.inc' and recompile PDFFIT. 
+\subsubsection{Error -9: Inconsistency between NCELL and \# atoms}
+\par
+When reading a structure file, the number of atoms actually found 
+does not match the number of atoms expected from the parameters 
+of the 'ncell' keyword. For 'ncell nx,ny,nz,n' you expect to read 
+nx.ny.nz.n atoms. 
+\subsubsection{Error -10: Invalid parameter selected}
+\par
+An invalid refinement parameter was selected. Use the command 
+'show config' to see what the maximum number of refinement 
+parameters is you can use. 
+\subsubsection{Error -11: Too many data points in experimental PDF}
+\par
+The PDF data file to be read contains too many data points. You 
+might need to adjust the parameter MAXDAT in the file 'config.inc' 
+and recompile PDFFIT. 
+\subsubsection{Error -12: Cannot extend r-range for convolution}
+\par
+In order to calculate the PDF, the calculated function is convoluted 
+with a SINC function with a width determined by Qmax. In oder to 
+carry out the convolution a finite number of data points outside 
+the refinement range are needed. You have to use a lower RMAX for 
+the refinement or reprocess the PDF up to a higher R value. 
+\subsubsection{Error -13: R-value out of range}
+\par
+You have specified a value of R that is outside the range for the 
+specified data set. Check your input. 
+\subsubsection{Error -14: Parameter index in p[i] out of range}
+\par
+You have used a parameter index 'i' that is out of range. Note that 
+the maximum allowed value of 'i' is determined by the maximum number 
+of parameters that can be used for a given set of data and structural 
+phases. 

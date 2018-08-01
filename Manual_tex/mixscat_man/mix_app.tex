@@ -1,0 +1,137 @@
+%------------------------------------------------------------------------
+% Chapter:  Appendix A
+%------------------------------------------------------------------------
+
+\chapter{Equations \label{app}}
+
+In this appendix, we will derive the equations used in the program
+to extract the differential $G(r)$ functions. It is important to
+recognize the difference between a partial and a differential PDF.
+We us the following notation: The \textit{partial} PDF, $G_{AB}(r)$
+contains only contributions from atoms pairs of type $AB$, for
+example the $OO$ partial of water would only contain oxygen-oxygen
+contributions. The \textit{differential} PDF,
+$G_{\overline{AB}}(r)$, on the other hand will contain contributions
+from all atom-atom pairs \textit{except} $AB$. Similarly we define
+the partial structure factor as $S_{AB}(Q)$ and the differential
+structure factor as $S_{\overline{AB}}(Q)$.
+
+
+%------------------------------------------------------------------------
+\section{Calculating the difference \label{app-calc}}
+
+We will discuss the way how the difference is calculated using the
+PDF, $G(r)$. Differences in $S(Q)$ are calculated exactly the same
+way. The PDF can be written as
+
+\begin{equation}
+  G(r) = \frac{1}{r} \sum_{ij} \left (
+         \frac{c_{i}c_{j}b_{i}b_{j}}{\langle b \rangle ^{2}}
+         \, \delta (r - r_{ij}) \right )   - 4 \pi r \rho_{0}.
+ \label{eq:gr}
+\end{equation}
+
+\noindent Here the sums go over all atoms within the model crystal
+and $r_{ij}$ is the separation distance between atoms $i$ and $j$.
+The value $b_{i}$ is the scattering length for atom $i$ and $\langle
+b \rangle$ is the average scattering length of the model crystal.
+The concentration for each atom site is given by $c_{i}$ and
+$c_{j}$. Finally $\rho_{0}$ is the number density.
+
+The goal is to calculate a difference of two measurements and make
+one of the atom-atom correlations cancel each other. We will
+illustrate this using the case of a neutron and x-ray measurement.
+We write the PDFs for the two measurements as follows:
+
+\begin{eqnarray}
+  G^{n}(r) & = & \frac{1}{r} \sum_{ij} w_{ij}^{n} \, g_{ij}(r) - 4 \pi r \rho_{0}
+  \label{eq:grn}\\
+  G^{x}(r) & = & \frac{1}{r} \sum_{ij} w_{ij}^{x} \, g_{ij}(r) - 4 \pi r \rho_{0}.
+  \label{eq:grx}
+\end{eqnarray}
+
+\noindent Here the superscript $n$ stands for neutron data and $x$
+stands for x-ray data. $g_{ij}(r)$ describes the atom-atom
+correlations in the structure and it is independent of the type of
+measurement. The difference in measurement is contained in the
+weights,
+
+\begin{eqnarray}
+  w^{n}_{ij} & = & \frac{c_{i} c_{j} b_{i} b{j}}{\langle b \rangle ^{2}}
+  \label{eq:wn}\\
+  w^{x}_{ij} & = & \frac{c_{i} c_{j} f_{i}(Q) f_{j}(Q)}{\langle f(Q) \rangle
+  ^{2}}.
+  \label{eq:wx}
+\end{eqnarray}
+
+\noindent Note that in the case of x-rays the weights are given by
+the atomic formfactor, $f(Q)$. When using the program on $S(Q)$ the
+$Q$ dependence is actually used in the calculation. However, for
+calculations using $G(r)$, the weights are calculated as $f(Q=0)$.
+Next we will assume that we want to remove the correlations between
+atoms $m$ and $n$. Rewriting equations \ref{eq:grn} and \ref{eq:grx}
+will give us
+
+\begin{eqnarray}
+  G^{n}(r) & = & \frac{1}{r} \, w_{mn}^{n} \, g_{mn}(r) +
+                 \frac{1}{r} \sum_{ij \neq mn} w_{ij}^{n} \, g_{ij}(r) - 4 \pi r \rho_{0}
+  \label{eq:grn2}\\
+  G^{x}(r) & = & \frac{1}{r} \, w_{mn}^{x} \, g_{mn}(r) +
+                 \frac{1}{r} \sum_{ij \neq mn} w_{ij}^{x} \, g_{ij}(r) - 4 \pi r \rho_{0}.
+  \label{eq:grx2}
+\end{eqnarray}
+
+\noindent Finally the differential PDF without atom pairs $m,n$ is
+calculated from the experimental data $G^{n}(r)$ and $G^{x}(r)$ as
+
+\begin{equation}
+  G_{\overline{mn}}(r) = \frac{G^{n}(r)}{w^{n}_{mn}} -
+                         \frac{G^{x}(r)}{w^{x}_{mn}}.
+  \label{eq:gdiff}
+\end{equation}
+
+%------------------------------------------------------------------------
+\newpage
+\section{Using a model \label{app-mod}}
+
+The program calculates the desired differential PDF,
+$G_{\overline{mn}}(r)$, as defined in equation \ref{eq:gdiff}.
+Unfortunately this difference has messed up the weights of the other
+contributions as well. First we need to derive the correct weights. 
+Starting with equation \ref{eq:gdiff} and using the definitions in 
+equations \ref{eq:grn2} and \ref{eq:grx2}, one finds
+
+\begin{equation}
+  G_{\overline{mn}}(r) = \frac{1}{r} \sum_{ij \neq mn} \left (
+                         \frac{w^{n}_{ij}}{w^{n}_{mn}} -
+                         \frac{w^{x}_{ij}}{w^{x}_{mn}} \right ) \,g_{ij}(r) -
+                         4 \pi r \rho_{0} \left ( \frac{1}{w^{n}_{mn}} -
+                                                  \frac{1}{w^{x}_{mn}} \right ).
+  \label{eq:gdwei}
+\end{equation}
+
+The most recent version of the program DISCUS\,\citep{discus} allows the 
+user to specify the weights for
+each partial $g^{c}_{ij}$. The required commands to be used in
+DISCUS can be exported in MIXSCAT. A note that the concentrations
+$c_i$ account for the number of pairs of a particular combination
+of atom types. When calculating the differential PDF, these are required
+to obtain the correct weights. Most modeling programs (e.g. DISCUS),
+however, will loop over all atom pairs. In that case the factor 
+$c_i c_j$ needs to be divided out again.
+These weights can be saved and used in DISCUS to calculate the correctly
+weighted differential PDFs from a model.
+
+At this time many programs such as PDFgui\,\citep{pdfgui} do not allow 
+the user to enter specific weights for the different calculated partials 
+and direct calculation of the differential from a model is not possible. However, once can calculate all the individual partials and 'mix' them with the correct weights. We can for example use PDFgui and calculate the neutron weighted partials, $G^{n,c}_{ij}(r)$, as
+
+\begin{equation}
+  G^{n,c}_{ij}(r) = \frac{1}{r} w^{n}_{ij} g^{c}_{ij}(r) - 4 \pi r \rho_{0},
+  \label{eq:gcn}
+\end{equation}
+
+and we extract $g^{c}_{ij}$ from this expression and use equation 
+\ref{eq:gdwei} to calculate the correct differential PDF, $G^{c}_{\overline{mn}}(r)$ using e.g. a spreadsheet. 
+
+%------------------------------------------------------------------------

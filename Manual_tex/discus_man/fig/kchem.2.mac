@@ -1,0 +1,9 @@
+orient p
+sfra 1,0.0,0.0,1.0,0.5
+load xy,chem.2.blen
+fnam off
+achx bond length [\A]
+achy Number
+mark 0.1,1000
+skal 4.7,5.3,0,3400
+lcol 1,6

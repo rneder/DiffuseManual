@@ -1,0 +1,45 @@
+ General fit parameter settings : 
+   Title            :  
+            
+   Fit function     : Gaussian (2D)
+   Data file name   : s288.xy
+   # of data pts.   :     65
+   # of parameters  :     10
+   Urf              :     .1000
+   Max. cycle       :     30
+   MFEN for maxima  :      7
+   Weighting scheme : w(i) = 1.0/i
+
+ Information about the fit : 
+   Sum n-1    :  41.4761                 Sum n   :  225.244    
+   Difference :  183.768    
+   Urf final  :  1.20022    
+   R4 value   :  .311632E-01             R exp   :  .384072E-01
+
+ Correlations larger than 0.8 :
+   Between p( 2) - p( 1) :   .990
+   Between p( 5) - p( 3) :   .930
+   Between p( 7) - p( 3) :  -.996
+   Between p( 7) - p( 5) :  -.946
+  
+ Fitted  2 Gaussian(s) : 
+
+   p( 1) : backgr. 1 :  495.829     +-  24.1324        pinc : 1.
+   p( 2) : backgr. 2 : -119.413     +-  26.1570        pinc : 1.
+
+ Gaussian :   1
+
+   p( 3) : peak      :  644.911     +-  142.425        pinc : 1.
+   p( 4) : position  : -.926051     +-  .458203E-03    pinc : 1.
+   p( 5) : fwhm      :  .502781E-01 +-  .312424E-02    pinc : 1.
+   p( 6) : asymmetry :  1.00000     +-  .000000E+00    pinc : 0.
+           integral  :  34.5153     +-  9.76726    
+
+ Gaussian :   2
+
+   p( 7) : peak      : -262.350     +-  146.463        pinc : 1.
+   p( 8) : position  : -.925000     +-  .000000E+00    pinc : 1.
+   p( 9) : fwhm      :  .640000E-01 +-  .000000E+00    pinc : 1.
+   p(10) : asymmetry :  1.00000     +-  .000000E+00    pinc : 0.
+           integral  : -17.8728     +-  9.97790    
+  

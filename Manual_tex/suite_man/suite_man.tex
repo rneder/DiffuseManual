@@ -1,0 +1,201 @@
+%------------------------------------------------------------------------
+%                           DISCUS_SUITE Users guide
+%------------------------------------------------------------------------
+
+\documentclass[11pt]{report}
+
+\usepackage[letterpaper]{geometry}
+\geometry{height=8.5in}
+\geometry{bottom=1.1in}
+\geometry{left=1.1in}
+\geometry{right=1.1in}
+
+\usepackage[dvips]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{floatflt}
+\usepackage{tabularx}
+\usepackage[round]{natbib}
+\usepackage[hang,small,bf]{caption2}
+\usepackage{fancyvrb}
+\usepackage{scalefnt}
+\usepackage{color}
+\usepackage{url}
+\usepackage{hyperref}
+
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+
+\input{../version.tex}
+
+%------------------------------------------------------------------------
+
+\newcommand{\Discus}{\textsc{Discus\ }}
+\newcommand{\discus}{\textsc{Discus}}
+\newcommand{\Diffev}{\textsc{Diffev\ }}
+\newcommand{\diffev}{\textsc{Diffev}}
+\newcommand{\Kuplot}{\textsc{Kuplot\ }}
+\newcommand{\kuplot}{\textsc{Kuplot}}
+\newcommand{\Suite}{\textsc{Discus Suite\ }}
+\newcommand{\suite}{\textsc{Discus Suite}}
+
+% General page style
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\bfseries \slshape\leftmark}
+\fancyhead[R]{\bfseries Users Guide}
+\fancyfoot[R]{\bfseries Page \thepage}
+\fancyfoot[L]{\bfseries \Suite \version}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Style for chapter start pages ..
+
+\fancypagestyle{plain} {
+  \fancyhf{}
+  \fancyhead[R]{\bfseries Users Guide}
+  \fancyfoot[L]{\bfseries \Suite \version}
+  \fancyfoot[R]{\bfseries Page \thepage}
+  \renewcommand{\headrulewidth}{0.4pt}
+}
+
+% MacVerbatim style for macros
+
+\definecolor{DarkBlue}{rgb}{0.1,0.0,0.5}
+
+\DefineVerbatimEnvironment%
+{MacVerbatim}{Verbatim}
+{fontfamily=courier,
+ fontsize=\scriptsize,
+ fontseries=b,
+ formatcom=\color{DarkBlue}}
+
+\graphicspath{{pic/}}
+
+\setlength\parindent{0pt}
+
+%------------------------------------------------------------------------
+
+\begin{document}
+
+%------------------------------------------------------------------------
+% Title
+%------------------------------------------------------------------------
+
+\begin{titlepage}
+\begin{flushright}
+
+  \hrule
+  \vspace{15mm}
+  \textbf{{\scalefont{8} \suite}} \\
+  \vspace{15mm}
+  \textbf{{\scalefont{4} Users Guide}} \\
+  \vspace{10mm}
+  \textbf{{\Huge Version  \version}} \\
+  \vspace{10mm}
+
+  \hrule
+  \vspace{45mm}
+  \textbf{written by} \\
+
+  \vspace{5mm}
+  \textbf{\Large Reinhard Neder} \\
+  Email: reinhard.neder@fau.de \\
+
+  \vspace{20mm}
+  \textbf{\Large \url{http://tproffen.github.io/DiffuseCode}} \\
+
+  \vspace{3mm}
+  \hrule
+
+\end{flushright}
+\begin{flushright}
+  \textit{Document created: \today}
+\end{flushright}
+
+\end{titlepage}
+
+%------------------------------------------------------------------------
+% Preface
+%------------------------------------------------------------------------
+
+\chapter*{Preface}
+\subsection*{Disclaimer}
+
+The \Suite software described in this guide is
+provided without warranty of any kind.  No liability is taken for any loss
+or damages, direct or indirect, that may result through the use of the
+\suite.  No warranty is made with respect to this manual, or the program
+and functions therein.  There are no warranties that the programs are free
+of error, or that they are consistent with any standard, or that they will
+meet the requirement for a particular application.  The programs and the
+manual have been thoroughly checked.  Nevertheless, it can not be
+guaranteed that the manual is correct and up to date in every detail. This
+manual and the \Suite program may be changed without notice.\par
+
+\Suite is intended as a public domain program. It may be used free
+of charge.  Any commercial use is, however, not allowed without permission
+of the authors.
+
+%------------------------------------------------------------------------
+
+\subsection*{Using \suite}
+
+Publications of results totally or partially obtained using the program
+\Suite should state that \Suite was used and contain the
+following reference:
+
+\begin{quote}
+  {\sc Neder, R.B.} in preparation - check website.
+\end{quote}
+
+%------------------------------------------------------------------------
+
+\subsection*{More information}
+
+This users guide can only provide program specific details. A
+broader discussion of simulation techniques and some \Suite
+examples and macro files can be found in our book
+
+\begin{quote}
+  {\sc Neder, R.B. \& Proffen, Th.} "Diffuse Scattering and Defect Structure
+  Simulations - A cook book using the programs DISCUS", {\it IUCr Texts on
+  Crystallography}, Oxford University Press, 2007.
+\end{quote}
+
+%------------------------------------------------------------------------
+% Table of contents, List of Tables etc..
+%------------------------------------------------------------------------
+
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+%------------------------------------------------------------------------
+% Here all the chapter are included ...
+%
+% Alter or comment the \includeonly command above to work with the
+% complete manual or only certain parts.
+%
+%------------------------------------------------------------------------
+
+\include{suite_int}
+\include{suite_con}
+\include{suite_exa}
+
+%------------------------------------------------------------------------
+% Appendices
+%------------------------------------------------------------------------
+
+\appendix
+\include{appl_suite}
+
+%------------------------------------------------------------------------
+% Bibliography
+%------------------------------------------------------------------------
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{suite_man}
+\bibliographystyle{kristal}
+
+\end{document}

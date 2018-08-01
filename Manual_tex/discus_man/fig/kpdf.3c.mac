@@ -1,0 +1,63 @@
+reset
+orient port
+#
+do i[1]=1,7
+  load xy,"therm.%d.pdf",i[1]
+  lcol i[1],3
+enddo
+#
+fnam off
+fset 2
+achx r(\A)
+achy G(\A\u-2\d)
+#
+buf 0.1,0.0,0.07,0.04
+#
+nfra 6
+sfra 1,0.00,0.67,0.50,1.00
+sfra 2,0.50,0.67,1.00,1.00
+sfra 3,0.00,0.33,0.50,0.67
+sfra 4,0.50,0.33,1.00,0.67
+sfra 5,0.00,0.00,0.50,0.33
+sfra 6,0.50,0.00,1.00,0.33
+#
+kfra 1,1
+kfra 2,2
+kfra 3,3,4
+kfra 4,5
+kfra 5,6
+kfra 6,7
+#
+afra 1
+skal 2.0,5.5,ymin[1],1.05*ymax[1]
+mark 1.0,100
+tit2 (a)
+#
+afra 2
+skal 2.0,5.5,ymin[2],1.05*ymax[2]
+mark 1.0,20
+tit2 (b)
+#
+afra 3
+skal 2.0,5.5,ymin[4],ymax[4]
+mark 1.0,10
+lcol 4,1
+ltyp 4,2
+tit2 (c)
+#
+afra 4
+skal 2.0,5.5,ymin[4],ymax[4]
+mark 1.0,10
+tit2 (d)
+#
+afra 5
+skal 2.0,5.5,ymin[4],ymax[4]
+mark 1.0,10
+tit2 (e)
+#
+afra 6
+skal 2.0,5.5,ymin[4],ymax[4]
+mark 1.0,10
+tit2 (f)
+#
+plot

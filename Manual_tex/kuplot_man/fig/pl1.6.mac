@@ -1,0 +1,19 @@
+rese
+load cr,phtp.cr
+#
+skal 0.0,28.8,0.0,28.8
+mark 14.4,14.4
+#
+aver 1.0
+angl 120.0
+#
+msiz 1,0.35
+grid on
+fnam off
+#
+achx a-axis (\A)
+achy b-axis (\A)
+#
+bond 1,1.4,0.2,1,1,1.5
+#
+plot

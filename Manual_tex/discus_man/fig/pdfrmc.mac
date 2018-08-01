@@ -1,0 +1,50 @@
+read
+cell ni.cll,4,4,4
+#
+# We enter the PDF segment again and read our PDF data file 
+# using the command 'data'.
+#
+pdf
+data ni.data
+#
+# Next we specify the maximum r and dr as before which defines
+# the range of the calculated PDF. Next we set the range in 
+# r that actually should be used for the refinement, here from
+# 1.5 to 10.0A.
+#
+set range,10.0,0.02
+set frange,1.5,10.0
+#
+# We set Qmax to the value corresponding to the experiment and
+# select X-rays.
+#
+set qmax,22.0
+set rad,xray
+#
+# Now we enter the RMC related settings (see also chapter 11).
+# We select atoms to be moved (here Ni):
+#
+sel ni
+#
+# We set the mode to shift atoms using a Gaussian distribution
+# with a sigma of 0.01 lattice units (~ 0.035A).
+#
+set mode,shift
+set move,ni,0.01,0.01,0.01
+#
+# Finally we set the screen update interval to 1 and specify
+# that 25 cycles will be carried out.
+#
+set disp,1
+set cyc,25
+#
+# Before we start, we have a look at the current settings ..
+#
+show all
+#
+# Now we run the refinement - this may take some time ..
+#
+run
+#
+save pdf,dummy.rmc.pdf
+exit

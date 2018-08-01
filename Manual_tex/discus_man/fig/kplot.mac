@@ -1,0 +1,31 @@
+rese
+orient port
+buf 0.08
+#
+load cr,plot.cr.plot
+load cr,plot.de.plot
+#
+fnam off
+achx x [l.u]
+achy y [l.u]
+font just,cent
+#
+nfra 2
+afra 1
+kfra 1,1
+fset 2
+ccal add,wx,1,10.0
+ccal add,wy,1,10.0
+skal -0.5,19.5,-0.5,19.5
+mark  5.0,5.0
+msiz 1,0.15
+aver 1.
+tit2 (a) crystal 
+#
+afra 2
+kfra 2,2
+skal -0.095,0.095,-0.095,0.095
+mark  0.05,0.05
+msiz 2,0.05
+aver 1.
+tit2 (b) density

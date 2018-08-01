@@ -1,0 +1,4 @@
+\fn KUPLOT normal font
+\fr KUPLOT roman font
+\fi KUPLOT italic font
+\fs KUPLOT script font

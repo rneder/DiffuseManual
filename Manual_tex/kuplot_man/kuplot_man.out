@@ -1,0 +1,119 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{What is KUPLOT ?}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{Getting started }{chapter.1}% 3
+\BOOKMARK [0][-]{chapter.2}{Plotting 1D data }{}% 4
+\BOOKMARK [1][-]{section.2.1}{File formats }{chapter.2}% 5
+\BOOKMARK [1][-]{section.2.2}{Making a nicer plot }{chapter.2}% 6
+\BOOKMARK [1][-]{section.2.3}{Fonts and special characters }{chapter.2}% 7
+\BOOKMARK [1][-]{section.2.4}{Drawing bonds }{chapter.2}% 8
+\BOOKMARK [1][-]{section.2.5}{Filling of areas}{chapter.2}% 9
+\BOOKMARK [1][-]{section.2.6}{Saving data sets }{chapter.2}% 10
+\BOOKMARK [1][-]{section.2.7}{Printing and exporting the plot }{chapter.2}% 11
+\BOOKMARK [0][-]{chapter.3}{Plotting 2D data }{}% 12
+\BOOKMARK [1][-]{section.3.1}{File formats }{chapter.3}% 13
+\BOOKMARK [1][-]{section.3.2}{Customizing the plot }{chapter.3}% 14
+\BOOKMARK [1][-]{section.3.3}{Using bitmaps }{chapter.3}% 15
+\BOOKMARK [1][-]{section.3.4}{Saving data }{chapter.3}% 16
+\BOOKMARK [0][-]{chapter.4}{Using frames }{}% 17
+\BOOKMARK [1][-]{section.4.1}{Introduction }{chapter.4}% 18
+\BOOKMARK [1][-]{section.4.2}{Example 1: Using two different y-axes }{chapter.4}% 19
+\BOOKMARK [1][-]{section.4.3}{Example 2: Connected view graphs }{chapter.4}% 20
+\BOOKMARK [1][-]{section.4.4}{Example 3: Advanced frame usage }{chapter.4}% 21
+\BOOKMARK [0][-]{chapter.5}{Using the mouse }{}% 22
+\BOOKMARK [1][-]{section.5.1}{Mouse interface }{chapter.5}% 23
+\BOOKMARK [1][-]{section.5.2}{Mouse in macros }{chapter.5}% 24
+\BOOKMARK [0][-]{chapter.6}{Manipulating and analyzing data }{}% 25
+\BOOKMARK [1][-]{section.6.1}{Simple data calculations }{chapter.6}% 26
+\BOOKMARK [1][-]{section.6.2}{Calculating functions }{chapter.6}% 27
+\BOOKMARK [1][-]{section.6.3}{Data manipulation }{chapter.6}% 28
+\BOOKMARK [2][-]{subsection.6.3.1}{Data smoothing }{section.6.3}% 29
+\BOOKMARK [2][-]{subsection.6.3.2}{Sorting data }{section.6.3}% 30
+\BOOKMARK [2][-]{subsection.6.3.3}{Rebinning data }{section.6.3}% 31
+\BOOKMARK [2][-]{subsection.6.3.4}{Matching and merging data sets }{section.6.3}% 32
+\BOOKMARK [1][-]{section.6.4}{Data manipulation using variables }{chapter.6}% 33
+\BOOKMARK [1][-]{section.6.5}{Data analysis }{chapter.6}% 34
+\BOOKMARK [1][-]{section.6.6}{Fourier transform }{chapter.6}% 35
+\BOOKMARK [1][-]{section.6.7}{Other functions }{chapter.6}% 36
+\BOOKMARK [0][-]{chapter.7}{Least square fitting }{}% 37
+\BOOKMARK [1][-]{section.7.1}{Fitting 1d data sets }{chapter.7}% 38
+\BOOKMARK [1][-]{section.7.2}{Fitting 2d data sets }{chapter.7}% 39
+\BOOKMARK [1][-]{section.7.3}{User defined fit functions }{chapter.7}% 40
+\BOOKMARK [0][-]{appendix.A}{KUPLOT commands}{}% 41
+\BOOKMARK [1][-]{section.A.1}{Summary}{appendix.A}% 42
+\BOOKMARK [1][-]{section.A.2}{News}{appendix.A}% 43
+\BOOKMARK [1][-]{section.A.3}{achx/y/z}{appendix.A}% 44
+\BOOKMARK [1][-]{section.A.4}{alloc}{appendix.A}% 45
+\BOOKMARK [1][-]{section.A.5}{angl}{appendix.A}% 46
+\BOOKMARK [1][-]{section.A.6}{aver}{appendix.A}% 47
+\BOOKMARK [1][-]{section.A.7}{bond}{appendix.A}% 48
+\BOOKMARK [1][-]{section.A.8}{branch}{appendix.A}% 49
+\BOOKMARK [1][-]{section.A.9}{buff}{appendix.A}% 50
+\BOOKMARK [1][-]{section.A.10}{branch}{appendix.A}% 51
+\BOOKMARK [1][-]{section.A.11}{ccal}{appendix.A}% 52
+\BOOKMARK [1][-]{section.A.12}{color}{appendix.A}% 53
+\BOOKMARK [1][-]{section.A.13}{conv}{appendix.A}% 54
+\BOOKMARK [1][-]{section.A.14}{cost}{appendix.A}% 55
+\BOOKMARK [1][-]{section.A.15}{cmap}{appendix.A}% 56
+\BOOKMARK [1][-]{section.A.16}{deriv}{appendix.A}% 57
+\BOOKMARK [1][-]{section.A.17}{dsav}{appendix.A}% 58
+\BOOKMARK [1][-]{section.A.18}{ecol}{appendix.A}% 59
+\BOOKMARK [1][-]{section.A.19}{etyp}{appendix.A}% 60
+\BOOKMARK [1][-]{section.A.20}{excl}{appendix.A}% 61
+\BOOKMARK [1][-]{section.A.21}{fill}{appendix.A}% 62
+\BOOKMARK [1][-]{section.A.22}{fit}{appendix.A}% 63
+\BOOKMARK [1][-]{section.A.23}{fnam}{appendix.A}% 64
+\BOOKMARK [1][-]{section.A.24}{font}{appendix.A}% 65
+\BOOKMARK [1][-]{section.A.25}{fset}{appendix.A}% 66
+\BOOKMARK [1][-]{section.A.26}{four}{appendix.A}% 67
+\BOOKMARK [1][-]{section.A.27}{frames}{appendix.A}% 68
+\BOOKMARK [1][-]{section.A.28}{func}{appendix.A}% 69
+\BOOKMARK [1][-]{section.A.29}{glat}{appendix.A}% 70
+\BOOKMARK [1][-]{section.A.30}{grid}{appendix.A}% 71
+\BOOKMARK [1][-]{section.A.31}{hart}{appendix.A}% 72
+\BOOKMARK [1][-]{section.A.32}{hcol}{appendix.A}% 73
+\BOOKMARK [1][-]{section.A.33}{hlab}{appendix.A}% 74
+\BOOKMARK [1][-]{section.A.34}{hlin}{appendix.A}% 75
+\BOOKMARK [1][-]{section.A.35}{hpak}{appendix.A}% 76
+\BOOKMARK [1][-]{section.A.36}{htyp}{appendix.A}% 77
+\BOOKMARK [1][-]{section.A.37}{ident}{appendix.A}% 78
+\BOOKMARK [1][-]{section.A.38}{inte}{appendix.A}% 79
+\BOOKMARK [1][-]{section.A.39}{ksav}{appendix.A}% 80
+\BOOKMARK [1][-]{section.A.40}{kcal}{appendix.A}% 81
+\BOOKMARK [1][-]{section.A.41}{kpara}{appendix.A}% 82
+\BOOKMARK [1][-]{section.A.42}{lart}{appendix.A}% 83
+\BOOKMARK [1][-]{section.A.43}{lcol}{appendix.A}% 84
+\BOOKMARK [1][-]{section.A.44}{load}{appendix.A}% 85
+\BOOKMARK [1][-]{section.A.45}{sm}{appendix.A}% 86
+\BOOKMARK [1][-]{section.A.46}{ltyp}{appendix.A}% 87
+\BOOKMARK [1][-]{section.A.47}{lwid}{appendix.A}% 88
+\BOOKMARK [1][-]{section.A.48}{mark}{appendix.A}% 89
+\BOOKMARK [1][-]{section.A.49}{match}{appendix.A}% 90
+\BOOKMARK [1][-]{section.A.50}{mcol}{appendix.A}% 91
+\BOOKMARK [1][-]{section.A.51}{mean}{appendix.A}% 92
+\BOOKMARK [1][-]{section.A.52}{merge}{appendix.A}% 93
+\BOOKMARK [1][-]{section.A.53}{mouse}{appendix.A}% 94
+\BOOKMARK [1][-]{section.A.54}{mtyp}{appendix.A}% 95
+\BOOKMARK [1][-]{section.A.55}{msiz}{appendix.A}% 96
+\BOOKMARK [1][-]{section.A.56}{nexus}{appendix.A}% 97
+\BOOKMARK [1][-]{section.A.57}{orient}{appendix.A}% 98
+\BOOKMARK [1][-]{section.A.58}{plot}{appendix.A}% 99
+\BOOKMARK [1][-]{section.A.59}{prin}{appendix.A}% 100
+\BOOKMARK [1][-]{section.A.60}{ptyp}{appendix.A}% 101
+\BOOKMARK [1][-]{section.A.61}{rdef}{appendix.A}% 102
+\BOOKMARK [1][-]{section.A.62}{rebin}{appendix.A}% 103
+\BOOKMARK [1][-]{section.A.63}{rese}{appendix.A}% 104
+\BOOKMARK [1][-]{section.A.64}{rval}{appendix.A}% 105
+\BOOKMARK [1][-]{section.A.65}{sann}{appendix.A}% 106
+\BOOKMARK [1][-]{section.A.66}{save}{appendix.A}% 107
+\BOOKMARK [1][-]{section.A.67}{sdef}{appendix.A}% 108
+\BOOKMARK [1][-]{section.A.68}{show}{appendix.A}% 109
+\BOOKMARK [1][-]{section.A.69}{sleg}{appendix.A}% 110
+\BOOKMARK [1][-]{section.A.70}{smax}{appendix.A}% 111
+\BOOKMARK [1][-]{section.A.71}{smooth}{appendix.A}% 112
+\BOOKMARK [1][-]{section.A.72}{sort}{appendix.A}% 113
+\BOOKMARK [1][-]{section.A.73}{spline}{appendix.A}% 114
+\BOOKMARK [1][-]{section.A.74}{skal}{appendix.A}% 115
+\BOOKMARK [1][-]{section.A.75}{tit1/2}{appendix.A}% 116
+\BOOKMARK [1][-]{section.A.76}{window}{appendix.A}% 117
+\BOOKMARK [1][-]{section.A.77}{variables}{appendix.A}% 118
+\BOOKMARK [1][-]{section.A.78}{errors}{appendix.A}% 119

@@ -1,0 +1,48 @@
+orient port
+#
+buf 0.055
+fset 2
+rese
+load cr,lsin.plot
+load cr,tsin.plot
+load cr,tbox.plot
+load cr,ttri.plot
+#
+fnam off
+achx x [l.u.]
+achy y [l.u.]
+grid on
+#
+skal -9.5,9.5,-9.5,9.5
+mark 3,3
+#
+nfra 4
+sfra 1,0.00,0.00,0.50,0.35
+sfra 2,0.50,0.00,1.00,0.35
+sfra 3,0.00,0.35,0.50,0.70
+sfra 4,0.50,0.35,1.00,0.70
+#
+afra 1
+kfra 1,1
+msiz 1,0.15
+aver 1.0
+tit2 (a)
+#
+afra 2
+kfra 2,2
+msiz 2,0.15
+aver 1.0
+tit2 (b)
+#
+afra 3
+kfra 3,3
+msiz 3,0.15
+aver 1.0
+tit2 (c)
+#
+afra 4
+kfra 4,4
+msiz 4,0.15
+aver 1.0
+tit2 (d)
+

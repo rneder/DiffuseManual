@@ -1,0 +1,34 @@
+%------------------------------------------------------------------------
+% Introduction
+%------------------------------------------------------------------------
+
+\chapter{Introduction\label{s:intro}}
+
+So what is \Mixscat all about ? Essentially one can combine total 
+total scattering data with different weights to extract partial or in our 
+case differential PDFs. A partial PDF contains only information from pairs of 
+a particular atom type. For example $G_{AB}$ would contain only contributions 
+from AB pairs. For a $N$ component system, one would need $N(N+1)/2$ 
+independent measurements. A differential PDF, $G_{\overline{AB}}$ on the 
+other hand contains all atom-atom contributions \textit{except} the ones from 
+AB pairs. Here only two data sets are needed.
+
+The different data sets can either be neutron data from samples containing 
+different isotopes of the same element or x-ray data taken close to one 
+elements absorption edge or, as in our case, a combination of x-ray and 
+neutron data. This has been done, and is by no means new. What makes \Mixscat 
+new, is our attempt to create a simple to use tool to combine neutron and x-
+ray data. More discussion about other methods and plenty of references can be 
+found in our \Mixscat paper\,\citep{mixscat}. A more detailed discussion and 
+summary of the equations behind this approach are given in Appendix \ref
+{app}.
+
+In principle \Mixscat can be used to process real space data, $G(r)$, as well 
+as reciprocal space data, $S(Q)$. However, we find working with real space 
+data is more straight forward, as for example differences in instrument 
+resolution manifest themselves at higher distances $r$ whereas they effect $S
+(Q)$ over the complete range. Also in many cases, a differential PDF is 
+extracted to aid model building and focussed on the low $r$ region where PDF 
+peaks are well separated. Once a useable structural model might is 
+determined, it can be refined against all available data sets yielding 
+partials extracted from the model.

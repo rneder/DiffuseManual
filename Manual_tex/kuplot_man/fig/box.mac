@@ -1,0 +1,12 @@
+# $1: low, $2: high
+rese
+alloc 50
+#
+do i[1]=1,50
+  x[1,i[1]]=(i[1]-25.0)
+  if (x[1,i[1]].ge.$1 .and. x[1,i[1]].le.$2) then
+    y[1,i[1]]=10
+  else
+    y[1,i[1]]=0
+  endif
+enddo          

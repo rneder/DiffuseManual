@@ -1,0 +1,71 @@
+orient port
+rese
+#
+# Load data
+#
+load xy,ni-nsls.calc
+load xy,ni-nsls.data
+load xy,ni-nsls.dif
+load xy,ni-inhs.calc
+load xy,ni-inhs.data
+load xy,ni-inhs.dif
+#
+msiz 2,0.08
+msiz 5,0.08
+#
+# Now we make some common settings
+#
+fnam off
+#
+# Setting frames
+#
+nfra 4
+sfra 1,0.00,0.65,1.00,1.00
+sfra 2,0.00,0.50,1.00,0.65
+sfra 3,0.00,0.15,1.00,0.50
+sfra 4,0.00,0.00,1.00,0.15
+#
+afra 1
+buff 0.1,0.1,0.0,0.05
+kfra 1,1,2
+lcol 1,6
+ltyp 2,0
+mtyp 2,3
+mcol 2,6
+achx OFF
+achy G(r) [\A\u-2\d]
+skal xmin[1],xmax[1],1.1*ymin[1],1.2*ymax[1]
+mark 2.0,10.0
+tit2 NSLS data
+#
+afra 2
+buff 0.1,0.1,0.1,0.0
+kfra 2,3
+lcol 3,6
+achx r [\A]
+achy Difference
+#skal xmin[1],xmax[1],1.5*ymin[3],1.5*ymax[3]
+mark 2.0,5.0
+#
+#
+afra 3
+buff 0.1,0.1,0.0,0.05
+kfra 3,4,5
+lcol 4,6
+ltyp 5,0
+mtyp 5,3
+mcol 5,6
+achx OFF
+achy G(r) [\A\u-2\d]
+skal xmin[4],xmax[4],1.1*ymin[4],1.2*ymax[4]
+mark 2.0,10.0
+tit2 in house data
+#
+afra 4
+buff 0.1,0.1,0.1,0.0
+kfra 4,6
+lcol 6,6
+achx r [\A]
+achy Difference
+skal xmin[6],xmax[6],1.5*ymin[6],1.5*ymax[6]
+mark 2.0,5.0

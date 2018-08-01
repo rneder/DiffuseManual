@@ -1,0 +1,2613 @@
+\chapter{KUPLOT commands}
+\section{Summary}
+\par
+Here is a list and brief description of valid KUPLOT commands. Further 
+help can be obtained by typing the corresponding command name at the 
+help prompt. 
+\par
+\begin{MacVerbatim}
+News          : Information on program updates
+achx/y/z      : Set labels for x, y and z-axis
+alloc         : Allocate space for data set without loading one
+angl          : Set angle between x- and y-axis
+aver          : Set ratio between units on y and x-axis
+branch        : Switch to discus, SUITE version only
+buff          : Set reserved space outside of plotting frame
+ccal          : Perform calculations with single data set
+color         : Set pen colors
+conv          : Calculate convolution of two data sets
+costvalue     ! Set a value to be returned to DIFFEV
+cmap          : Select color map
+deriv         : Calculate the derivative
+ecol          : Set color of error bars
+etyp          : Set type of error bars
+eval          : Evaluate expression
+excl          : Exclude regions from 1D files
+fill          : Set filling style
+fit           : Enter least square fit sub level
+fnam          : Toggle plot of filenames in upper left corner
+font          : Set font size, type and color
+fset          : Set type of plot frame (axis, tick marks, ..)
+frames        : More information about the use of frames
+func          : Create data set from given function
+glat          : Smooth data set (sliding average)
+grid          : Toggle plotting of a grid at main marker points
+hart          : Set type for 2D plots (bitmap, contours, ..)
+hcol          : Set color of contour lines
+hlab          : Labeling of contour lines
+hlin          : Set contour line parameters (also for bitmap)
+hpak          : Set number of contour line packages
+htyp          : Set line type for contour lines
+iden          : Toggle plotting of user, data and time information
+inte          : Integrate data set
+ksav          : Save data set in various formats
+kpara         : Plots parameters fitted with DIFFEV
+kcal          : Perform calculations with two data sets (add, ..)
+lart          : Set type for 1D plot (line, steps, spline)
+lcol          : Set line color
+load          : Read data set
+ltyp          : Set line type
+lwid          : Set line width
+mark          : Set tick mark interval
+match         : Calculate scale and offset to get best match bw. data
+mcol          : Set marker color
+mean          : Calculate average and stand. deviation for data set
+merge         : Merge data sets (2D only)
+mouse         : Activate the mouse
+mtyp          : Set marker type
+msiz          : Set marker size
+nexus         : NeXus file support routines
+orient        : Set paper orientation (landscape, portrait)
+plot          : Display plot
+prin          : Print plot
+ptyp          : Set marker type for maxima
+rdef          : Read KUPLOT settings from file
+rebin         : Allows rebinning data to user defined grid
+rese          : Reset
+sann          : Set text annotations for plot
+save          : Save plot as hardcopy
+sdef          : Store KUPLOT settings on disk
+show          : Show various settings
+sleg          : Sets legend of plot
+smax          : Determines maxima of data set
+smooth        : Smooth data set (Savitzky-Golay algorithm)
+sort          : Sort data set
+spline        : Interpolate data set on grid given by different set
+skal          : Set plot window
+tit1/2        : Set plot titles
+window        : Select graphics window
+variables     : List of variables
+errors        : List of error messages
+\end{MacVerbatim}
+\section{News}
+\par
+Here you can find updated info on the latest KUPLOT releases. 
+\subsection*{2018\_June}
+\par
+Revised the reaction to a CTRL-C 
+\par
+Added a ==$> $ 'set error, ... , "save" option 
+\subsection*{2018\_May}
+\par
+Added the possibility to use a macro as fit 'function' 
+\subsection*{2018\_Feb}
+\par
+Added a command 'kpara' to create a plot for DIFFEV 
+\par
+Added an optional parameter "partial" to the ==$> $ 'rvalue' command 
+\par
+Added optional parameters to the "load csv" command 
+\subsection*{2018\_Jan}
+\par
+The new command 'costvalue' allows to set a global value 
+for the cost funciton that is returned to DIFFEV. 
+\par
+The logical comparisons may now take the operators: 
+$ <$, $ <$=, ==, /=, $> $=, $> $/ 
+The classical fortran77 operators are still valid 
+\par
+New logical functions "isvar" and "isexp" can be used within an 
+"if" construction. See help entry ==$> $'function' in the 
+general "Command\_lang" section. 
+\subsection*{2017\_Oct}
+\par
+The 'ni' format may now have a leading header that consists of 
+lines that start with a '\#' in the first column 
+\subsection*{2017\_Sep}
+\par
+Throughout the program the internal calculation of random numbers 
+was changed to the FORTRAN 90 intrinsic function. 
+\par
+Added error messages for variable nx, ny, modified variable np to 
+yield the total number of data points for 2D data sets as well. 
+\subsection*{2017\_May}
+\par
+The 'save' command can now save graphics as a PDF file 
+\subsection*{2017\_Jan}
+\par
+Added the option to read CSV files to 'load' command. 
+\par
+An unfortunate typing error in News/2016\_oct regarding the new 
+refinement variable 
+ref\_para[1...]   ( was misspelled as ref\_param[1...] ) 
+is corrected in the  on-line help. 
+\subsection*{2016\_Dec}
+\par
+At a few select points colors are introduced into the output. 
+Currently these are just the error messages. 
+\par
+\subsection*{2016\_Oct}
+\par
+Global variables have been introduced that use the same syntax as 
+user defined variables. This include just "pi" and variables related 
+to the refinement. 
+DIFFEV sets the value to these variables: 
+ref\_generation  Current generation 
+ref\_member      Current population size 
+ref\_children    Current children size 
+ref\_dimension   Number of parameters 
+ref\_kid         Current child Updated for DISCUS and KUPLOT only 
+ref\_indiv       Current individuum Updated for DISCUS and KUPLOT only 
+ref\_para[1..]   Current trial parameters for current child 
+\par
+All colors can be referenced by their respective names as well as by 
+their traditional numbers. See 'lcol', 'hcol', 'mcol' 'ecol' 
+\par
+All line types can be referenced by descriptive names as well as by 
+their traditional numbers. See 'ltyp', 'htyp' 
+\par
+All marker types can be referenced by descriptive names as well as by 
+their traditional numbers. See 'etyp', 'mtyp', 'ptyp' 
+\subsection*{2016\_Feb}
+\par
+Minor upgrade, added a threshold function to ==$> $ 'ccal' 
+\subsection*{2015\_Dec}
+\par
+Minor upgrade, increases the size of bitmaps KUPLOT can plot 
+\subsection*{2015\_June}
+\par
+Starting with Version 5.1, we have migrated to a X-Window 
+environment for WINDOWS as well. As a small side effect, 
+the technique to jump to the desired folder has changed slightly. 
+See the help entry on "cd" in the general "Command\_lang" section 
+for further information. The process is described in the 
+package manual as well. 
+\section{achx/y/z}
+{\bf achx $ \{$$ <$string$> $ $| $"OFF"$\} $ [, $ \{$"lin" $| $ "log"$\} $] \par }
+{\bf achy $ \{$$ <$string$> $ $| $"OFF"$\} $ [, $ \{$"lin" $| $ "log"$\} $] \par }
+{\bf achz $ \{$$ <$string$> $ $| $"OFF"$\} $ \par }
+\par
+\vspace{3pt}
+This command sets the labels for the x- or y-axis. The label for 
+the z-axis is only active when bitmaps are plotted and is used 
+to label a wedge on the left side of the plot. As for the other 
+axes the parameter "OFF" will turn off the plotting of the 
+wedge which is the default. The optional parameter "lin" or 
+"log" allows the user to toggle between a linear and logarithmic 
+axis. 
+\par
+Because KUPLOT treats the ',' as a parameter separator it can not 
+be used within the label $ <$string$> $. The command allows to build a 
+label from a format text and variables/numbers. It is the same 
+mechanism as described in -$> $ filenames. If the given parameter is 
+"OFF", no label AND no numbers will be plotted at the corresponding 
+axis. 
+\par
+Examples: 
+\par
+\begin{MacVerbatim}
+achx 2 Theta       : will label x-axis with '2 Theta'
+achy "PSD #%d",43  : will label y-axis with 'PSD #43'
+\end{MacVerbatim}
+\section{alloc}
+{\bf alloc $ <$name$> $,$ <$len$> $ \par }
+{\bf alloc $ <$name$> $,$ <$x$> $,$ <$y$> $ \par }
+\par
+\vspace{3pt}
+This command allocates space for a new data set. This is e.g. required 
+if a data set should be created using the FORTRAN interpreter of 
+KUPLOT. The command 'alloc $ <$name,$ <$len$> $' allocated space for $ <$len$> $ 
+points for a 2d data set. To allocate a 3d data sets, the size in x- 
+and y-direction is given after the name of the data set. The parameter 
+$ <$name$> $ just specifies a name for the data set (also used as default 
+filename if the data set is saved). 
+\section{angl}
+{\bf angl [$ <$angle$> $] \par }
+\par
+\vspace{3pt}
+This command allows to set the angle between the x- and y-axis for 
+the currently active frame. Suitable angles are between 30 and 120 
+degrees. If the command is entered without parameters, the value 
+is set to 90.0 degrees. 
+\section{aver}
+{\bf aver [$ <$yx$> $] \par }
+\par
+\vspace{3pt}
+This command sets the aspect ratio between the y- and the x-axis. 
+A value of $ <$yx$> $=1.0 will force one unit on the x-axis to be as 
+long as one unit on the y-axis. The value $ <$yx$> $ is the ratio 
+y/x of the length of a unit of both axis. Is the parameter $ <$yx$> $ 
+omitted, the plot will fill the complete drawing area. 
+\section{bond}
+{\bf bond \par }
+{\bf bond $ <$ib$> $,$ <$dist$> $ [,$ <$sig$> $ [,$ <$it$> $,$ <$ic$> $,$ <$iw$> $]] \par }
+\par
+\vspace{3pt}
+This command enables the plotting of lines between points that 
+have a given distance, e.g. to include bonds in a crystal file 
+plot. The first parameter $ <$ib$> $ is the number of the definition 
+you are going to alter. The second parameter $ <$dist$> $ is the 
+distance of points that shall be connected by a line. The distance 
+is given relative to the current x-axis. To calculate the distances, 
+the aspect ratio and the angle between the axes is used. Thus you 
+will get the desired connection only for the correct aspect ratio 
+(-$> $ aver) and angle between the axes (-$> $ angl). The other parameters 
+are optional. The value $ <$sig$> $ sets the allowed relative deviation 
+from the given distance, e.g. a value of 0.1 will allow distances 
+of +- 10\% of the given value. The parameters $ <$ic$> $, $ <$it$> $ and $ <$iw$> $ 
+set the line color, line type and line width of the connecting 
+line, respectively (-$> $ lcol, ltyp, lwid). 
+\par
+In order to disable the plotting of a defined bond, just specify 
+a zero distance, i.e. 'bond $ <$ic$> $,0.0'. 
+\section{branch}
+{\bf branch discus [, "-macro" $ <$macro\_name$> $ [ $ <$par1$> $ [ , $ <$par2$> $ ...]]] \par }
+{\bf branch diffev [, "-macro" $ <$macro\_name$> $ [ $ <$par1$> $ [ , $ <$par2$> $ ...]]] \par }
+\par
+\vspace{3pt}
+Active within the discus suite only! 
+\par
+Branches to the "discus" or "diffev" section. 
+\par
+Within this section any standard DISCUS command can be 
+given. The behavior of "discus" is essentially the same 
+as in the stand alone version. Likewise for DIFFEV. 
+\par
+The main use will branch to DISCUS while the discus section 
+is run via run\_mpi from a DIFFEV slave. 
+\par
+Optionally the "-macro" qualifier instructs the suite to run the 
+macro $ <$macro\_name$> $ (with its optional parameters) before the 
+interactive session is started. 
+\section{buff}
+{\bf buff $ <$all$> $ \par }
+{\bf buff $ <$left$> $,$ <$right$> $,$ <$bottom$> $,$ <$top$> $ \par }
+\par
+\vspace{3pt}
+This command allows to alter the amount of drawing space KUPLOT 
+reserves outside the plotting area for labels, titles etc.. The 
+parameters given are relative to the size of the plot, e.g. a 
+value of 0.3 will save 30\% of the width/height of the plot itself 
+for axis numbers, labels etc. - note that if the reserved space 
+is too small text might be wrapped around or cut off. 
+\section{branch}
+{\bf branch discus \par }
+\par
+\vspace{3pt}
+Active within the discus suite only! 
+\par
+Branches to the "discus" section. 
+\par
+Within this section any standard DISCUS command can be 
+given. The behavior of "discus" is essentially the same 
+as in the stand alone version. 
+\section{ccal}
+{\bf ccal $ <$oper$> $,$ <$field$> $,$ <$ik$> $ [,$ <$value$> $] \par }
+\par
+\vspace{3pt}
+This command allows data manipulation. All functions could also 
+be performed using the FORTRAN type interpreter, but especially 
+for large data sets this can be very slow. 
+\par
+The general syntax is the operation $ <$oper$> $ (see list below) that 
+should be performed as first parameter followed by the field 
+identifier $ <$field$> $ (see below), followed by the number of the 
+data set $ <$ik$> $. Some operations require an additional parameter 
+$ <$value$> $. 
+\par
+Here is a list of allowed operation parameters $ <$oper$> $: 
+\par
+\begin{MacVerbatim}
+  "inv"  :  x -> 1/x         "squ"  :  x -> x**2
+  "log"  :  x -> ln(x)       "add"  :  x -> x + <value>
+  "exp"  :  x -> exp(x)      "mul"  :  x -> x * <value>
+  "sqr"  :  x -> sqrt(x)     "abs"  :  x -> |a|
+  "thr"  :  x < value -> -9999; value is thus a threshold,
+\end{MacVerbatim}
+ data below are considered invalid 
+\par
+The value "x" in the table above represents the coordinate selected 
+by the $ <$field$> $ parameter. Allowed values are: 
+\par
+\begin{MacVerbatim}
+  "wx" : x value of data set
+  "dx" : standard deviation of x
+  "wy" : y value of data set
+  "dy" : standard deviation of y
+  "wz" : z value of data set (for 3d data sets only)
+\end{MacVerbatim}
+\section{color}
+{\bf color $ <$ic$> $,$ <$r$> $,$ <$g$> $,$ <$b$> $ \par }
+\par
+\vspace{3pt}
+This command allows the user to change the color settings for 
+the different pens. The parameter $ <$ic$> $ gives the pen number 
+(0 for background) and $ <$r$> $,$ <$g$> $,$ <$b$> $ are the red, green and blue 
+values to be uses ranging from 0.0 to 1.0. If no parameters are 
+given, the current settings are displayed. 
+\section{conv}
+{\bf conv $ <$ik1$> $,$ <$ik2$> $ \par }
+\par
+\vspace{3pt}
+This command calculates the convolution of data sets $ <$ik1$> $ and 
+$ <$ik2$> $ and creates a new data set with the result. Both data sets 
+must be on the same equidistant grid ! 
+\section{cost}
+{\bf costvalue  $ <$rvalue$> $ [, $ <$partial\_rvalue1$> $ ...] \par }
+\par
+\vspace{3pt}
+Set a value that is to be retured to DIFFEV as the overall 
+R-value. It will overwrite the current weighted R-value 
+that was calculated with the ==$> $ 'rval' command. 
+The value of $ <$rvalue$> $ can be any expression or real valued 
+variable. This allows to calculate a combined, weighted 
+R-value from several different calculations like single 
+crystal, powder diffraction, PDF, etc. 
+\par
+If the partial R-values are provided as well, they will 
+overwrite the corresponding partial R-values. 
+\section{cmap}
+{\bf cmap $ \{$ "gray" $| $ "fire" $| $ "kupl"  $\} $ \par }
+{\bf cmap $ \{$ "read" $| $ "write"$\} $, $ <$fname$> $ \par }
+{\bf cmap "invert" \par }
+\par
+\vspace{3pt}
+This command allows to choose the color map to be used for printing 
+bitmaps (see 'hart' command). The three build in color map are 
+"gray", "fire" and "kupl" (the previous default color map). Color maps 
+can also be read from a file using the command 'cmap read,$ <$fname$> $'. 
+The format is of the form '\#RRGGBB' for each color map entry on a 
+new line and 'RR', 'GG' and 'BB' are the 'red', 'green' and 'blue' 
+values given in hexadecimal ranging from 00 to FF. The current 
+color map can be saved to a file using the command 'cmap write,$ <$fname$> $'. 
+Finally 'cmap invert' will simply invert the current color map. 
+\par
+The RGB values of the current color map can be shown using the 
+command 'show color'. The color map entries can also be altered 
+using the variable 'cmap [$ <$ic$> $,3]'. 
+\section{deriv}
+{\bf deriv $ <$ik$> $ [,$ <$order$> $] \par }
+\par
+\vspace{3pt}
+This command calculates the $ <$order$> $th derivative of data set $ <$ik$> $. 
+The result is stored as new data set. If $ <$order$> $ is omitted, the 
+first derivative is calculated. 
+\section{dsav}
+{\bf dsav "gsas",$ <$file$> $ [,$ <$iname$> $] \par }
+{\bf dsav "xml",$ <$file$> $ [,$ <$dtd-path$> $] \par }
+{\bf dsav "merge",$ <$file$> $ \par }
+\par
+\vspace{3pt}
+The parameter "gsas"  allows one to save all loaded data sets 
+in GSAS file format. NOTE THAT THE CURRENT IMPLEMENTATION ASSUMES 
+A LUJAN STYLE GSAS FILE. 
+\par
+The parameter "xml" will save the plot on PlotML (xml) format 
+for viewing with 'plplot'. Currently only 1D data are supported. 
+The optional second parameter allows one to specify the location 
+of the DTD file needed to render the XML file. 
+\par
+The parameter "merge" will save a xyz-type file from all the 
+loaded data sets with the following condition x=x, y=data set 
+number and z=y. This can then be loaded using load zz, .. 
+\section{ecol}
+{\bf ecol $ <$ik$> $,$ <$c$> $ \par }
+\par
+\vspace{3pt}
+This command sets the error bar color for the data set $ <$ik$> $. 
+The colors are numbered like the pens on a HP7475 plotter. Allowed 
+values for $ <$c$> $ are listed in the table, Alternatively you can use 
+the color name (without blanks i.e. darkblue etc.) 
+\par
+The allowed default color values $ <$icol$> $ are listed below. Note 
+that they can be changed by the user via the command 'color'. 
+\par
+\begin{MacVerbatim}
+  1 : red       5 : yellow        9 : dark blue      13 : cyan
+  2 : green     6 : black        10 : dark magenta   14 : dark cyan
+  3 : blue      7 : dark red     11 : dark yellow    15 : white (!)
+  4 : magenta   8 : dark green   12 : gray
+\end{MacVerbatim}
+\section{etyp}
+{\bf etyp $ <$ik$> $,$ <$p$> $ \par }
+\par
+\vspace{3pt}
+This command sets the type of error bars to be use for the data 
+set number $ <$ik$> $. Allowed values for $ <$p$> $ are: 
+\par
+\begin{MacVerbatim}
+  0 : {"noerror"|"none"} : no error bars are drawn
+  1 :  "xbar"            : only error bars in x-direction
+  2 :  "ybar"            : only error bars in y-direction
+  3 :  "cross"           : error bars in both directions
+\end{MacVerbatim}
+\section{excl}
+{\bf excl $ <$ik$> $,$ <$left$> $,$ <$right$> $ \par }
+\par
+\vspace{3pt}
+This command allows the user to exclude the area between $ <$left$> $ 
+and $ <$right$> $ from data set $ <$ik$> $. The values within the range 
+are replaced by the linear interpolation between $ <$left$> $ and 
+$ <$right$> $, i.e. the closest data points to the specified values. 
+If $ <$left$> $ is outside the data range, all points up to $ <$right$> $ 
+are removed. If $ <$right$> $ is outside the data range, all points 
+from $ <$left$> $ onwards are removed. 
+\section{fill}
+{\bf fill $ <$ik$> $,$ <$fc$> $,$ <$ft$> $ [,$ <$xmin$> $,$ <$xmax$> $] [,$ <$ymin$> $,$ <$ymax$> $] \par }
+\par
+\vspace{3pt}
+This command sets the filling style for data set $ <$ik$> $. The data 
+set is treated as a polygon and is filled between the data and 
+the baseline. The fill color is defined by $ <$fc$> $ (see lcol for 
+color definitions). The following fill types $ <$ft$> $ are currently 
+supported: 
+\par
+\begin{MacVerbatim}
+  1: "solid"     : solid fill    5: "bsolid" : type 1 plus border
+  2: "slash"     : hashed (/)    6: "bslash" : type 2 plus border
+  3: "backslash" : hashed (\)    7: "bback"  : type 3 plus border
+  4: "cross"     : cross hashed  8: "bcross" : type 4 plus border
+\end{MacVerbatim}
+The filled area is defined by the data points and a baseline, 
+by default the connection between the end points of the current 
+plotting area. However, the area to be filled can be limited 
+using the optional parameters $ <$xmin$> $, $ <$xmax$> $ and $ <$ymin$> $, $ <$ymax$> $. 
+\section{fit}
+{\bf fit $ <$ik$> $ \par }
+\par
+\vspace{3pt}
+This command enters the fit sub level and data set $ <$ik$> $ is taken 
+as target data set. For an easy start, select a fit function 
+with 'func' and start the fit using the 'run' command. The result 
+can be displayed with 'plot' and saved with 'save'. For more 
+detailed information see the list of commands below: 
+\par
+\subsection*{commands}
+{\bf Valid commands in this sub level are: \par }
+\par
+\begin{MacVerbatim}
+@      : Executes a macro (see general help)
+=      : Algebra (see general help)
+cycle  : Sets maximum number of fit cycles
+echo   : Echoes a string on the screen (see general help)
+eval   : Evaluates an expression  (see general help)
+exit   : Exits fit sub level
+func   : Sets fit function
+help   : Gives on-line help for 'fit' sub level (see general help)
+macro  : Writes current fit parameters to a macro file
+mark   : Sets interval for tick marks
+mfen   : Sets parameter for maxima determination (fit start values)
+output : Toggles fit screen output on/off
+para   : Sets/modifies fit parameters
+plot   : Plot results
+range  : Sets data range used for refinement
+run    : Start the fit
+save   : Save fit results
+show   : Show settings and fit results
+skal   : Sets region for plotting window (see general help)
+system : Executes operating system command (see general help)
+urf    : Sets urf value
+wait   : Waits for user input (see general help)
+wic    : Sets weighting scheme
+\end{MacVerbatim}
+\subsection*{cycle}
+{\bf cycle $ <$n$> $ \par }
+\par
+\vspace{3pt}
+This command sets the maximum number of cycles to $ <$n$> $. If a minimum 
+is found in less cycles, the fit will stop before $ <$n$> $ cycles are 
+finished. 
+\subsection*{func}
+\par
+This command allows to set the fit function. After this command is 
+called, KUPLOT will calculate starting values and destroy possible 
+previous fit results, which should be saved ('save') before this 
+command is called. The starting values for some functions use the 
+'smax' function. You can set the window size using the 'mfen' command. 
+See also -$> $ 'smax'. The following table shows the currently allowed 
+functions: 
+\par
+\begin{MacVerbatim}
+function   2d   3d   what            <par>
+-----------------------------------------------------------
+ "poly"    yes  no   polynomial         order of the polynomial
+ "cheb"    yes  no   Chebyshev poly. order of the polynomial
+ "gaus"    yes  yes  Gaussian        number of Gaussians
+ "lore"    yes  no   Lorentzian      number of Lorentzians
+ "pseudo"  yes  no   Pseudo-Voigt    number of Pseudo-Voigts
+ "fx"      yes  yes  User defined    # parameters and function
+ "ma"      yes  yes  User macro      # parameters and macro name
+ "back"    yes  no   Background      # of background parameters
+ "gsas"    yes  no   TOF profile     see text
+\end{MacVerbatim}
+Select a fit function from the list below for more information: 
+\subsubsection{poly}
+{\bf func "poly" [,$ <$par$> $] \par }
+\par
+\vspace{3pt}
+A polynomial function p[1] + p[2]*r[0] + p[3]*r[0]**2 + ... 
+is used. The parameter is the order of the polynomial. 
+\subsubsection{gaus}
+{\bf func "gaus" [,$ <$par$> $] \par }
+\par
+\vspace{3pt}
+The fit uses $ <$par$> $ Gaussian functions. Two parameters (no. 1 
+and 2) are refined for the background and each Gaussian peak used 
+four parameters: 
+\par
+\begin{MacVerbatim}
+p[3] Peak height
+p[4] Position
+p[5] FWHM
+p[6] Asymmetry
+\end{MacVerbatim}
+A Gaussian function with linear background is used as: 
+p[1] + p[2]*r[0] + p[3]*exp(-4*ln(2)*(r[0]-p[4])**2/p[5]**2) 
+Note that the peak height rather than the integral intensity 
+is refined. 
+\subsubsection{lore}
+{\bf func "lore" [,$ <$par$> $] \par }
+\par
+\vspace{3pt}
+The fit uses $ <$par$> $ Lorentzian functions. Two parameters (no. 1 and 2) 
+are refined for the background and each Lorentzian peak used four 
+parameters: 
+\par
+\begin{MacVerbatim}
+p[3] Peak height
+p[4] Position
+p[5] FWHM
+p[6] Asymmetry
+\end{MacVerbatim}
+A Lorentzian function with linear background is used: 
+p[1] + p[2]*r[0] + p[3]*p[5]**2/(p[5]**2 + 4*(r[0]-p[4])**2) 
+Note that the peak height rather than the integral intensity 
+is refined. 
+\subsubsection{pseudo}
+{\bf func "pseudo" [,$ <$par$> $ [,$ <$origin$> $ [,$ <$n\_backgrd$> $ ]] \par }
+\par
+\vspace{3pt}
+The fit uses $ <$par$> $ Pseudo-Voigt functions. $ <$n\_backgrd$> $ parameters 
+(no. 1, .. to $ <$n\_backgrd$> $) are refined for the background and each 
+Pseudo-Voigt peak used six parameters: 
+\par
+\begin{MacVerbatim}
+p[3] eta
+p[4] integral intensity
+p[5] Position
+p[6] FWHM
+p[7] Asymmetry parameter 1
+p[8] Asymmetry parameter 2
+\end{MacVerbatim}
+The Pseudo-Voigt function is used in the form: 
+\par
+\begin{MacVerbatim}
+background + Intensity*(eta*L + (1-eta)G)*Asymmetry
+\end{MacVerbatim}
+with Lorentzian part as: 
+\begin{MacVerbatim}
+L = 2/pi*FWHM / ( FWHM**2 + 4*(x-POSITION)**2 )
+\end{MacVerbatim}
+and Gaussian part as: 
+\begin{MacVerbatim}
+G = 2*sqrt(ln(2)/pi)/FWHM * exp ( -4ln(2) * (x-POSITION)**2/FWHM**2 )
+\end{MacVerbatim}
+The asymmetry function is defined as: 
+\par
+\begin{MacVerbatim}
+ASYMMETRY = 1 + (p[7]*FA(z) + p[8]*FB(z))/ tan(POSTION)
+FA(z) = 2*z*exp(-z**2)
+FB(z) = 2*(2*z**2-3)*FA(z)
+z = (x-POSITION)/FWHM
+\end{MacVerbatim}
+The background is calculated as a polynomial of order 
+(n\_backgrd-1): 
+\par
+\begin{MacVerbatim}
+p[1] + p[2]*(x-origin) + p[3]*(x-origin)**2 + ...
+or more exactly:
+SUM p[i]*(x-origin)**(i-1)
+\end{MacVerbatim}
+where origin is the third optional parameter from the command 
+line. If this parameter is omitted, the origin is set to zero. 
+To describe a locally bent background, one should set the 
+origin of the background to a position within the refined 
+x-range instead of zero. The value of the origin is not refined. 
+\par
+The last optional parameter defines the number of background 
+parameters to be used. If it is omitted, the number of 
+background parameters is set to 2. 
+\subsubsection{fx}
+{\bf func "fx",$ <$ip$> $,$ <$function$> $ \par }
+\vspace{3pt}
+KUPLOT allows the user to fit a user defined function to a given 
+1D as well as 2D data set. The first parameter after "fx" specifies 
+the number of parameters. Refer to the parameters in the expression 
+for the function as p[1],p[2],.... The x-variable is r[0] and the 
+y-variable (for 2D data sets) is r[1]. Note, that possible values 
+stored in these variables are lost. It sounds complicated, but the 
+following examples should help: 
+\par
+\begin{MacVerbatim}
+func fx,3,p[1]+p[2]*exp(p[3]*r[0])   : Fit a+b*exp(c*x)
+func fx,2,p[1]*r[0]+p[2]*r[1]        : Fit a*x + b*y (2D data set)
+\end{MacVerbatim}
+For a syntax check, the expression is calculated once after entering 
+this command. If the parameter values p[i] are not set to proper 
+start values, a error might occur, i.e. division by zero. 
+\subsubsection{ma}
+{\bf func "ma",$ <$ip$> $,$ <$macro\_name$> $ \par }
+\vspace{3pt}
+KUPLOT allows the user to fit a user defined function inside a 
+macro to a given 1D as well as 2D data set. The first parameter 
+after "fx" specifies the number of parameters. Refer to the 
+parameters in the expression for the function as p[1],p[2],.... 
+The x-variable is r[0] and the y-variable (for 2D data sets) 
+is r[1]. Note, that possible values stored in these variables 
+are lost. 
+\par
+The macro can use expressions, loops and if constructions, 
+nested macros are allowed as well. 
+For a full use of the discus\_suite, use a combination of a 
+'top' and 'quit' command. With the 'top' command the macro 
+steps to the top level at the discus\_suite. From there on 
+all commands can be used. 
+\par
+The final function value must be given on a 'value' command, 
+the derivatives on a 'deriv' command. For these command you 
+must have left the 'top' section via a 'quit'. 
+As simple macro would be: 
+value p[1]*r[0]                  ! Fit a*x 
+deriv 1, r[0]                    ! derivative with respect to p[1] 
+finished 
+\par
+or absolutely eqivalently: 
+r[100] = p[1]*r[0] 
+value r[100]                     ! Fit a*x 
+deriv 1, r[0]                    ! derivative with respect to p[1] 
+finished 
+\par
+More involved, create a structure, calculate bond length as the 
+function value: 
+\par
+r[101] = p[1]                    ! Copy KUPLOT variables to global 
+r[102] = p[2] 
+top                              ! Go to top level menu 
+  discus 
+    read 
+      free 
+    insert C, r[101], 0,0, 0.1 
+    insert C, r[102], 0,0, 0.1 
+    r[200] = x[1]-x[2]           ! the function value 
+    r[201] =  1.0                ! the derivative with respect to p[1] 
+    r[202] = -1.0                ! the derivative with respect to p[2] 
+  exit 
+quit                             ! Quit the top level menu back to fit 
+value r[200] 
+deriv 1, r[201] 
+deriv 2, r[202] 
+finished 
+\par
+It sounds complicated, but the following examples should help: 
+\par
+\begin{MacVerbatim}
+func ma,3, one.mac                   : Fit a+b*exp(c*x)
+\end{MacVerbatim}
+Inside macro "one.mac" use the lines: 
+value p[1]+p[2]*exp(p[3]*r[0])   ! Fit a+b*exp(c*x) 
+deriv 1, 0.0                     ! derivative with respect to p[1] 
+deriv 2, exp(p[3]*r[0])          ! derivative with respect to p[2] 
+deriv 3, p[2]*exp(p[3]*r[0])*r[0]! derivative with respect to p[3] 
+finished 
+\par
+The last command 'finished' is required inside these macros to 
+return to the fit routine. 
+\par
+\begin{MacVerbatim}
+func ma,2, two.mac                   : Fit a*x + b*y (2D data set)
+\end{MacVerbatim}
+Inside macro "two.mac" use the lines: 
+value p[1]*r[0]+p[2]*r[1]        ! Fit a*x + b*y 
+deriv 1, r[0]                    ! derivative with respect to p[1] 
+deriv 2, r[1]                    ! derivative with respect to p[2] 
+finished 
+\par
+\begin{MacVerbatim}
+func ma, 2
+\end{MacVerbatim}
+For a syntax check, the expression is calculated once after entering 
+this command. If the parameter values p[i] are not set to proper 
+start values, a error might occur, i.e. division by zero. 
+\subsubsection{gsas}
+{\bf func "gsas",$ <$ptype$> $,$ <$bank$> $,$ <$iparm-file$> $ \par }
+\par
+\vspace{3pt}
+KUPLOT allows the refinement of a GSAS profile function for TOF 
+data. For details about the parameters and definitions of these 
+functions, please refer to the GSAS manual. The parameters are 
+$ <$ptype$> $ to select the profile function type, $ <$bank$> $ to select 
+the bank number and $ <$iparm-file specifies the GSAS style 
+instrument parameter file. The starting values are read from this 
+file. Please also note, that the x-values are expected to be TOF. 
+\subsubsection{back}
+{\bf func "back",$ <$icalc$> $ [,$ <$par$> $] \par }
+\vspace{3pt}
+The fitting of a background is calculated as: 
+\par
+\begin{MacVerbatim}
+y(dataset) = scale*y(dataset icalc) + SUM xx**parameter
+\end{MacVerbatim}
+Thus KUPLOT takes the data set $ <$icalc$> $ as input values, which are 
+scaled and to which a polynomial function is added. This sum is 
+fitted to the current dataset which was selected by the 'fit' command. 
+\par
+The scale parameter is p[1], all higher parameters act as exponents 
+to the background polynomial. Thus p[2] is a constant background, 
+p[3] a linear background etc. The xx argument of the polynomial 
+is calculated as (x - xmin), where x is the x-value of each given 
+data point and xmin the minimum x-value. Thus, the values of the 
+background polynomial change if you fit to a changed x-range! 
+\par
+\begin{MacVerbatim}
+<par>  effect
+1      scale factor only
+2      scale factor + constant background
+3      scale factor + constant + linear background
+N      scale factor + background polynomial of oder (N-2)
+\end{MacVerbatim}
+\subsection*{help}
+{\bf help $ <$command$> $ \par }
+\par
+\vspace{3pt}
+Displays this help text, for help for a certain command type help 
+command. See help entry on main level for more details. 
+\subsection*{macro}
+{\bf macro $ <$filename$> $ \par }
+\par
+\vspace{3pt}
+This command saves the current parameters in a KUPLOT macro file. 
+This allows to set the parameter values in a later session using 
+@$ <$filename$> $ from the FIT sub level. 
+\subsection*{mfen}
+{\bf mfen $ <$if$> $ \par }
+\par
+\vspace{3pt}
+This command sets the 'window size' for maxima determination used 
+to compute starting values for functions GAUS and LORE. For details 
+about the $ <$if$> $ value see command -$> $ smax. 
+\subsection*{output}
+{\bf output $ \{$ "on" $| $ "off" $\} $ \par }
+\par
+\vspace{3pt}
+This command allows to specify if the progress of the fit should be 
+displayed on the screen ("on") or not ("off"). 
+\subsection*{para}
+{\bf para \par }
+{\bf para $ <$ip$> $,$ <$pinc$> $ [,$ <$value$> $] \par }
+{\bf para $ \{$ "save" $| $ "load" $\} $ \par }
+\par
+\vspace{3pt}
+This command allows to modify the fit parameters. If the command 
+is called alone, the current parameters are displayed. A single 
+parameter $ <$ip$> $ can be set to a value $ <$value$> $. The value $ <$pinc$> $ 
+specifies if the parameter should be refined ($ <$pinc$> $ = 1) of should 
+be kept fixed ($ <$pinc$> $ = 0). If $ <$value$> $ is omitted the current value 
+will be used. 
+\par
+A set of parameters can be internally stored ('para save') and loaded 
+later back in the parameter array ('para load'). Each save command 
+will overwrite previously stored values. 
+\subsection*{plot}
+{\bf plot \par }
+\par
+\vspace{3pt}
+This command displays the current fit result with the current plot 
+settings (like the plot command in the main level). 
+\subsection*{range}
+{\bf range $ \{$"all" $| $ "plot"$\} $ \par }
+\par
+\vspace{3pt}
+This command allows one to select which part of the data are used 
+for the refinement. If set to "all", all data are used. If set to 
+"plot" only the data shown on the current plot window are used. 
+This is useful if one wants to refine e.g. just a single Gaussian 
+in a data set without having to manipulate the data set itself. 
+\subsection*{run}
+{\bf run \par }
+\par
+\vspace{3pt}
+This command starts the fit. 
+\subsection*{save}
+{\bf save \par }
+\par
+\vspace{3pt}
+This command saves the current fit results. The output filename 
+is the filename of the input data set with the following extensions: 
+\par
+\begin{MacVerbatim}
+  .erg  : text file with fit results
+  .fit  : calculated data set
+  .dif  : difference between observed and calculated data set
+\end{MacVerbatim}
+\subsection*{show}
+{\bf show [ $ \{$ "general" $| $ "fit" $| $ "para" $\} $ ] \par }
+\par
+\vspace{3pt}
+This command shows fit settings and results. If the command is called 
+without parameters, all information is printed on the screen. The 
+command 'show general' will display only general fit settings, 'show 
+fit' the fit results like R values and 'show para' will list the 
+resulting parameters. 
+\subsection*{urf}
+{\bf urf $ <$u$> $ \par }
+\par
+\vspace{3pt}
+This command sets the URF (some German: Unterer Relaxations Faktor) 
+for the fit. This value determines who 'fast' the fit will move to 
+its minimum or how much the parameter values are changed in each 
+cycle depending on the deviations. A small value (e.g. 0.1) might 
+lead to a fast convergence but might also miss the minimum. A larger 
+value (e.g. 100.0) will give a slow convergence which more certain 
+finds the minimum, but might be caught in local minima rather than in 
+the global one. 
+\par
+Understood ? Well just try different values until your fit converges 
+nicely to the global minimum. 
+\subsection*{wic}
+{\bf wic $ <$w$> $ [,$ <$K$> $] \par }
+\par
+\vspace{3pt}
+This command defines the weighting scheme to be used for the fit. The 
+valid values for $ <$w$> $ are: 
+\par
+\begin{MacVerbatim}
+  "one"  : w(y) = 1.0              "sqa"  : w(y) = y**2
+  "sqrt" : w(y) = SQRT(y)          "inv"  : w(y) = 1/y
+  "log"  : w(y) = LOG(y)           "isq"  : w(y) = 1/SQRT(y)
+  "lin"  : w(y) = y                "dat"  : w(y) = 1/DY (error data set)
+  "bck"  : w(y) = exp(-K*(y-ycalc))
+\end{MacVerbatim}
+The second parameter is only needed for the weighting scheme "bck". 
+\section{fnam}
+{\bf fnam [ $ \{$"on" $| $ "off"$\} $ ] \par }
+\par
+\vspace{3pt}
+This command determines weather the filename should be plotted for 
+every data set in the upper right corner. Called without parameters, 
+filename plotting is switched off. 
+\section{font}
+{\bf font $ <$prop$> $,$ <$value$> $,.. \par }
+\par
+\vspace{3pt}
+This command allows to set font attributes for the active frame. 
+The settings can be displayed by entering the command 'font' 
+without parameters or using the command 'show font'. For a list 
+of escape sequences and special characters see entry PGPLOT below. 
+The available font properties $ <$prop$> $ are listed below: 
+\par
+\subsection*{PGPLOT}
+{\bf Special characters \par }
+\par
+\vspace{3pt}
+The use of the PGPLOT library allows KUPLOT users to use a variety 
+of escape sequences and special characters in all text related 
+functions of KUPLOT. 
+\par
+\begin{MacVerbatim}
+\u  : start superscript, or end subscript
+\d  : start sub, or end superscript (e.g. cm\u-2\d)
+\b  : backspace (draw next character on top of current one)
+\fn : switch to normal font (1)
+\fr : switch to roman font  (2)
+\fi : switch to italic font (3)
+\fs : switch to script font (4)
+
+\\  : backslash              \x  : Multiplication sign
+\.  : centered dot           \A  : Angstroem
+
+\gx      : Greek character 'x' (e.g. \ga gives alpha, \gb beta, ..)
+\(nnnn)  : character (nnnn) from the Hershey character set
+\end{MacVerbatim}
+\subsection*{color}
+{\bf font "color",$ <$id$> $,$ <$icol$> $ \par }
+\par
+\vspace{3pt}
+This command allows to alter the color of the font used to label the 
+graph. The default is black for all fonts. The different types of 
+text given by their $ <$id$> $ parameter are listed below: 
+\par
+\begin{MacVerbatim}
+  1 : main title line               2: subtitle line
+  3 : axis labels                   4: numbers at axis
+  5 : text in text frame            6: filename & caption
+\end{MacVerbatim}
+The allowed default color values $ <$icol$> $ are listed below. Note 
+that they can be changed by the user via the command 'color'. 
+Alternatively you can use 
+the color name (without blanks i.e. darkblue etc.) 
+\par
+\begin{MacVerbatim}
+  1 : red       5 : yellow        9 : dark blue      13 : cyan
+  2 : green     6 : black        10 : dark magenta   14 : dark cyan
+  3 : blue      7 : dark red     11 : dark yellow    15 : white (!)
+  4 : magenta   8 : dark green   12 : gray
+\end{MacVerbatim}
+\subsection*{just}
+font "just", $ \{$ "left" $| $ "center" $\} $ 
+\par
+This command sets the text justification for the two title lines and 
+the text within a text frame. 
+\subsection*{size}
+{\bf font "size",$ <$id$> $,$ <$size$> $ \par }
+{\bf font "size",$ <$scale$> $ \par }
+\par
+\vspace{3pt}
+This command sets the font size for text type $ <$id$> $ to $ <$size$> $ points. 
+If a specified font size is not available, a fixed font will be used 
+instead. The allowed $ <$id$> $ parameters are: 
+\par
+\begin{MacVerbatim}
+  1 : main title line               2: subtitle line
+  3 : axis labels                   4: numbers at axis
+  5 : text in text frame            6: filename & caption
+\end{MacVerbatim}
+Alternatively if only one parameter is given after "size", all fonts 
+will be scaled by the given factor $ <$scale$> $, i.e. a value of 0.5 will 
+set all font sizes to half their specified original size. 
+\subsection*{typ}
+{\bf font "typ",$ <$id$> $,$ <$typ$> $ \par }
+\par
+\vspace{3pt}
+This command sets the font of the text typ $ <$id$> $ to $ <$typ$> $. Allowed 
+values for the text typ parameter $ <$id$> $ are: 
+\par
+\begin{MacVerbatim}
+  1 : main title line               2: subtitle line
+  3 : axis labels                   4: numbers at axis
+  5 : text in text frame            6: filename & caption
+\end{MacVerbatim}
+Currently implemented fonts are: 
+\par
+\begin{MacVerbatim}
+  1 : Normal single stroke font (default)
+  2 : Roman font
+  3 : Italics font
+  4 : Script font
+\end{MacVerbatim}
+\section{fset}
+{\bf fset $ <$typ$> $ \par }
+\par
+\vspace{3pt}
+This commands allows to alter the frame and axis plotted around 
+the view graph for the active frame. The allowed values for $ <$typ$> $ 
+are: 
+\par
+\begin{MacVerbatim}
+  0 : no frame, axis and labels
+  1 : only a box around the view graph
+  2 : setting 1 & tick marks, numbers and labels
+  3 : setting 2 & axis at x,y=0.0
+\end{MacVerbatim}
+If you specify a negative number for $ <$typ$> $ rather than the positive 
+number listed above, the y-axis label and numbers will be plotted 
+on the right hand side of the view graph rather than the left hand 
+side. This allows to plot data sets with two different y-axis in 
+one plot by plotting two frames (-$> $ frames) on top of each other. 
+\par
+Note, that the numbers and label at the axis can be switched off 
+using the command 'achx/y' (-$> $ achx, achy). A dotted line parallel 
+to x and y at the major tick marks can be plotted using the command 
+'grid' (-$> $ grid). The variable axis[i,j] allows one to change 
+various details of the axes and frame (-$> $ variables). Note that the 
+values are given in character height units. 
+\section{four}
+{\bf four $ <$ik$> $ [,$ <$Qmin$> $, $ <$Qmax$> $, $ <$deltaQ$> $] [,$ <$code$> $] \par }
+\par
+\vspace{3pt}
+This function allows the user to calculate the discrete Fourier 
+Transform of data set $ <$ik$> $. The range of the Fourier transform is 
+given by $ <$Qmin$> $ and $ <$Qmax$> $ and the step size is $ <$deltaQ$> $. If the 
+parameters are omitted, the range in Fourier space is fixed 
+from -1/2D .. 1/2D with D being the grid size in real space. Note, 
+that the range can only be explicitly specified for 1D data sets. The 
+optional parameter $ <$code$> $ determines how much output will be 
+created. The parameter $ <$code$> $ is made up of any combination of the 
+following four letters: 
+\par
+\begin{MacVerbatim}
+  r   : save real (cos) part of Fourier Transform
+  i   : save imaginary (sin) part of Fourier Transform
+  a   : save amplitude of Fourier Transform
+  p   : save phase of Fourier Transform
+\end{MacVerbatim}
+So $ <$code$> $ 'riap' would save all 4 parts in separate new data sets. 
+The default is to store the real part. If the parameter $ <$code$> $ 
+contains the letter 'H', the factor 2pi is used in the exponential. 
+\section{frames}
+{\bf Using frames in KUPLOT \par }
+\par
+\vspace{3pt}
+The program KUPLOT allows to divide the plotting space into smaller 
+areas called FRAMES. Each frame can be individually positioned on the 
+plotting space. The user can define which loaded dataset should be 
+displayed in which frame, alternatively, the contents of a text file 
+can be printed in a frame. Each frame has its own set of parameters 
+like title, axis labels, tick marks, ... . All commands related to 
+frames are listed below: 
+\par
+\subsection*{commands}
+{\bf List of commands: \par }
+\par
+\begin{MacVerbatim}
+afra : sets the active frame for user input
+bfra : sets background color for specified frame
+cfra : copy frame parameters
+fram : defines if a border is plotted around each frame
+kfra : define contents of frames (data sets or text)
+nfra : set number of frames (default = 1)
+sfra : define position and size of frame
+\end{MacVerbatim}
+\subsection*{afra}
+{\bf afra $ <$if$> $ \par }
+\par
+\vspace{3pt}
+The active frame is set to $ <$if$> $. All parameters like title, axis labels, 
+plotting window etc. are entered for the active frame. Is 'afra' entered 
+without parameters, the actual active frame is displayed. The setting 
+of one frame can be copied to another frame with the 'cfra' command. 
+\subsection*{bfra}
+{\bf bfra $ <$if$> $,$ <$r$> $,$ <$g$> $,$ <$b$> $ \par }
+\par
+\vspace{3pt}
+This command sets the background color for frame $ <$if$> $. The color is 
+given as RGB (red,green,blue) value ranging from 0.0 to 1.0. The 
+default is a white background (1.0 1.0 1.0). 
+\par
+If the background color is changed frequently, the X-window server 
+might be unable to allocate additional colors if bitmaps are used. 
+To free the used colors reenter the command 'cmap' which will create 
+a new color map. 
+\subsection*{cfra}
+{\bf cfra $ <$ifr$> $,$ <$i1$> $ [,$ <$i2$> $,$ <$i3$> $,...] \par }
+\par
+\vspace{3pt}
+This command copies the settings of frame $ <$ifr$> $ (like title, contour 
+line settings, plot window, ..) to frames $ <$i1$> $, $ <$i2$> $, ... 
+\subsection*{fram}
+{\bf fram [ $ \{$"on" $| $ "off"$\} $ ] \par }
+\par
+\vspace{3pt}
+This command determines weather a black border is plotted around the 
+graph / each individual frame. Called without parameters, no border 
+will be plotted. 
+\subsection*{kfra}
+{\bf kfra $ <$if$> $,$ <$ik1$> $ [,$ <$ik2$> $,...] \par }
+{\bf kfra $ <$if$> $,$ <$fname$> $ \par }
+{\bf kfra $ <$if$> $,$ \{$"para" $| $ "fit"$\} $ \par }
+\par
+\vspace{3pt}
+This command sets the contents for frame $ <$if$> $. A frame can either 
+contain the graphs of dataset(s) $ <$ik1$> $,.. of the contents of a text 
+file, specified by $ <$fname$> $. Special text frames are "para" which 
+prints data information and "fit" giving the fit results. 
+\subsection*{nfra}
+{\bf nfra $ <$n$> $ \par }
+\par
+\vspace{3pt}
+This command sets the total number of frames to be used. For most 
+values of $ <$n$> $ KUPLOT defines a default layout. If no default layout 
+is found, a warning is given. The layout can be changes using the 
+command 'sfra'. 
+\subsection*{sfra}
+{\bf sfra $ <$if$> $,$ <$xmin$> $,$ <$ymin$> $,$ <$xmax$> $,$ <$ymax$> $ \par }
+\par
+\vspace{3pt}
+This command allows to define the layout of the frames on the plot space. 
+The lower left corner of the plot space is 0,0, the upper right is 1,1. 
+The lower left corner $ <$xmin$> $,$ <$ymin$> $ and the upper right corner $ <$xmax$> $, 
+$ <$ymax$> $ for each frame $ <$if$> $ can be specified with the 'sfra' command. 
+\section{func}
+{\bf func $ <$f(r[0])$> $,     $ <$iref$> $ \par }
+{\bf func $ <$f(r[0])$> $,     $ <$xmin$> $,$ <$xmax$> $,$ <$dx$> $ \par }
+{\bf func $ <$f(r[0],r[1])$> $,$ <$xmin$> $,$ <$xmax$> $,$ <$dx$> $,$ <$ymin$> $,ymax$> $,$ <$dy$> $ \par }
+{\bf func "fit",$ <$iref$> $ \par }
+{\bf func "fit",$ <$xmin$> $,$ <$xmax$> $,$ <$dx$> $ \par }
+{\bf func "fit",$ <$xmin$> $,$ <$xmax$> $,$ <$dx$> $,$ <$ymin$> $,ymax$> $,$ <$dy$> $ \par }
+\par
+\vspace{3pt}
+This command allows to create a new data set from the function and 
+range given as command parameters. Every call of 'func' will create 
+a new data set similar to 'load'. Use 'rese' to discard previous 
+created data sets. 
+\par
+The first parameter is the function to be calculated. See -$> $ expressions 
+for details on the function syntax. Use variable r[0] as x-variable and 
+r[1] as y-variable in case of 3D data sets. Note that stored values 
+in r[0] and r[1] will be destroyed ! The parameters $ <$xmin$> $ and $ <$xmax$> $ 
+give the x-range for the function. The value of $ <$dx$> $ is the step size 
+in x-direction. For 3D data sets the y-range is given as additional 
+parameters in a similar way. Alternatively the x-values can be taken 
+from the dataset $ <$iref$> $ (not implemented for 3D files). 
+\par
+if the first parameter is "fit", the value of the current fit function 
+(see -$> $ fit) is used. 
+\par
+\begin{MacVerbatim}
+Examples
+func sin(r[0]),0.00,6.30,0.10             : sin(x) from 0->6.3, 64 pts
+func sin(r[0])*cos(r[1]),0,6,0.1,0,6,0.1  : sin(x)*cos(y) 0->6  61x61 pts.
+\end{MacVerbatim}
+\section{glat}
+{\bf glat $ <$ik$> $,$ <$ip$> $ [, $ \{$"x" $| $ "y"$\} $] \par }
+\par
+\vspace{3pt}
+This command smoothes the data set number $ <$ik$> $ over $ <$ip$> $ points. 
+The number $ <$ip$> $ should be a positive odd number. A normal sliding 
+averaging without weighting is used (see also command -$> $ smooth). 
+Three dimensional files are per default smoothed in x and y direction. 
+The user can restrict the smoothing to only one direction by adding the 
+optional parameter "x" or "y". 
+\section{grid}
+{\bf grid [ $ \{$"on" $| $ "off"$\} $ ] \par }
+\par
+\vspace{3pt}
+This command determines whether a dotted line parallel to the axis 
+should be plotted at all major tick mark positions. Called without 
+parameters, the grid plotting is switched off. 
+\section{hart}
+{\bf hart $ <$ik$> $,$ <$p$> $ \par }
+\par
+\vspace{3pt}
+This command controls the appearance of two dimensional plots. The 
+data set is again specified by $ <$ik$> $, the allowed values for $ <$p$> $ are: 
+\par
+\begin{MacVerbatim}
+  1 : contour map
+  2 : bitmap
+  3 : contour map & bitmap
+\end{MacVerbatim}
+The z-range of the values to be converted to the color range of the 
+bitmap is determined by the setting of the first contour line range 
+(see command hlin). The color map is defined by the 'cmap' command. 
+\section{hcol}
+{\bf hcol $ <$ik$> $,$ <$ic$> $,$ <$c$> $ \par }
+\par
+\vspace{3pt}
+This command sets the color for contour line set $ <$ic$> $ for the data 
+set $ <$ik$> $. The colors are numbered like the pens on a HP7475 plotter. 
+Allowed values for $ <$c$> $ are listed in the table, Alternatively you 
+can use the color name (without blanks i.e. darkblue etc.) 
+\par
+The allowed default color values $ <$icol$> $ are listed below. Note 
+that they can be changed by the user via the command 'color'. 
+\par
+\begin{MacVerbatim}
+  1 : red       5 : yellow        9 : dark blue      13 : cyan
+  2 : green     6 : black        10 : dark magenta   14 : dark cyan
+  3 : blue      7 : dark red     11 : dark yellow    15 : white (!)
+  4 : magenta   8 : dark green   12 : gray
+\end{MacVerbatim}
+\section{hlab}
+{\bf hlab $ <$ik$> $,$ <$int$> $ \par }
+\par
+\vspace{3pt}
+This command controls optional labeling of the contour lines of 
+data set $ <$ik$> $. If the parameter $ <$int$> $ is set to zero (default), no 
+labels are drawn. Otherwise every $ <$int$> $ contour level starting at 
+the base level is labeled. The font characteristics of the axes 
+labels are used, only the font size is reduced by 75\%. 
+\section{hlin}
+{\bf hlin $ <$ic$> $,$ <$min$> $,$ <$inc$> $,$ <$n$> $ [, $ \{$ "abs" $| $ "\%" $\} $] \par }
+\par
+\vspace{3pt}
+This command sets the contour line parameters. The first parameter 
+$ <$ic$> $ specifies the contour line set, which is defined by the following 
+numbers. The contour lines starting level is given by $ <$min$> $, the 
+increment by $ <$inc$> $ and the number of contours to be plotted by $ <$n$> $. 
+As default the given values are taken as absolute values. However, 
+is a fifth parameter set to "\%" the values of $ <$min$> $ and $ <$inc$> $ are 
+taken relative to the maximum/minimum value of loaded data set 1. 
+\par
+Is the command given without parameters, the current settings of the 
+contour parameters are displayed on the screen. 
+\section{hpak}
+{\bf hpak $ <$ip$> $ \par }
+\par
+\vspace{3pt}
+KUPLOT allows to define more than one set of contour lines (see 'hlin' 
+command). The command 'hpak' allows to set the number of contour line 
+sets $ <$ip$> $ to be used. 
+\section{htyp}
+{\bf htyp $ <$ik$> $,$ <$ic$> $,$ <$p$> $ \par }
+\par
+\vspace{3pt}
+This command sets the line typ for contour line set $ <$ic$> $ for the data 
+set $ <$ik$> $. The colors are numbered like the pens on a HP7475 plotter. 
+Allowed values for $ <$p$> $ are (number or name): 
+\par
+\begin{MacVerbatim}
+  0 : {"noline"|"none"} : no line
+  1 :  "solid"          : solid line
+  2 :  "broken"         : ----   ----   ----   ----
+  3 :  "dashed"         : - ---- - ---- - ---- - --
+  4 :  "shortbroken"    : - - - - - - - - - - - - -
+  5 :  "shortdashed"    : - - - ---- - - - ---- - -
+\end{MacVerbatim}
+\section{ident}
+{\bf ident [ $ \{$"on" $| $ "off"$\} $ ] \par }
+\par
+\vspace{3pt}
+This command determines whether user name, date and time of the plot 
+are written on the bottom of the view graph. 
+\section{inte}
+{\bf inte $ <$ik$> $ [,$ <$xmin$> $,$ <$xmax$> $] \par }
+{\bf inte $ <$ik$> $ [,$ <$xmin$> $,$ <$xmax$> $,$ <$ymin$> $,$ <$ymax$> $] \par }
+\par
+\vspace{3pt}
+This command calculates the integral of data set $ <$ik$> $. If the additional 
+parameters are omitted, the complete actual plotting window is integrated. 
+Alternatively, the integration limits $ <$xmin$> $,$ <$xmax$> $ (2d) or $ <$xmin$> $,$ <$xmax$> $, 
+$ <$ymin$> $,$ <$ymax$> $ (3d) can be given after the data set number $ <$ik$> $. 
+\par
+The results of this command are stored in the res[i] variables in 
+the following order: 
+\par
+\begin{MacVerbatim}
+  res[0]   : Number of parameters given
+  res[1]   : Integral
+  res[2]   : Sigma of the integral
+  res[3]   : # of points integrated
+  res[4]   : Integration limit xmin
+  res[5]   : Integration limit xmax
+  res[6]   : Integration limit ymin (only for 3d data)
+  res[7]   : Integration limit ymax (only for 3d data)
+\end{MacVerbatim}
+\section{ksav}
+{\bf ksav $ <$ik$> $ \par }
+\par
+\vspace{3pt}
+This command enters the 'ksav' level of KUPLOT which allows to save 
+the given data set $ <$ik$> $ in different formats to a file. The allowed 
+commands in the 'ksav' level are: 
+\par
+\subsection*{commands}
+Here is a list of valid commands in the KSAV sub level: 
+\par
+\begin{MacVerbatim}
+exit    : Leaves KSAV sub level without saving the file
+form    : Sets output file format
+help    : Displays on-line help (see general help)
+m999    : Treatment of excluded data points
+outfile : Specifies the output filename
+run     : Saves file and leaves KSAV level
+show    : Shows the current settings
+thresh  : Sets threshold for PGM file output
+wait    : wait for user input (see main help)
+\end{MacVerbatim}
+\subsection*{form}
+{\bf form $ <$ff$> $ [,$ <$p1$> $,$ <$p2$> $,...] \par }
+\par
+\vspace{3pt}
+This command determines the file format to be used when the file is 
+saved. Some formats require additional parameters. If a parameter 
+is not required, the default is the current plotting window. 
+The following list shows the valid file formats: 
+\par
+\begin{MacVerbatim}
+<ff>   <p1>,....           required   What
+---------------------------------------------------------------------
+ xy    xmin,xmax,[<style>]    no      Saves xy file from xmin,xmax
+ ni    xmin,xmax,ymin,ymax    no      Nipl file, given area
+ pg    xmin,xmax,ymin,ymax    no      PGM file (ASCII), given area
+ gn    xmin,xmax,ymin,ymax    no      XYZ file (gnuplot), given area
+ sx    y-value               yes      Crossection || x at y-value
+ sy    x-value               yes      Crossection || y at x-value
+ mx    i                     yes      Crossection || x trough max #i
+ my    i                     yes      Crossection || y trough max #i
+ sk    ik                    yes      Crossection along xy of data set ik
+ sl    x1,y1,x2,y2,n         yes      Crossection from x1,y1 to x2,y2
+                                      with n points
+\end{MacVerbatim}
+For the xy format, the last optional parameter can be the string 
+"four" to explicitly write the default four columns x, y, dx, dy. 
+Alternatively the last parameter can be "two" to write a two 
+column file.  If the uncertainties for x and / or y are not zero, 
+the values are lost! 
+For either option, the parameters xmin, xmax are still optional, 
+and the command might take the forms: 
+\begin{MacVerbatim}
+ xy    ,xmin,xmax, "four"
+ xy    ,xmin,xmax, "two"
+ xy    ,xmin,xmax
+ xy    ,"four"
+ xy    ,"two"
+\end{MacVerbatim}
+\subsection*{m999}
+{\bf m999 "excl"$| $"data" \par }
+\par
+\vspace{3pt}
+KUPLOT treats data points of value "-9999" as excluded data in a 
+two dimensional data array. This command specifies the treatment of 
+these data points while writing crossections $| $$| $ x or y. 
+With "excl" these data points are omitted from the output file, which 
+may therefore have a length that varies from the corresponding 
+dimension of the two-dimensional data. 
+With "data" these data points are treated as regular data points and 
+written to the output file. The output file is of constant length 
+corresponding to the respective two dimensional dimension. The 
+output file contains the data points with value -9999. 
+\subsection*{outfile}
+{\bf outfile $ <$fname$> $ \par }
+\par
+\vspace{3pt}
+This command specifies the name of the output file. See entry 'filenames' 
+for more information about the building of filenames. 
+\subsection*{run}
+{\bf run \par }
+\par
+\vspace{3pt}
+This command save the file with the current settings and leaves the 
+KSAV level. 
+\subsection*{show}
+{\bf show \par }
+\par
+\vspace{3pt}
+This command shows the current settings. 
+\subsection*{threshold}
+{\bf thresh $ \{$ "high"$| $"low"$| $"sigma"$| $"zmin"$| $"zmax"$\} $ $ <$value$> $ \par }
+\par
+\vspace{3pt}
+This command sets the threshold that is used when writing BITMAP output. 
+All values less than the minimum threshold are set to zero, 
+all values higher than the maximum threshold are set to the 
+maximum threshold. The values in between are linearly scaled from zero 
+to 255. 
+\par
+Depending on the first parameter, the second parameter is interpreted in 
+five different ways: 
+\par
+\begin{MacVerbatim}
+"high"  : Sets maximum threshold for BITMAP in percent of the maximum z
+"low"   : Sets minimum threshold for BITMAP in percent of the maximum z
+"sigma" : Sets threshold to average z +- <value>*standard deviation z
+"zmax"  : Sets maximum threshold for BITMAP
+"zmin"  : Sets minimum threshold for BITMAP
+\end{MacVerbatim}
+\section{kcal}
+{\bf kcal $ \{$"add"$| $"sub"$| $"mul"$| $"div"$\} $,$ <$ik1$> $,$ <$ik2$> $[,$ \{$"excl"$| $"neut"$| $"igno"$\} $][,"over"] \par }
+\par
+\vspace{3pt}
+This command allows to multiply ("mul"), add ("add"), divide ("div") 
+or subtract ("sub") the y- or z- values of the data sets $ <$ik1$> $ and $ <$ik2$> $. 
+For a 2d data sets, the y- values are used, for a 3d data set the 
+z-values.  The optional last parameter triggers where the resulting 
+data set is stored. The default is to create a new data set. If the 
+parameter "over" is specified, the resulting data set will overwrite 
+data set $ <$ik1$> $. 
+\par
+The optional fourth parameter is effective only for 3d data sets. It 
+tells KUPLOT how to treat the special z values of "-9999." The 
+following parameters are valid: 
+\par
+\begin{MacVerbatim}
+"excl" : These data points are treated as excluded regions and the
+         result will be -9999 if one or both z-values of the data
+         sets had been -9999. This is also the default used when no
+         fourth parameter is given.
+"neut" : The data points are treated as neutral element for the
+         operation. If both input values are -9999, the result is -9999,
+         if only one input value is -9999, the result is the z-value
+         of the other curve.
+"igno" : The special properties of these data points are ignored and
+         the result is the corresponding operation between the two
+         numbers.
+\end{MacVerbatim}
+\section{kpara}
+{\bf kpara $ \{$$ <$par\_name$> $ $| $ $ <$par\_number$> $$\} $ \par }
+{\bf kpara $ \{$ $ \{$"last"$| $ "-1"$\} $ $| $ $ <$generation\_no$> $ $\} $ , \par }
+{\bf       $ \{$$ <$par\_name$> $ $| $ $ <$par\_number$> $$\} $ , $ \{$$ <$par\_name$> $ $| $ $ <$par\_number$> $$\} $ \par }
+\par
+\vspace{3pt}
+This command serves to create a standardized plot of the parameters 
+refined via DIFFEV. 
+\par
+The first form with a single parameter name or number will plot the 
+development of this parameter versus the refinement generations. 
+The parameter name may include "Rvalue" or 0 to plot the development 
+of the R-value. 
+\par
+The second form serves to plot the distribution of two parameters 
+in a given generation. If the first command parameter is either 
+"last" or "-1" the last generation is used. This can be helpful to 
+repeatedly plot the parameters during a refinement. 
+The plot will display the distribution of the two parameters. 
+The size of the markers indicates the R-value for each parameter 
+pair, with the smallest marker signifying the smallest R-value. 
+Either of the two parameter names/numbers may be "Rvalue" or "0" 
+to show the correlation between parameter value and the R-value. 
+\par
+Examples 
+kpara Rvalue    ! Show the R-value versus generations 
+kpara P\_one     ! Same for a parameter named "P\_one" 
+kpara last, P\_one, Rvalue  ! Show R-values versus Parameter value 
+                           ! in the last generation 
+kpara last, P\_one, P\_two   ! Dislay (possible) correlation 
+                           ! between these two parameters 
+\section{lart}
+{\bf lart $ <$ik$> $,$ <$p$> $ \par }
+\par
+\vspace{3pt}
+This command sets the who the points of data set $ <$ik$> $ are to be 
+connected. Allowed values for $ <$p$> $ are: 
+\par
+\begin{MacVerbatim}
+   1 : points are connected by a line
+   2 : histogram style plot
+   3 : connection via cubic splines
+\end{MacVerbatim}
+\section{lcol}
+{\bf lcol $ <$ik$> $,$ <$c$> $ \par }
+\par
+\vspace{3pt}
+This command sets the line color for the data set $ <$ik$> $. If $ <$ik$> $ is 
+0 the color set is taken for the grid lines (-$> $ grid "on" $| $ "off"). 
+The colors are numbered like the pens on a HP7475 plotter. Allowed 
+values for $ <$c$> $ are listed in the table, Alternatively you can use 
+the color name (without blanks i.e. darkblue etc.) 
+\par
+The allowed default color values $ <$icol$> $ are listed below. Note 
+that they can be changed by the user via the command 'color'. 
+\par
+\begin{MacVerbatim}
+  1 : red       5 : yellow        9 : dark blue      13 : cyan
+  2 : green     6 : black        10 : dark magenta   14 : dark cyan
+  3 : blue      7 : dark red     11 : dark yellow    15 : white (!)
+  4 : magenta   8 : dark green   12 : gray
+\end{MacVerbatim}
+\section{load}
+{\bf load $ <$form$> $,$ <$fname$> $[,$ <$par$> $,$ <$par$> $,..] \par }
+\par
+\vspace{3pt}
+Reads a data set from file $ <$fname$> $. The format of the input file 
+is given by the value of $ <$form$> $. Some formats require additional 
+parameters $ <$par$> $. If a history (PDFgetN) is prepended, KUPLOT 
+extracts the title and stores some information in the res[n] 
+array (see PDFFIT 'read data' for details). The parameter $ <$fname$> $ 
+can also be a valid expression such as "*.asc" just as a directory 
+command. 
+\par
+Here is a list of the available formats: 
+\par
+\subsection*{4d}
+{\bf load 4d,$ <$file$> $,$ <$ix$> $,$ <$iy$> $,$ <$iz$> $,$ <$ival$> $ \par }
+\par
+\vspace{3pt}
+This command allows to read a section from a NIPL type 4D files 
+(x y z value). The first two parameters after the filename define 
+which index is mapped to x and y in KUPLOT. The next parameter 
+defined which index is used for cutting and $ <$ival$> $ specified the 
+value at which the cut is performed. 
+\subsection*{cr}
+{\bf load cr,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+Reads a "crystal" file format which contains coordinates for 
+the atoms and typ, color and size for the marker for the specific 
+atom. Those code numbers for typ, color and size are the same used 
+with the 'mtyp', 'mcol' and 'msiz' commands. The points are plotted 
+in the xy plane, i.e. projected along z. 
+\par
+\begin{MacVerbatim}
+  0.5 0.5 0.5   5 3 1.00
+  1.0 1.0 1.0   5 6 0.75
+\end{MacVerbatim}
+The first atom at (0.5 0.5 0.5) is represented by a red (col=3) 
+filled square (typ =5) of the size 1.00 whereas the second atom 
+is a black (col=6) filled smaller square. The size is given relative 
+to the size set with -$> $ 'msiz'. The first atom is plotted with the 
+full size set with 'msiz' whereas the second atom is only 75\% of 
+that size. 
+\subsection*{csv}
+load xy,$ <$file$> $ 
+load xy,$ <$file$> $, skip:$ <$nskip$> $, 
+        colx:$ <$icolx$> $, coly:$ <$icoly$> $, coldx:$ <$icoldx$> $, coldy:$ <$icoldy$> $, 
+        separator:$ <$name$> $ 
+\par
+Reads a csv type file that has been extracted from PANAlytical 
+powder data. 
+\par
+The second form is a generic attempt to read any CSV file. 
+You can specify as optional parameters: 
+skip:  Number of header lines to skip     Default : 25 
+colx:  Column from which to take x-data   Default :  1 
+coly:  Column from which to take y-data   Default :  2 
+coldx: Column from which to take uncertainties for x-data Default : 0 
+coldy: Column from which to take uncertainties for y-data Default : 0 
+separator: Character that separates the columns, possible values are: 
+           ";" or "semicolon"             Default  : "semicolon" 
+           ":" or "colon" 
+           "comma" 
+           "tab" 
+If the error columns are omitted or set to zero no error data are read 
+\subsection*{de}
+{\bf load de,$ <$file$> $,$ <$gridx$> $,$ <$gridy$> $ \par }
+\par
+\vspace{3pt}
+This command works similar to the 'load zz,..' command but rather 
+that reading a xyz-file, a histogram of a xy-file is calculated, 
+i.e. z represents the number of points x,y which fall in a grid 
+of the size $ <$gridx$> $ and $ <$gridy$> $. 
+\subsection*{gs}
+{\bf load gs,$ <$file$> $,$ <$ibank$> $ [,$ <$unit$> $] [,$ <$ifile$> $] [,"norm"] \par }
+\par
+\vspace{3pt}
+This command allows to read GSAS files. AT THIS TIME THIS FEATURE 
+IS ONLY TESTED FOR TIME-OF-FLIGHT POWDER DIFFRACTION DATA. The value 
+$ <$ibank$> $ determines which bank to read. A range of banks can be 
+specified like from$> $to and to real all banks use the keyword "all". 
+The optional parameter $ <$ifile$> $ is the file name of the corresponding 
+GSAS instrument parameter file, which is ONLY needed if certain unit 
+conversion are desired. The desired unit is specified with the optional 
+parameter $ <$unit$> $. Valid units are: 
+\par
+\begin{MacVerbatim}
+   "T"    : Time-of-Flight
+   "D"    : D spacing
+   "L"    : Wavelength (lambda)
+   "Q"    : Momentum transfer Q
+   "X"    : Used to indicate X-ray data in 2THETA
+\end{MacVerbatim}
+Finally if the last optional parameter is set to "norm", the intensities 
+will be normalized by the incident spectrum. A valid instrument parameter 
+file is required in this case. 
+\subsection*{ma}
+{\bf load ma,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+This commands reads a "marker" file which is a normal xy-file, but 
+the program will only use the x coordinate , y is set to zero. So 
+tick marks at the x-axis can be drawn. 
+\subsection*{mc}
+{\bf load mc,$ <$file$> $,$ <$snumber$> $ \par }
+\par
+\vspace{3pt}
+This commands reads spectrum number $ <$snumber$> $ from MCA files 
+(e.g. those created at A2/CHESS). 
+\subsection*{ni}
+{\bf load ni,$ <$file$> $[,$ <$white$> $] \par }
+\par
+\vspace{3pt}
+This file format is also an old "Garching format" used by an even 
+older plot program. It contains gridded 3d data in the following 
+format: 
+\par
+\begin{MacVerbatim}
+line 1    : nx ny                    ! number of points in x and y
+line 2    : xmin xmax ymin ymax      ! range in x and y
+line 3-xx : z z z z z z z            ! z-values increasing in x and y
+\end{MacVerbatim}
+\subsection*{pg}
+{\bf load pg,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+Here is finally a universal 3d data file format known by KUPLOT, 
+PGM files (from netpbm library). The current KUPLOT version can 
+only read ASCII PGM files which have the code P2 in the first 
+line of the program. 
+\subsection*{sc/st}
+{\bf load sc,$ <$file$> $ [,$ <$iscan$> $] [,$ <$cx$> $,$ <$cy$> $] [,$ <$cN$> $] [,$ <$cdx$> $] [,$ <$cdy$> $] \par }
+{\bf load st,$ <$file$> $ [,$ <$iscan$> $] [,$ <$cx$> $,$ <$cy$> $] [,$ <$cN$> $] [,$ <$cdx$> $] [,$ <$cdy$> $] \par }
+{\bf load sc,$ <$file$> $,$ <$iscan$> $,"info" \par }
+{\bf load smca,$ <$file$> $,[$ <$iscan$> $ [,$ <$iscan$> $, $ <$ipoint$> $ [,"kev",par1,par2,par3]]] \par }
+\par
+\vspace{3pt}
+This command allows one to read SPEC scan files. The parameter 
+$ <$file$> $ is as usual the filename. If no further parameters are 
+given, KUPLOT lists the scans present in the file. The next 
+parameter $ <$iscan$> $ is the number of the scan. Rather than an 
+individual scan, one can specify a range of scans to be read 
+via 'start $> $ end' in the $ <$iscan$> $ field. Alternatively one can use 
+the string 'all' for $ <$iscan$> $ to extract all scans from the 
+given file. 
+\par
+If the subcommand is 'sc' or 'st', KUPLOT will read a scan, 
+if the subcommand is 'smca', KUPLOT will read a MCA data point 
+embedded in the spec file. 
+\par
+With no further parameters again KUPLOT lists information about the 
+given scan an descriptions of the columns in that scan. The next 
+two parameters $ <$cx$> $ and $ <$cy$> $ specify the columns to be associated 
+with x and y. These parameters can either be numbers (positive numbers 
+are counted from the left, negative from the right) or the EXACT 
+column title. The last optional parameters defines which column KUPLOT 
+will use for normalization of the y-data. If the subcommand 'sc' is 
+used, KUPLOT calculates the standard deviation 'dy' as SQRT(y). If 
+'st' is entered, no errors are calculated.  Columns $ <$cdx$> $ and $ <$cdy$> $ 
+correspond to the errors of $ <$cx$> $ and $ <$cy$> $ allowing the user to read 
+sigma values from any column of the file. The fields have to be 
+specified in the given order, for used field enter "0". 
+The scan info that KUPLOT derives from the file is in part stored 
+into the result variable ==$> $ 'res[]'. The entries are: 
+0  number of values stored in res 
+1  number of scans 
+2  number of MCA points 
+3...2+NSCANS number of data points in each scan 
+2+1*NSCANS+1 ... 2+2*NSCANS  xmin for each scan 
+2+2*NSCANS+1 ... 2+3*NSCANS  xmax for each scan 
+\par
+KUPLOT can also extract scan information for a given scan $ <$iscan$> $ 
+from the SPEC file when the parameter "info" is specified. Note that 
+no data are read. 
+\par
+\begin{MacVerbatim}
+load smca,<file>,[<iscan> [,<iscan>, <ipoint> [,"kev",par1,par2,par3]]]
+\end{MacVerbatim}
+KUPLOT will extract an MCA from a SPEC file. 
+$ <$iscan$> $ is the scan number. If the SPEC files does not contain any 
+        scans but just individual MCA data points, set $ <$iscan$> $ to zero. 
+$ <$ipoint$> $ is the number of the data point within scan $ <$iscan$> $. If there 
+        are no scans in the file, KUPLOT will read the file until it 
+        finds the individual MCA data number $ <$ipoint$> $. 
+Without the "kev" key word, KUPLOT will use the channel number for the 
+x-axis. With the keyword, the channel number is converted into keV 
+according to kev = par1*channel**2 + par2*channel + par3 
+\par
+Examples: 
+\par
+\begin{MacVerbatim}
+load sc,scan.dat,12              ! Shows info for scan 12
+load sc,scan.dat,pmQ,Elastic,14  ! Reads Q vs. elastic counts norm.
+                                   by data in column 14 (monitor)
+load sc,scan.dat,1>3,1,2         ! Read scans 1 to 3 column 1 vs. 2
+load sc,scan.dat,1,info          ! Get information for scan 1
+\end{MacVerbatim}
+\subsection*{xx}
+{\bf load xx,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+This command reads just the first column of a data file and takes 
+the point number as x-value. 
+\subsection*{xy}
+{\bf load xy,$ <$file$> $ [,$ <$cx$> $,$ <$cy$> $] [,$ <$cdx$> $,$ <$cdy$> $] [,$ <$header$> $] \par }
+\par
+\vspace{3pt}
+Reads data from a multi column ASCII file. Blank lines and lines 
+starting with \# are ignored. If no parameters after $ <$file$> $ are given, 
+column 1 is assigned to x and column 2 to y. If three columns are 
+present, column 3 is assigned to dy. In case 4 or more columns are 
+present, column 3 is dx and column 4 is dy. Alternatively, the 
+desired columns can be specified using the optional parameters 
+$ <$cx$> $ and $ <$cy$> $ for the data columns x and y as well as parameters 
+$ <$cdx$> $ and $ <$cdy$> $ for assigning the errors to columns x and y. The 
+final optional parameter $ <$header$> $ allows one to specify the number 
+of header lines to be skipped. 
+\subsection*{zz}
+{\bf load zz,$ <$file$> $,$ <$gridx$> $,$ <$gridy$> $ [,"mod"] \par }
+{\bf load zz,$ <$file$> $,$ <$gridx$> $,$ <$gridy$> $ [,$ <$xmin$> $,$ <$xmax$> $,$ <$ymin$> $,$ <$ymax$> $] \par }
+\par
+\vspace{3pt}
+This command reads a xyz-file, each xyz triplet on a single line. 
+The data points are binned to a regular grid of the size $ <$gridx$> $ 
+and $ <$gridy$> $. The number of points in each direction is calculated 
+by the program. This command can also be used to rebin data on 
+a regular grid to a broader one. 
+Without the optional parameter "mod" the grid starts at the lowest 
+x,y values found and continues in steps of $ <$gridx$> $ and $ <$gridy$> $. 
+If the optional parameter "mod" is given, the grid is shifted 
+to the next integer multiple of the interval $ <$gridx$> $, $ <$gridy$> $. 
+Alternatively, the desired boundaries can be given as additional 
+parameters. All points outside these limits will be ignored. 
+\subsection*{mp}
+{\bf load mp,$ <$file$> $,$ <$gridx$> $,$ <$gridy$> $ [,"mod"] \par }
+{\bf load mp,$ <$file$> $,$ <$gridx$> $,$ <$gridy$> $ [,$ <$xmin$> $,$ <$xmax$> $,$ <$ymin$> $,$ <$ymax$> $] \par }
+\par
+\vspace{3pt}
+This command reads a binary xyz-file, each xyz triplet is given on a 
+single 16 byte record. The first 4 bytes of the first record are 
+an integer number that gives the total number of records in the file 
+including the first line. Each other record contains the xyz data 
+as 4 byte real numbers. In case of data that form a plane in three 
+dimensions, the data are: abscissa, ordinate, 'density', third axis. 
+\par
+The data points are binned to a regular grid of the size $ <$gridx$> $ 
+and $ <$gridy$> $. The number of points in each direction is calculated 
+by the program. This command can also be used to rebin data on 
+a regular grid to a broader one. 
+Without the optional parameter "mod" the grid starts at the lowest 
+x,y values found and continues in steps of $ <$gridx$> $ and $ <$gridy$> $. 
+If the optional parameter "mod" is given, the grid is shifted 
+to the next integer multiple of the interval $ <$gridx$> $, $ <$gridy$> $. 
+Alternatively, the desired boundaries can be given as additional 
+parameters. All points outside these limits will be ignored. 
+\section{sm}
+{\bf load sm,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+Loads the SIMREF *.plt file. 
+\subsection*{special}
+{\bf load $ <$form$> $,$ <$file$> $ \par }
+\par
+\vspace{3pt}
+KUPLOT can read certain special file formats produced by the program 
+MAN2 and MAN1 used at the Institut fuer Kristallographie of the 
+University Munich. Those formats are summed up in the following 
+list: 
+\par
+\begin{MacVerbatim}
+T1/T2   MAN2-Pfausdatei            2-Theta gegen Zaehlrohr 1/2
+C1/C2   MAN2-Pfausdatei            Chi     gegen Zaehlrohr 1/2
+P1/P2   MAN2-Pfausdatei            Phi     gegen Zaehlrohr 1/2
+O1/O2   MAN2-Pfausdatei            Omega   gegen Zaehlrohr 1/2
+H1/H2   MAN2-Pfausdatei            H gegen Zaehlrohr 1/2
+K1/K2   MAN2-Pfausdatei            K gegen Zaehlrohr 1/2
+K1/K2   MAN2-Pfausdatei            K gegen Zaehlrohr 1/2
+L1/L2   MAN2-Pfausdatei            L gegen Zaehlrohr 1/2
+ TE     MAN2-Pfausdatei            Messpunktnummer gegen Temperatur (822)
+ DM     MAN2-Pfausdatei            Messpunktnummer gegen DMM-Wert
+ ZE     MAN2-Pfausdatei            Messpunktnummer gegen Messzeit
+Z1/Z2   Messdatei von PULx         Zaehlrohr 1 bzw. 2
+\end{MacVerbatim}
+Two other special formats are the output files of the FAST data 
+collection software of the area detector used in Munich. The two 
+formats are: 
+\par
+\begin{MacVerbatim}
+ DA     MP-Datei (binaer)          Flaechenzaehlerdatei
+ AS     MP-Datei (ascii)           Flaechenzaehlerdatei
+\end{MacVerbatim}
+\section{ltyp}
+{\bf ltyp $ <$ik$> $,$ <$p$> $ \par }
+\par
+\vspace{3pt}
+This command sets the line typ to be used for data set $ <$ik$> $. The 
+allowed values for $ <$p$> $ are (number or name): 
+\par
+\begin{MacVerbatim}
+  0 : {"noline"|"none"} : no line
+  1 : {"solid"}         : solid line
+  2 : {"broken"}        : ----   ----   ----   ----
+  3 : {"dashed"}        : - ---- - ---- - ---- - --
+  4 : {"shortbroken"}   : - - - - - - - - - - - - -
+  5 : {"shortdashed"}   : - - - ---- - - - ---- - -
+\end{MacVerbatim}
+\section{lwid}
+{\bf lwid $ <$ik$> $,$ <$width$> $ \par }
+\par
+\vspace{3pt}
+This command sets the line width $ <$width$> $ in cm for the data set $ <$ik$> $. 
+If $ <$ik$> $ is zero, the line width for the frame itself is set. The 
+current settings can be displayed using the 'show style' command. 
+\section{mark}
+{\bf mark [$ <$inx$> $] [,$ <$iny$> $] \par }
+\par
+\vspace{3pt}
+This command sets the interval and starting point for the tick marks 
+at the x- and y-axis. If all parameters are omitted, KUPLOT will do 
+an automatic setting. The two parameters $ <$inx$> $ and $ <$iny$> $ give 
+the interval of the major tick marks on the x- and y-axis. If only 
+$ <$inx$> $ is given, $ <$iny$> $ remains unchanged. 
+\section{match}
+{\bf match $ \{$"scal" $| $ "offset" $| $ "all"$\} $,$ <$io$> $,$ <$ic$> $ \par }
+{\bf match "mix",$ <$io$> $,$ <$i1$> $,$ <$i2$> $ \par }
+\par
+\vspace{3pt}
+This command calculates the scale factor and/or offset which gives 
+the best match between of data set $ <$ic$> $ to $ <$io$> $. The first command 
+determines whether only a scale ("scal") or offset ("offset") or 
+both ("all") will be calculated. Data set $ <$ic$> $ is then modified 
+using these values. This command is currently only available for 
+2D data sets (e.g. xy files). NOTE: This command assumes that a 
+given data point i in both data sets $ <$io$> $ and $ <$ic$> $ corresponds to 
+the same x-value, i.e. the data sets must be equal with respect to 
+their x-values ! 
+\par
+If the first parameter is set to "mix" then data set $ <$io$> $ is matched 
+by f*$ <$i1$> $+(1-f)*$ <$i2$> $. The result is added as new data set. All data 
+sets $ <$io$> $, $ <$i1$> $ and $ <$i2$> $ need to have identical x data points. 
+\par
+The scale factor and the offset are written into the result variable 
+as entries 1 and 2. res[0] is set to 2 
+\section{mcol}
+{\bf mcol $ <$ik$> $,$ <$c$> $ \par }
+\par
+\vspace{3pt}
+This command sets the marker color for the data set $ <$ik$> $. The colors 
+are numbered like the pens on a HP7475 plotter. Allowed values for 
+$ <$c$> $ are: listed in the table, Alternatively you can use 
+the color name (without blanks i.e. darkblue etc.) 
+\par
+The allowed default color values $ <$icol$> $ are listed below. Note 
+that they can be changed by the user via the command 'color'. 
+\par
+\begin{MacVerbatim}
+  1 : red       5 : yellow        9 : dark blue      13 : cyan
+  2 : green     6 : black        10 : dark magenta   14 : dark cyan
+  3 : blue      7 : dark red     11 : dark yellow    15 : white (!)
+  4 : magenta   8 : dark green   12 : gray
+\end{MacVerbatim}
+\section{mean}
+{\bf mean $ <$ik$> $ [,$ <$xmin$> $,$ <$xmax$> $] \par }
+{\bf mean $ <$ik$> $ [,$ <$xmin$> $,$ <$xmax$> $,$ <$ymin$> $,$ <$ymax$> $] \par }
+\par
+\vspace{3pt}
+This command allows to calculate the average and standard deviation for data 
+set $ <$ik$> $. The area used for the calculation can be given by $ <$xmin$> $,$ <$xmax$> $ for 
+2d data or $ <$xmin$> $,$ <$xmax$> $,$ <$ymin$> $,$ <$ymax$> $ for 3d data. If these parameters are 
+omitted, the complete actual plotting range is used for the calculation. 
+\par
+The results are stored in the res[i] variables in the following order: 
+\par
+\begin{MacVerbatim}
+   3d        2d
+  --------------------------------------------------------
+  res[0]   res[0]   = Number of stored values
+  res[1]   res[1]   = average of x-values
+  res[2]   res[2]   = average of y-values
+  res[3]            = average of z-values
+  res[4]   res[3]   = standard deviation of x-values
+  res[5]   res[4]   = standard deviation of y-values
+  res[6]            = standard deviation of z-values
+  res[7]   res[5]   = # points used for calculation
+  res[8]   res[6]   = used range : xmin
+  res[9]   res[7]   = used range : xmax
+  res[10]           = used range : ymin
+  res[11]           = used range : ymax
+\end{MacVerbatim}
+\section{merge}
+{\bf merge $ <$i1$> $,$ <$i2$> $,... [,"add"] \par }
+{\bf merge $ \{$"-1"$| $"all"$\} $  [,"add"] \par }
+\par
+\vspace{3pt}
+This command allows one to merge different data sets given by 
+the parameters $ <$i1$> $, $ <$i2$> $ and so on. 
+If the first parameter is equal to "-1" or "all", all currently 
+loaded data sets are merged. 
+\par
+If as last parameter "add" 
+is given, the values are simply added, otherwise they are 
+normalized by the number of contributing data points. The new 
+data set is assigned the next free data set number. 
+\par
+The extend of the new data set is defined by the maximum x-values 
+of the data sets to be merged. The grid size is taken as the 
+difference of the first two points of the first specified data set. 
+\section{mouse}
+{\bf mouse \par }
+{\bf mouse $ \{$"point" $| $ "line" $| $ "rect" $| $ "xrange" $| $ "yrange" $\} $ \par }
+\par
+\vspace{3pt}
+When the command is given without an additional parameter, KUPLOT 
+redraws the plot with a button area and enters the interactive 
+'mouse mode'. Use the 'EXIT' button to return to the normal command 
+mode. The command 'mouse point' allows the user to select a point 
+within the active frame (-$> $ afra) and returns the coordinates 
+in the variable res[]: 
+\par
+\begin{MacVerbatim}
+   3d        2d
+  ------------------------------------------------------------
+  res[0]     res[0]       = Number of values stored
+  res[1]     res[1]       = x-coordinate of point selected
+  res[2]     res[2]       = y-coordinate of point selected
+  res[3]                  = z-coordinate of nearest grid pt.
+  res[4]     res[3]       = Mouse button clicked
+\end{MacVerbatim}
+                            (1=left, 2=middle, 3=right) 
+\par
+The commands 'mouse line' allows one to select two points 
+that are connected with a line. Select the first point using 
+the left mouse button. The command 'mouse rect' selects 
+two points as well, however they make up the corners of a 
+rectangle. Commands 'mouse xrange' and 'mouse yrange' mark the 
+two points by horizontal/vertical lines. The resulting coordinates 
+are stored in res[] again: 
+\par
+\begin{MacVerbatim}
+  res[0]     = Number of values stored
+  res[1]     = x-value of first point
+  res[2]     = y-value of first point
+  res[3]     = x-value of second point
+  res[4]     = y-value of second point
+  res[5]     = Mouse button clicked when selecting 2nd point
+\end{MacVerbatim}
+               or -1 if action was aborted. 
+\section{mtyp}
+{\bf mtyp $ <$ik$> $,$ <$p$> $ \par }
+\par
+\vspace{3pt}
+This command sets the marker typ to be used for data set $ <$ik$> $. The 
+allowed standard values for $ <$p$> $ are listed below. Additionally one 
+can access all PGPLOT markers by adding 100 to the PGPLOT marker 
+number (see users guide). A value of 118 for example will give the 
+PGPLOT symbol 18, a filled star. 
+\par
+Allowed values for $ <$p$> $ are listed in the table. Alternatively 
+you can use the name (without blanks) 
+\par
+\begin{MacVerbatim}
+  0 : no marker|none  5 : filled square    10 : slash (/)
+  1 : dot             6 : empty triangle   11 : backslash (\)
+  2 : circle empty    7 : times (x)        12 : minus (-)
+  3 : filled circle   8 : plus  (+)        13 : vertical line
+  4 : square empty    9 : bar  (|)              from y-axis
+ -1 : x_coordinate   -2 : y_coordinate     -3 : "xy": both
+\end{MacVerbatim}
+\section{msiz}
+{\bf msiz $ <$ik$> $,[$ <$size$> $ [, $ \{$"x" $| $ "y" $| $ "0" $| $ $ <$data\_set$> $$\} $]] \par }
+\par
+\vspace{3pt}
+This command sets the marker size for data set $ <$ik$> $ to $ <$size$> $. 
+The marker size is given in cm (for our friends in the US: 
+1 inch = 2.54 cm). 
+\par
+If the third parameter is given and not equal to "0", the marker 
+are scaled proportionally. 
+x  The marker size is proportional to the value along the x-axis 
+y  The marker size is proportional to the value along the y-axis 
+$ <$data\_set$> $ The marker size is proportional to the y-value of 
+data set $ <$data\_set$> $. 
+\section{nexus}
+\par
+Here is a list of the NeXus file related commands. You have to 
+enable NeXus support when compiling KUPLOT. The commands are 
+\par
+\subsection*{nxopen}
+{\bf nxopen $ <$file$> $ \par }
+\par
+\vspace{3pt}
+This command opens the NeXus file called $ <$file$> $. The file stays 
+open until the command 'nxclose' is issued. 
+\subsection*{nxclose}
+{\bf nxclose \par }
+\par
+\vspace{3pt}
+This command closes the current NeXus file. 
+\subsection*{nxdir}
+{\bf nxdir \par }
+\par
+\vspace{3pt}
+This command lists all NXdata entries in the currently open NeXus 
+file. Note currently it will only list NXdata entries directly 
+below the top NXentry level. 
+\subsection*{nxload}
+{\bf nxload $ <$sdsname$> $ \par }
+{\bf nxload $ <$sdsname$> $,$ <$i$> $,$ <$j$> $ \par }
+{\bf nxload $ <$sdsname$> $,$ <$cx$> $,$ <$cy$> $ \par }
+{\bf nxload $ <$sdsname$> $,$ <$xmin$> $,$ <$xmax$> $,$ <$ymin$> $,$ <$ymax$> $ \par }
+{\bf nxload $ <$sdsname$> $,$ <$i$> $,$ <$j$> $,$ <$k$> $,$ <$cx$> $,$ <$cy$> $ \par }
+{\bf nxload $ <$sdsname$> $,$ <$i$> $,$ <$j$> $,$ <$k$> $,$ <$xmin$> $,$ <$xmax$> $,$ <$ymin$> $,$ <$ymax$> $ \par }
+\par
+\vspace{3pt}
+This command reads the content of an SDS (data set) of the NeXus 
+file into a KUPLOT data set. The first parameter is always the 
+name of the data block $ <$sdsname$> $. To list all data blocks, use the 
+command 'nxdir'. The other parameters allow one to extract a 
+section or rebin the data. In general, parameters $ <$i$> $, $ <$j$> $ and 
+$ <$k$> $ allow he selection of a cut or slice from the data. If one of 
+these variables is '*', it represents the direction to be extracted. 
+The parameters $ <$cx$> $ and $ <$cy$> $ allow one to compress the data, i.e. 
+a value of 2 would combine any neighboring data points while 
+reading. Finally, $ <$xmin$> $,$ <$xmax$> $,$ <$ymin$> $ and $ <$ymax$> $ allow one to 
+extract only the specified subsection. 
+\section{orient}
+{\bf orient [$ \{$ "landscape" $| $ "portrait" $\} $] \par }
+\par
+\vspace{3pt}
+This command sets the orientation of the resulting plot. The default 
+is landscape orientation, which is set, if the command is given without 
+parameters. 
+\section{plot}
+{\bf plot \par }
+\par
+\vspace{3pt}
+This command is used to plot the graph on the screen. 
+\section{prin}
+{\bf prin [$ <$dev$> $], [$ <$command$> $] \par }
+\par
+\vspace{3pt}
+This command allows to print the current view graph. The output 
+device type $ <$dev$> $ can be given as first parameter. The only 
+supported printing device is currently 'ps' for POSTSCRIPT. The 
+file is then automatically send to the default printer. As an 
+alternative the print command to be used can be specified as second 
+parameter. Note the command has to be in ". The print device and 
+the default print command can be altered in the file 'blk\_appl.f' 
+of the KUPLOT source code. 
+\par
+\begin{MacVerbatim}
+Examples:
+prin                  : Print to default device/printer
+prin ps,"lpr -drscgf" : Print Postscript using command lpr -drscgf ..
+\end{MacVerbatim}
+\section{ptyp}
+{\bf ptyp $ <$ik$> $,$ <$p$> $ \par }
+\par
+\vspace{3pt}
+This command sets the marker typ to be used for the found maxima of 
+data set $ <$ik$> $. The allowed values for $ <$p$> $ are listed below. 
+Additionally one can access all PGPLOT markers by adding 100 to the 
+PGPLOT marker number (see users guide). A value of 118 for example 
+will give the PGPLOT symbol 18, a filled star. 
+\par
+Allowed values for $ <$p$> $ are listed in the table. Alternatively 
+you can use the name (without blanks) 
+\par
+\begin{MacVerbatim}
+  0 : no marker|none  5 : filled square    10 : slash (/)
+  1 : dot             6 : empty triangle   11 : backslash (\)
+  2 : empty circle    7 : times (x)        12 : minus (-)
+  3 : filled circle   8 : pluss (+)        13 : vertical line
+  4 : empty square    9 : bar  (|)              from y-axis
+ -1 : x-coordinate   -2 : y-coordinate     -3 : both
+\end{MacVerbatim}
+\section{rdef}
+{\bf rdef [$ <$fname$> $] \par }
+\par
+\vspace{3pt}
+This command reads the KUPLOT setting from a defaults file. If 
+no filename $ <$fname$> $ is give, the setting are read from 'kuplot.def'. 
+\section{rebin}
+{\bf rebin $ <$ik$> $,$ <$delta$> $ \par }
+\par
+\vspace{3pt}
+This command allows one to rebin a 2D data set $ <$ik$> $ to a new 
+equi-distant grid with a spacing of $ <$delta$> $. The command creates 
+a new data set with the rebinned data. Note that this command will 
+only work for 2D data sets. 3D data can be rebinned by saving them 
+in GN format and reading them in via 'load zz,..' with the desired 
+grid size. 
+\section{rese}
+{\bf rese ["all"] \par }
+\par
+\vspace{3pt}
+This command resets KUPLOT. The next data set will be loaded as set 
+number 1. Values for aspect ratio, distance of tick marks etc. are 
+also reset to automatic determination. The optional parameter "all" 
+will reset KUPLOT back to the initial state including titles, colors, 
+labels and so on. 
+\section{rval}
+{\bf rval $ <$ik$> $,$ <$ij$> $[,$ <$weight$> $]  [, partial:$ <$no$> $] \par }
+\par
+\vspace{3pt}
+Calculates the residual between curves $ <$ik$> $ and $ <$ij$> $. 
+The last parameter defines the weighting scheme to be used for 
+the calculation. The valid values for $ <$weight$> $ are: 
+\par
+\begin{MacVerbatim}
+  "one"  : w(y) = 1.0              "sqa"  : w(y) = y**2
+  "sqrt" : w(y) = SQRT(y)          "inv"  : w(y) = 1/y
+  "log"  : w(y) = LOG(y)           "isq"  : w(y) = 1/SQRT(y)
+  "lin"  : w(y) = y                "dat"  : w(y) = 1/DY (error data set)
+\end{MacVerbatim}
+The "partial" parameter tells KUPLOT that this is one out of 
+several R-values that will be send back to DIFFEV. If these 
+partial R-values are to be averaged evenly, it is sufficient to 
+provide all partial R-values via the 'rval' command. 
+If you want to weigh these R-values differently, use the 
+==$> $ 'costvalue' command. 
+\par
+The R-values are also copied into the result variable as entries 
+one and two (unwieghted and weighted). 
+\section{sann}
+{\bf sann $ <$ia$> $,"OFF" \par }
+{\bf sann $ <$ia$> $,$ <$text$> $,$ <$x$> $,$ <$y$> $ [,$ \{$"l"$| $"c"$| $"r"$\} $] [,$ <$angle$> $] [,$ <$xp$> $,$ <$yp$> $] \par }
+\par
+\vspace{3pt}
+This command allows to add annotations to a plot. The first 
+parameter $ <$ia$> $ is the annotation number. The text is given 
+as second parameter $ <$text$> $. It is possible to use formats 
+(-$> $ filenames) to alter the text using variables. The next 
+two parameters $ <$x$> $ and $ <$y$> $ give the position where the text 
+should appear in plot coordinates. You can use 'mouse' to determine 
+the coordinates of a particular point. The default justification 
+of the text is LEFT, i.e. $ <$x$> $ and $ <$y$> $ specify the lower left 
+corner of the text. Other justifications can be given as 
+optional parameter. Next the angle between the text and the 
+x-axis $ <$angle$> $ can be given as optional last parameter. 
+The last two optional parameters $ <$xp$> $ and $ <$yp$> $ give the coordinates 
+to the head of an arrow drawn from the text position to this 
+point. If omitted, no arrow is drawn. 
+\par
+Font type, size and color is similar to the settings for 
+filenames and caption (-$> $ font). Call 'sann' without parameters 
+or use 'show annotation' to get a list of the currently set 
+annotations. 
+\section{save}
+{\bf save $ <$dev$> $, [$ <$filename$> $] \par }
+\par
+\vspace{3pt}
+$ <$dev$> $ : "ps", "png", "pic", "pdf" 
+This command allows to save the current view graph. The output 
+device type $ <$dev$> $ can be given as first parameter. The 
+choices for $ <$dev$> $ are: 
+"ps" for POSTSCRIPT 
+"pic" or "png" for a PNG 
+"pdf" for a PDF file format 
+\par
+If "pdf" is chosen, a postscript file and a pdf file will be generated. 
+\par
+The hardcopy and graphics file format 
+can be changed in the file 'blk\_appl.f90' of the KUPLOT source code 
+to any device that is supported by PGPLOT. 
+\section{sdef}
+{\bf sdef [$ <$fname$> $] \par }
+\par
+\vspace{3pt}
+This command writes the current setting of KUPLOT in a file. If 
+no filename $ <$fname$> $ is give, the setting are written to 'kuplot.def'. 
+\section{show}
+{\bf show $ <$sub$> $ [,$ <$par$> $] \par }
+\par
+\vspace{3pt}
+This command displays various parameters and settings of KUPLOT. 
+The current subcommands are: 
+\par
+\subsection*{annotation}
+{\bf show "annotation" \par }
+\par
+\vspace{3pt}
+Shows the currently set annotation for the active frame. 
+\subsection*{color}
+{\bf show "color" \par }
+\par
+\vspace{3pt}
+This commands shows the list of current color settings for the 
+background and pens. These settings might be altered using the 
+command 'col'. 
+\subsection*{cmap}
+{\bf show "cmap" \par }
+\par
+\vspace{3pt}
+This command shows the RGB values of the current color map used 
+to print bitmaps (only POSTSCRIPT output and X11). 
+\subsection*{config}
+{\bf show config \par }
+\par
+\vspace{3pt}
+This command lists configuration information on the screen such 
+as the maximum number of data sets that can be read or the maximum 
+allowed number of frames. 
+\subsection*{data}
+{\bf show "data" [,$ <$ik$> $] \par }
+\par
+\vspace{3pt}
+Shows information about the loaded data set $ <$ik$> $. If the 
+parameter $ <$ik$> $ is omitted, information about all loaded 
+data sets is printed. 
+\subsection*{error}
+{\bf show "error" \par }
+\par
+\vspace{3pt}
+The error status of KUPLOT is displayed. 
+\subsection*{font}
+{\bf show "font" \par }
+\par
+\vspace{3pt}
+This command shows the font settings for the active frame. 
+\subsection*{frames}
+{\bf show "frames" \par }
+\par
+\vspace{3pt}
+This command shows the actual frame settings. For more information 
+who to use frames in KUPLOT see help entry 'frames'. 
+\subsection*{hlin}
+{\bf show "hlin" \par }
+\par
+\vspace{3pt}
+Shows the current contour line settings for the active frame. 
+\subsection*{plot}
+{\bf show "plot" \par }
+\par
+\vspace{3pt}
+Shows plot information for the active frame. A value of -9999. means 
+automatic setting of the corresponding parameter before the next plot. 
+\subsection*{result}
+{\bf show "result" \par }
+\par
+\vspace{3pt}
+This command shows the values currently stored in the res[i] 
+variable array. 
+\subsection*{style}
+{\bf show "style" \par }
+\par
+\vspace{3pt}
+This command shows plotting style setting like line color, line 
+style etc. are displayed on the screen. 
+\section{sleg}
+{\bf sleg $ <$ik$> $, ["off", $ <$text$> $] [,$ <$ox$> $, $ <$oy$> $] \par }
+\par
+\vspace{3pt}
+This command sets a possible caption for data set $ <$ik$> $. The text 
+with a sample line, marker, .. will appear in the upper left corner 
+of the plot. The option can be turned off via 'sleg $ <$ik$> $,off'. The 
+caption text can also be a format string followed by the necessary 
+parameters (see filenames entry !). The optional parameters $ <$ox$> $ 
+and $ <$oy$> $ allow to specify the UPPER RIGHT corner of the box containing 
+the captions in data coordinates. If the parameters are omitted, 
+the upper right corner of the plot is used by default. 
+\section{smax}
+{\bf smax $ <$ik$> $,$ <$ifen$> $ [,$ <$fname$> $] \par }
+\par
+\vspace{3pt}
+This command searches for maxima within data set $ <$ik$> $. 
+The parameter $ <$ifen$> $ determines how many points (in each 
+direction) around a possible maximum must have a lower value 
+as the maximum itself. For smooth data use larger values, 
+for rough data smaller values. If the parameter $ <$fname$> $ is given, 
+the results are saved to the file $ <$fname$> $ rather than printed 
+in the screen. 
+\par
+The results of the search are stored in the variable array res[i]: 
+\par
+\begin{MacVerbatim}
+   res[0]              : Number of stored values.
+   res[i]              : Number of x point for i-th maximum (2d data)
+   res[2i-1],res[2i]   : Number of x,y point for i-th maximum (3d data)
+\end{MacVerbatim}
+The actual values can be determined by e.g. x[ik,res[5]]. For more 
+information, see variables entry. 
+\section{smooth}
+{\bf smooth $ <$ik$> $,$ <$ip$> $ [,$ <$o$> $] [, $ \{$"x" $| $ "y"$\} $] \par }
+\par
+\vspace{3pt}
+This command smoothes the data set number $ <$ik$> $ over $ <$ip$> $ points. 
+The number $ <$ip$> $ should be a positive odd number. KUPLOT uses the 
+Savitzky-Golay algorithm. The order of the smoothing polynomial defaults 
+to two. Alternatively the user can give a higher order (4,6) via 
+the optional parameter $ <$o$> $. Within limits this algorithm allows 
+smoothing without resolution (see section 14.8. in Numerical Recipes). 
+Three dimensional files are per default smoothed in x and y direction. 
+The user can restrict the smoothing to only one direction by adding the 
+optional parameter "x" or "y". An normal gliding average smoothing 
+is available via the command -$> $ glat. 
+\section{sort}
+{\bf sort $ <$ik$> $ \par }
+\par
+\vspace{3pt}
+This command sorts the data set $ <$ik$> $ increasing in its x-value. 
+\section{spline}
+{\bf spline $ <$ik$> $,$ <$ig$> $ \par }
+\par
+\vspace{3pt}
+This command will interpolate data set $ <$ik$> $ for x-values given 
+by data set $ <$ig$> $. The result is stored as a new data set. The 
+interpolation is done using a spline. 
+\section{skal}
+{\bf skal [$ <$xmin$> $, $ <$xmax$> $] [,$ <$ymin$> $, $ <$ymax$> $] \par }
+\par
+\vspace{3pt}
+This command sets the plotting window to $ <$xmin$> $ to $ <$xmax$> $ and $ <$ymin$> $ 
+to $ <$ymax$> $. If the data exceed the given window, they will be clipped. 
+If no parameters are given, the plotting window will be set to the 
+maximum / minimum values of the read data sets. If only the parameter 
+pair $ <$xmin$> $ and $ <$xmax$> $ are given, the plotted y-range remains 
+at the current setting. 
+\section{tit1/2}
+{\bf tit1 $ <$string$> $ \par }
+{\bf tit2 $ <$string$> $ \par }
+\par
+\vspace{3pt}
+This command sets the text for the two title lines. Because KUPLOT 
+treats the ',' as a parameter separator it can not be used within 
+the label $ <$string$> $. The command allows to build a label from a 
+format text and variables/numbers. It is the same mechanism as 
+described in -$> $ filenames. 
+\par
+\begin{MacVerbatim}
+Examples:
+tit1 Powder data ZrO2                   : 'Powder data ZrO2'
+tit1 "Run #%d / Sample #%d",i[1],i[2]   : 'Run #1 / Sample #5'
+                                          (for i[1]=1 & i[2]=5)
+\end{MacVerbatim}
+\section{window}
+{\bf window $ <$id$> $ [,$ <$sf$> $] \par }
+\par
+\vspace{3pt}
+This command allows the user to select a graphics output window. 
+The first window has $ <$id$> $ of 1, the second window 2 and so on. 
+The window command allows to create and toggle between graphics 
+windows (provided you use the default $\backslash$XSERV device). Note that 
+print and save command will use the content of the currently 
+active window. Optionally the windows can be scaled using the 
+additional scale factor parameter $ <$sf$> $ (default = 0.7). 
+\section{variables}
+\par
+The program KUPLOT recognizes various variables. The contents of a 
+variable can be displayed using the 'eval' command. Some variables 
+are READ ONLY (RO) and can not be changed. 
+\par
+\begin{MacVerbatim}
+Free variables :
+\end{MacVerbatim}
+---------------- 
+\par
+\begin{MacVerbatim}
+"i[<n>]"           : integer variables (currently 0 <= <n> <= 59)
+"r[<n>]"           : real variables    (currently 0 <= <n> <= 59)
+KUPLOT specific variables :
+---------------------------
+"x[<ik>,<ip>]"     : x value of point <ip> in loaded data set <ik>.
+"y[<ik>,<ip>]"     : y value of point <ip> in loaded data set <ik>.
+"dx[<ik>,<ip>]"    : value of sigma x of <ip> in loaded data set <ik>.
+"dy[<ik>,<ip>]"    : value of sigma y of <ip> in loaded data set <ik>.
+"z[<ik>,<ix>,<iy>" : z value of point <ix>,<iy> of loaded data set <ik>.
+"nx[<ik>]"         : # points in x-direction of data set <ik>. (RO)
+"ny[<ik>]"         : # points in y-direction of data set <ik>. (RO)
+"ni[<ik>]"         : data set <ik> is 2D (=0) or 3D (=1).      (RO)
+"np[<ik>]"         : # points of 1D data set <ik>,             (RO)
+\end{MacVerbatim}
+                   : \# or nx[$ <$ik$> $*ny[$ <$ik$> $] for 2D set $ <$ik$> $.    (RO) 
+\par
+\begin{MacVerbatim}
+"xmin[<ik>]"       : minimum x-value of data set <ik>          (RO)
+"xmax[<ik>]"       : maximum x-value of data set <ik>          (RO)
+"ymin[<ik>]"       : minimum y-value of data set <ik>          (RO)
+"ymax[<ik>]"       : maximum y-value of data set <ik>          (RO)
+"zmin[<ik>]"       : minimum z-value of data set <ik>          (RO)
+"zmax[<ik>]"       : maximum z-value of data set <ik>          (RO)
+"n[1]"             : number of loaded data sets
+"n[2]"             : maximum number of data sets               (RO)
+"n[3]"             : maximum number of frames                  (RO)
+"n[4]"             : maximum number of annotations             (RO)
+"n[5]"             : maximum number of bonds                   (RO)
+"p[i]"             : Fit parameters
+"s[i]"             : Fit parameter sigmas
+"axis[1,i]"        : Angle of labels for axis i (1=x,2=y)
+"axis[2,i]"        : Length of major ticks for axis i (1=x,2=y)
+"axis[3,i]"        : Length of minor ticks for axis i (1=x,2=y)
+"axis[4,i]"        : Subdivisions between ticks, axis i (1=x,2=y)
+"axis[5,i]"        : Distance numbers - axis i (1=x,2=y)
+"axis[6,i]"        : Distance label - axis i (1=x,2=y)
+"pwin[i]"          : Current plotting dimensions
+                     (1:xmin,2:xmax,3:ymin,4:ymax)             (RO)
+"cmap[<ic>,3]"     : color map entry RGB for color <ic>
+"cmax[1]"          : maximum number of bitmap colors          (RO)
+"size[i]"          : scale factor for output (1=x11,2=ps,3=pic)
+Variables containing command results :
+--------------------------------------
+"res[<n>]"          : Result of several calculations that return more
+                      than one value.  res[0] contains the number of
+                      values returned, res[1] to res[res[0]] contain the
+                      actual values.  The values of "res" change every time,
+                      a command is applied that returns more than one
+                      value. The old values are lost !
+\end{MacVerbatim}
+\section{errors}
+{\bf Error messages \par }
+\par
+\vspace{3pt}
+The program has been written such that it should handle almost 
+any typing error when giving commands and hopefully all errors 
+that result from calculation with erroneous data. When an error 
+is found an error message is displayed that should get you back 
+on track. Command language specific errors can be found in the 
+'command language' section of the on-line help. 
+\par
+The error messages are grouped in the following categories: 
+\par
+\begin{MacVerbatim}
+KUPL   Errors specific to KUPLOT usage
+\end{MacVerbatim}
+Each error message is displayed together with the corresponding 
+category $ <$cccc$> $ and the error number $ <$numb$> $ in the form: 
+\par
+{\bf   ****CCCC**** Message                    **** numb **** \par }
+\par
+\vspace{3pt}
+More information to a particular error message can be found by 
+typing 'help $ <$cccc$> $ $ <$numb$> $' where $ <$cccc$> $ is the category and 
+$ <$numb$> $ the error number. 
+\par
+\subsection*{appl}
+{\bf KUPLOT errors \par }
+\par
+\vspace{3pt}
+These messages describe application specific errors (here KUPLOT) 
+in contrast to errors concerning the command language handling. 
+\par
+\subsubsection{Error -1: Maximum number of data sets exceeded}
+\par
+There is no space left for a new data set. The maximum number of 
+data sets is defined by MAXKURVTOT in 'kuplot.inc'. In order to 
+change this setting you have to recompile the program. 
+\subsubsection{Error -2: Unknown file format}
+\par
+The given file format with the 'load' command is unknown. Check 
+the on-line help for 'load' for a list of valid file formats. 
+\subsubsection{Error -3: Maximum number of data points exceeded}
+\par
+There is not enough space for the requested data set left. The 
+maximum number of data points for ALL data sets is defined by 
+MAXARRAY in 'kuplot.inc'. 
+\subsubsection{Error -4: Invalid data set selected}
+\par
+The given data set number is not valid. Try 'show data' for a 
+list of loaded data sets. 
+\subsubsection{Error -5: Not an ASCII PGM file}
+\par
+The PGM file to be read is not ASCII (Code P2). Currently KUPLOT 
+can only read ASCII PGM files. If you have the 'pbmplus' package 
+installed, use the tool 'pnmnoraw' to convert from binary to ASCII 
+format. 
+\subsubsection{Error -6: Number of data points exceeds limit}
+\par
+There is not enough space for the requested data set left. The 
+maximum number of data points for ALL data sets is defined by 
+MAXARRAY in 'kuplot.inc'. 
+\subsubsection{Error -7: Invalid parameter value entered}
+\par
+The given parameter value like color, line typ or font id is invalid. 
+Check the on-line help for the corresponding command for valid 
+parameters. 
+\subsubsection{Error -8: Use only if NO data set is loaded}
+\par
+The command can only be used, if NO data sets are loaded. Use the 
+command 'rese' and reload the data sets after executing the command. 
+\subsubsection{Error -9: Too many excluded regions}
+\par
+The number of excluded regions exceeds the upper limit. The number 
+is defined in 'load.f' and the program must be recompiled after 
+changing the value. 
+\subsubsection{Error -10: Too many major tick marks}
+\par
+The number of major tick marks is too large to be displayed. Use the 
+'mark' command to adjust the number of tick marks. 
+\subsubsection{Error -11: Invalid plot device selected}
+\par
+The output device selected is invalid. Check the on-line help for 
+supported output device types. 
+\subsubsection{Error -12: No data present to plot}
+\par
+There are no data present to be plotted. You are doing something 
+wrong :-) 
+\subsubsection{Error -13: Too much points for spline / steps}
+\par
+The number of points for the current data set is too large for 
+'step' or 'spline' mode. The value is set by MAXSP in the file 
+'config.inc'. The program needs recompiling after the value is 
+changed. 
+\subsubsection{Error -14: Invalid contour line set selected}
+\par
+An invalid contour line set was selected. The maximum number of 
+contour line sets is specified by MAXHL in the file 'config.inc'. 
+The program must be recompiled after the variable was altered. 
+\subsubsection{Error -15: Invalid frame selected}
+\par
+An invalid frame was selected. Check 'show frames' for the current 
+frame settings. 
+\subsubsection{Error -17: Maximum number of frames exceeded}
+\par
+You want more frames than KUPLOT can handle. If you absolutely need 
+more frames, change the setting of MAXFRAME in 'config.inc' and re- 
+compile the program. 
+\subsubsection{Error -18: Invalid RGB color found}
+\par
+RGB colors must have values between 0.0 and 1.0. The entered value 
+is invalid. 
+\subsubsection{Error -19: Invalid peak number found}
+\par
+There is no maximum with the specified number. Use the 'smax' 
+command to see a list of found maxima. 
+\subsubsection{Error -20: No data points in selected area}
+\par
+The area selected for the command contains no points. 
+\subsubsection{Error -21: Too many maxima found at search}
+\par
+The search routine called by 'smax' has found too many maxima. Try 
+limiting the number by changing the parameter $ <$ifen$> $ (see help for 
+smax). The maximum number is set by MAXMAX in the file 'plot.f' and 
+'math.f'. 
+\subsubsection{Error -22: No maxima found}
+\par
+No maxima were found. Try a different setting of the $ <$ifen$> $ parameter 
+(see help for command 'smax') or are there no maxima after all ??? 
+\subsubsection{Error -23: Incompatible data sets for KCAL}
+\par
+The command 'kcal' works only for data sets of the same typ (2d or 
+3d) and identical size. 
+\subsubsection{Error -24: Size of res[] array exceeded}
+\par
+The size of the result variable array res[i] is exceeded. The size 
+is defined in 'param.inc'. 
+\subsubsection{Error -25: Invalid fit function selected}
+\par
+An invalid fit function was selected. Note that not all functions 
+are available for 3D data sets. Check the help entry for 'fit func' 
+for more information. 
+\subsubsection{Error -26: Invalid fit parameter selected}
+\par
+An invalid fit parameter was selected. 
+\subsubsection{Error -27: Invalid weighting scheme selected}
+\par
+The selected weighting scheme is invalid. Check the help entry for 
+'fit wic' for more information. 
+\subsubsection{Error -28: Invalid annotation number selected}
+\par
+The given annotation number (command 'sann') is not valid. If you 
+need more annotations, you have to change MAXAN in the file 
+'kuplot.inc' and recompile KUPLOT. 
+\subsubsection{Error -29: x or y-range of data set is zero}
+\par
+The x- or y-range of the read 3D file is zero. Check your input 
+file. 
+\subsubsection{Error -30: Not enough maxima found for start values}
+\par
+The number of Gaussians or Lorenzians exceeds the number of maxima 
+found in your data set. You can set the start parameters manually 
+(-$> $ 'par') or adjust the size of the search window (-$> $ 'mfen') 
+until all needed maxima are found. 
+\subsubsection{Error -31: To many fit parameters}
+\par
+The number of fit parameters exceeds the maximum limit. Either 
+use a theory function with less parameters or adjust the value of 
+MAXPARA in 'config.inc' and recompile KUPLOT. 
+\subsubsection{Error -33: Invalid bond definition selected}
+\par
+An invalid bond definition was specified. Check your input. 
+\subsubsection{Error -34: Data set to large for bitmap drawing}
+\par
+In order to use PGPLOT contour and bitmap routines, the data set 
+must fit in an array of the size MAXZ x MAXZ regardless of the 
+current setting of MAXDAT. Either use a smaller data set or adjust 
+the value of MAXZ in 'config.inc' and recompile KUPLOT. 
+\subsubsection{Error -35: No valid frame selected}
+\par
+During the select frame mouse operation and error occurred. Try 
+selecting the appropriate frame again. Note that there might be 
+areas of the plotting surface that do not belong to any frame. 
+\subsubsection{Error -36: Configuration mismatch file \& KUPLOT}
+\par
+The loading of KUPLOT defaults works only for default files that 
+were created with a KUPLOT version using the identical array 
+size definitions. 
+\subsubsection{Error -37: Scan not found in SPEC file}
+\par
+An invalid scan number was specified. Check your SPEC file for 
+the correct number (\#S xxx). 
+\subsubsection{Error -38: Invalid column value specified}
+\par
+The column name or number was not found for the specified scan. 
+Note that names must be given in full and are case sensitive. 
+\subsubsection{Error -39: Invalid smoothing size specified}
+\par
+An invalid smoothing size was given. Valid numbers are odd 
+integers. The minimum value for a smoothing polynomial of the 
+order of 2 is 5, for 4th order 7. 
+\subsubsection{Error -40: Maximum derivative exceeded}
+\subsubsection{Error -41: MCA scan not found}
+\subsubsection{Error -42: Invalid window ID selected}
+\subsubsection{Error -43: Invalid value/range for log. axis}
+\subsubsection{Error -44: Data sets must have same x-range}
+\subsubsection{Error -45: Step size of data sets is different}
+\subsubsection{Error -46: Invalid bank number found in iparm. file}
+\subsubsection{Error -47: Error reading instrument parameter file}
+\subsubsection{Error -48: Unsupported GSAS binning type found}
+\subsubsection{Error -49: No TIME\_MAP entry found in GSAS file}
+\subsubsection{Error -50: Requested bank not found in GSAS file}
+\subsubsection{Error -51: Unit for GSAS TOF conversion invalid}
+\subsubsection{Error -52: Unsupported incident spectr. function}
+\subsubsection{Error -53: This KUPLOT has NeXus support disabled}
+\subsubsection{Error -54: Close current NeXus file first}
+\subsubsection{Error -55: No NeXus file currently open}
+\subsubsection{Error -56: NeXus SDS has too many dimensions}
+\subsubsection{Error -57: Invalid SDS name specified (try nxdir)}
+\subsubsection{Error -58: SDS section value out of range}
+\subsubsection{Error -59: Invalid column number specified}
+\subsubsection{Error -60: Multiple point with same x, no spline}
+\subsubsection{Error -61: Singular matrix in Savitzky calculation}
+\par
+\subsubsection{Error -62: Data set is not 2D}
+\subsubsection{Error -63: Parameter no outside range}
+\subsubsection{Error -64: DIFFEV Summary file not found}
+\subsubsection{Error -65: DIFFEV LOG  or Current file not found}
+\subsubsection{Error -66: DIFFEV Rvalue file not found}

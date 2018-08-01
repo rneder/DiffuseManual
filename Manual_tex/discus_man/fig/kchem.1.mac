@@ -1,0 +1,30 @@
+rese
+orient p
+#
+load cr,chem.1.plot
+load xy,chem.1.homo
+#
+fnam off
+#
+buf 0.08
+nfra 2
+#
+afra 1
+kfra 1,1
+msiz 1,0.03
+skal -50.5,49.5,-50.5,49.5
+mark 30,30
+fset 2
+achx x [l.u.]
+achy y [l.u.]
+aver 1.0
+#
+afra 2
+kfra 2,2
+lart 2,2
+lcol 2,6
+skal 0.0,1.15,0,450
+mark 0.2,100
+aver 1.15/450.0
+achx Concentration
+achy Number

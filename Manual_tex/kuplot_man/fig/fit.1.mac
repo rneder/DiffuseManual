@@ -1,0 +1,25 @@
+rese
+#
+load xy,s288.xy
+#
+fit 1
+#
+mfen 7
+func gaus,1
+urf 10.0
+cyc 100
+par
+#
+run
+save
+#
+func gaus,2
+#
+p[ 7]=0.0
+p[ 8]=p[4]
+p[ 9]=p[5]
+p[10]=p[6]
+par
+# 
+run
+save

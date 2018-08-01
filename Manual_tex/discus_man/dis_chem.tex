@@ -1,0 +1,278 @@
+%------------------------------------------------------------------------
+% Chapter:  Analyzing defect structures
+%------------------------------------------------------------------------
+
+\chapter{Analyzing defect structures \label{chem}}
+
+After describing how to create and change structures this chapter
+will give a summary of \Discus functions to analyze a given
+disordered structure. All those commands are accessed via the {\tt
+chem} sub level of the program. This segment is entered using the
+command {\tt chem} and left again by the command {\tt exit}. The
+command {\tt mode} determines whether the entered commands operate
+on atoms ({\tt mode atom}) or molecules ({\tt mode mole}). If
+working with molecules the molecule type number replaces the atom
+name or number as parameter for the different commands. Note that
+not all commands are available in molecule mode. Also note, that the
+\Discus cookbook \citep{nedpro} includes a complete chapter on
+the analysis of disordered structures with many examples and
+exercises.
+
+%------------------------------------------------------------------------
+
+\section{Occupancies \label{chem-occ}}
+
+The command {\tt elem} will display the chemistry of the current
+model crystal. Depending on the selected mode the relative abundance
+of the present atom or molecule types is written on the screen. The
+results are saved in the variable {\tt res[i]} (see chapter
+FORTRAN style interpreter in the package manual). Entry {\tt res[1]}
+contains the relative amount of atom types {\tt void} and entries 
+{\tt res[1]} the relative amount of atom type 1.
+
+The relative abundances given by the command
+{\tt elem} are for the complete crystal and contain no further
+information about its homogeneity. \Discus allows the user to
+obtain concentration as well as correlation (see section
+\ref{chem-corr}) distributions within the crystal using the command
+{\tt homo}. This is achieved by sampling the crystal using a
+predefined volume.
+
+%------------------------------------------------------------------------
+
+\section{Distortions \label{chem-dist}}
+
+After analyzing concentrations within a crystal, this section will
+focus on the analysis of distortions. The simplest way is to compute
+average distances between different atom types in a given range. An
+example is given below. First the desired range of interatomic
+distances is limited to values between 4.5\AA \ and 5.5\AA \ (line
+1). Next the bond length distribution is calculated using the 
+\Discus command {\tt blen}. Here distances between {\it all} atoms
+will be considered and the resulting distribution is written to the
+file {\it chem.2.blen} (line 2).
+%
+
+\begin{MacVerbatim}
+     1  set blen,4.5,5.5
+     2  blen all,all,chem.2.blen
+\end{MacVerbatim}
+%
+Rather than using {\tt all} as parameters for the command {\tt
+blen}, atom names or numbers could be used to calculate the average
+bond length only for specify atom types.
+\par
+
+The command {\tt blen} averages {\bf all} distances within the given
+range specified with {\tt set blen}. In cases where more specific
+information about distances in given directions is needed, the
+command {\tt disp} must be used. Now it is necessary to enter
+neighbor definitions which can either be specified by a distance
+criteria or by individual vectors. In the example below the command
+{\tt set vec} in line 1 defines vector 1 (first 1) to be from site 1
+in one unit cell to site 1 (2nd and 3rd parameter) in the next unit
+cell in x-direction (1,0,0 - last 3 parameters). Next this vector is
+used as neighbor definition 1 (line 2). Finally the lattice
+averages are computed between all present atom types (line 3).
+%
+\begin{MacVerbatim}
+     1  set vec,1,1,1,1,0,0
+     2  set neig,vec,1
+     3  disp all,all
+\end{MacVerbatim}
+
+%------------------------------------------------------------------------
+
+\section{Correlations \label{chem-corr}}
+
+In this chapter the concept of correlations as a measure for those
+two-body interactions will be introduced. Although diffuse
+scattering contains only information about two-body interactions the
+concepts described here can easily be extended to include multi-site
+correlations. It should be noted that although these multi-site
+interactions do not show up in the diffraction pattern directly,
+they can have a constraining influence on two-body interactions and
+thus affect the diffraction pattern. However, \Discus is
+currently limited to the calculation of two-body interaction
+averages. \par
+
+We will talk about atom types in the following section, however, all
+correlation related commands are available for molecules as well. To
+work with molecules use the command {\tt mode mole} and specify
+molecule types rather than atom types or names as parameters for the
+commands.
+
+\subsection*{Occupational correlations \label{chem-corr-occ}}
+
+One definition of the correlation coefficient $c_{ij}$ between a
+pair of sites $i$ and $j$ based on a statistical definition of
+correlation \citep{we85} is given in equation \ref{chem-eq1}.
+%
+\begin{equation}
+    c_{ij} = \frac {P_{ij} - \theta^{2}} { \theta (1 - \theta)}
+    \label{chem-eq1}
+\end{equation}
+%
+$P_{ij}$ is the joint probability that both sites $i$ and $j$ are
+occupied by the same atom type and $\theta$ is its overall
+occupancy.  Negative values of $c_{ij}$ correspond to situations
+where the two sites $i$ and $j$ tend to be occupied by {\it
+different} atom types while positive values indicate that sites $i$
+and $j$ tend to be occupied by the {\it same} atom type.  A
+correlation value of zero describes a random distribution.  The
+maximum negative value of $c_{ij}$ for a given concentration
+$\theta$ is $-\theta/(1-\theta)$ ($P_{ij}=0$), the maximum positive
+value is +1 ($P_{ij}=\theta$). Let us look at a simple example:
+%
+\begin{MacVerbatim}
+     1  read
+     2  stru chem.1.stru
+     3  #
+     4  chem
+     5  #
+     6    set mode,quick,periodic
+     7  #
+     8    set vec,1,1,1, 1, 0, 0
+     9    set vec,2,1,1,-1, 0, 0
+    10    set vec,3,1,1, 0, 1, 0
+    11    set vec,4,1,1, 0,-1, 0
+    12  #
+    13    set vec,5,1,1, 1, 1, 0
+    14    set vec,6,1,1,-1, 1, 0
+    15    set vec,7,1,1, 1,-1, 0
+    16    set vec,8,1,1,-1,-1, 0
+    17  #
+    18    set neig,vec,1,2,3,4
+    19    set neig,add
+    20    set neig,vec,5,6,7,8
+    21  #
+    22    corr occ,zr,void
+    23  #
+    24  exit
+\end{MacVerbatim}
+%
+The macro starts with the reading of the disordered structure (lines
+1-2). After the {\tt chem} sublevel is entered (line 4) periodic
+crystal boundaries are selected (line 6).  The parameter {\tt quick}
+selects a faster neighboring finding algorithm which only works for
+crystals arranged in the \Discus storage order (see section
+\ref{struc-int}).  Note that $c_{\langle 10 \rangle}$ stands for the
+nearest neighbor correlations in all four symmetrically equivalent
+$<$10$>$ directions of the two dimensional cubic test crystal, i.e.
+$c_{10}$, $c_{\overline{1}0}$, $c_{01}$ and $c_{0 \overline{1}}$.
+All eight neighboring directions for $c_{\langle 10 \rangle}$ and
+$c_{\langle 11 \rangle}$ are defined as vectors 1 to 8 in lines 8 to
+16 of the macro file.  Next vectors 1 to 4 are grouped as
+neighboring definition for $c_{\langle 10 \rangle}$ (line 18) and
+vectors 5 to 8 for $c_{\langle 11 \rangle}$ (line 20).  The command
+'set neig,add' (line 19) stores the current neighboring definition
+and allows the definition of a new one.  Finally the correlations
+for the defined neighboring directions are calculated (line 22). The
+screen output looks like this:
+%
+\begin{MacVerbatim}
+    Calculating correlations
+        Atom types : A = ZR   and B = VOID
+
+        Neig.     AA         AB         BB         # pairs    correlation
+        -----------------------------------------------------------------
+           1    50.49 %    48.99 %      .51 %       40000       -.3061
+           2    71.04 %     7.89 %    21.07 %       40000        .7897
+\end{MacVerbatim}
+%
+The program lists the probabilities for AA, AB and BB pairs and the
+corresponding correlations $c_{ij}$.  Here the value for $c_{\langle
+10 \rangle}$ is negative, i.e.  vacancy neighbors in $<$10$>$
+directions tend to be avoided.  Neighboring vacancies in $<$11$>$
+direction on the other hand are much more likely compared to a
+random vacancy distribution indicated by the large positive value of
+$c_{\langle 11 \rangle}$.
+
+\subsection*{Displacement correlations \label{chem-corr-disp}}
+
+The correlation coefficient $c_{ij}$ for displacement correlations
+between two sites $i$ and $j$ is defined as:
+%
+\begin{equation}
+    c_{ij} = \frac { \langle x_{i} x_{j} \rangle }
+                   { \sqrt { \langle x_{i}^{2} \rangle
+                             \langle x_{j}^{2} \rangle } }
+    \label{chem-eq2}
+\end{equation}
+%
+Here $x_{i}$ is the displacement of the atom on site $i$ from the
+average position in a given direction and $\langle \cdot \rangle$
+stands for the average over the crystal.  Again a negative value
+describes a situation where the pairing of corresponding
+displacements are less likely than in a crystal with random
+displacements whereas a positive value indicates a larger than
+random probability. The definition of neighbors is identical to the
+example in the previous section.  Additionally the command {\tt set
+neig,dir} is used to determine the displacement direction to be
+used. Note that the displacement direction for the two sites $i$ and
+$j$ is not necessarily the same, e.g.  one could be interested in
+the correlation between the x-displacement on one site and the
+y-displacement on the neighboring site.
+
+\subsection*{Correlation fields \label{chem-corr-field}}
+
+In the previous sections a correlation $c_{ij}$ for a given pair of
+neighboring atoms was computed. An interesting information, however,
+is how these correlations extend within the crystal. The program
+\Discus allows the calculation of correlation fields for
+occupational and displacement correlations (command: {\tt field}).
+
+%------------------------------------------------------------------------
+
+\section{Bond valence sums \label{chem-bval}}
+
+The concept of {\it bond valence} has found wide applicability in
+solid state chemistry \citep{bral85,brok91}. One application is
+the use of bond-valence sums at atoms as a check on the
+reliability of a determined local structure. The valence of an
+atom i is calculated by the following empirical expression:
+%
+\begin{equation}
+  V_{i} = \sum_{ij} \exp \left\{ \frac{r^{0}_{ij} - d_{ij}}{b} \right\}
+  \label{chem-eq-bval}
+\end{equation}
+%
+Here $r^{0}_{ij}$ and $b$ are the so-called bond valence parameters,
+$d_{ij}$ is the distance between the central atom i and the
+neighboring atom j. The sum goes over all nearest neighbors. The
+bond valence parameters used by \Discus were taken from a list
+compiled by I.D. Brown, McMaster University, Hamilton, Canada from
+various references. Those parameters can be displayed using the
+command {\tt show}. An example is given below:
+%
+\begin{MacVerbatim}
+    discus > show bval,zr4+,o2-
+    Bond valence parameters ZR4+ - O2-  : r0 =  1.9280 b =  0.3700
+\end{MacVerbatim}
+%
+The parameters are specific for a given atom pair, here Zr$^{4+}$
+and O$^{2-}$. Note that it is required to use the atom names
+indicating the oxidation state like in the example above. It should
+also be noted, that bond valence parameters are not available for
+all pairs of atoms.
+
+%------------------------------------------------------------------------
+
+\section{Other tools \label{chem-other}}
+
+In this chapter a short summary of functions available in the 'chem'
+sublevel not discussed previously will be given. \par
+
+The average structure of a crystal can be calculated using the
+command {\tt aver}. Occupancies, average positions and standard
+deviations for these positions are calculated. This command is not
+available when working with molecules. The neighborhood of a given
+atom or molecule can be examined using the commands {\tt neig} and
+{\tt env}. The command {\tt neig} will use the currently stored
+neighbor definitions whereas {\tt env} will display {\bf all} atoms
+found in a given distance from the chosen origin. Finally the
+conversion between atom index and unit cell / atom site can be made
+using the equation given in section \ref{struc-int} or via the
+command {\tt trans} in the {\tt chem} level of \discus.
+
+%------------------------------------------------------------------------

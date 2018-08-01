@@ -1,0 +1,206 @@
+%------------------------------------------------------------------------
+% Chapter:  Crystallography
+%------------------------------------------------------------------------
+
+\chapter{Crystallography \label{cryst}}
+
+In this chapter crystallographic calculations such as conversion
+from direct to reciprocal space and {\it vice versa} are discussed
+as well as symmetry operations and unit cell transformations.  The
+mathematical background of the described calculations can be found
+e.g. in \citet{sands}.
+
+%------------------------------------------------------------------------
+
+\section{Crystallographic calculations \label{cryst-calc}}
+
+In order to determine the proper place of a new atom, or to check
+existing atoms several functions perform calculations that are based
+on the metric of the crystal.  Several intrinsic functions are
+provided by \discus. They are listed in Table \ref{func-cryst}
+in section \ref{get} of this manual.  Those function allow the user
+to calculate e.g. bond length and bond angles within the current
+crystal. \par
+%
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Command} & {\bf Description} \\
+  \hline\hline
+  {\tt d2r}     & Conversion from direct (real) space to reciprocal space \\
+  {\tt r2d}     & Conversion from reciprocal space to direct space \\
+  {\tt vprod}   & Vector product in real or reciprocal space \\
+  {\tt proj}    & Calculates the projection from one vector on another in
+                  real or reciprocal space \\
+  \hline
+\end{tabularx}
+\caption{\label{cry-tab1}Commands for crystallographic calculations}
+\end{table}
+%
+The crystallographic calculation commands provided by \Discus
+are shown in Table \ref{cry-tab1}. All commands display the results
+on the screen and store them in the variable res[i] (see section
+Variables in the package manual), which allows further use of the 
+results in macro files.
+\par
+
+The commands {\tt d2r} and {\tt r2d} calculate the components of a
+given vector ${\bf u}$ in the complementary space. The vector
+product ${\bf w} = {\bf u} \ast {\bf v}$ gives a vector ${\bf w}$
+that is normal to the two vectors ${\bf u}$ and ${\bf v}$. The
+length of the resulting vector ${\bf w}$ is given by $|{\bf u}|
+\cdot |{\bf v}| \cdot \sin (\angle ({\bf u},{\bf v}))$ which is the
+area of the parallelogram spanned by the vectors ${\bf u}$ and ${\bf
+v}$. This vector product is calculated by the command {\tt vprod}
+and any of the three vectors ${\bf u}$, ${\bf v}$ and ${\bf w}$ may
+be in direct or reciprocal space. The command {\tt proj} computes
+the projection of a vector ${\bf u}$ onto the vector ${\bf v}$ or on
+the plane normal to vector ${\bf v}$. The length of the projected
+vector is given by ${\bf u} \cdot {\bf v} / |{\bf v}|$. Again all
+input or resulting vectors can be in direct or reciprocal space.
+More details about these commands can be found in the online help of
+\discus. This version of \Discus does not offer a special
+command for the scalar product of two vectors. You can readily
+calculate the scalar product by keeping in mind its definition:
+$|{\bf u}| \cdot |{\bf v}| \cdot \cos (\angle ({\bf u},{\bf v}))$.
+You can calculate this value by the expression: {\tt blen({\bf
+u})*blen({\bf v})*cosd (bang({\bf u}, {\bf v}))}.
+
+%------------------------------------------------------------------------
+
+\section{Generalized symmetry operations \label{cryst-sym}}
+
+Lets assume that you want to rotate the oxygen atoms of a $SiO_{4}$
+tetrahedra around one of the Si-O bonds.  Or you want to create the
+twinned structure of a triclinic crystal.  The operations require
+the application of a symmetry element whose axis is not parallel to
+any of the base vectors and/or whose rotation angle is different
+from 60, 90, 120, or 180$^{\circ}$. Needless to say, the resulting
+symmetry matrix will not contain just one's and zero's. A general
+symmetry operation can be described by a 4x4 matrix of the following
+form:
+%
+\begin{equation}
+    S = \left (
+        \begin{array}{cccc}
+                w_{11} & w_{12} & w_{13} & t_{1}  \\
+                w_{21} & w_{22} & w_{23} & t_{2}  \\
+                w_{31} & w_{32} & w_{33} & t_{3}  \\
+                0 & 0 & 0 & 1
+        \end{array} \right )
+        \label{cry-eq1}
+\end{equation}
+%
+Here the components $w_{ij}$ define the rotation and $t_{i}$ the
+translational part of the symmetry operation.  A detailed
+description for the derivation of this general symmetry operation
+is found in \citet{sands}.\par
+
+Additionally \Discus allows one to select the atom or molecule
+types to be included in the symmetry operation using the {\tt
+sele/dese} and {\tt msel/mdes} commands.  The user can specify
+whether the atom or molecule created by the symmetry operation
+replaces its original or is inserted as a new atom or molecule in
+the crystal. The direction of the symmetry axis can either be given
+in direct or reciprocal space.  A pure mirror operation is performed
+by an improper rotation by 180$^{\circ}$.\par
+
+%------------------------------------------------------------------------
+
+\section{Generalized shear operations \label{cryst-shear}}
+
+A similar operation is required if you want to distort the structure
+or part of the structure. Such a distortion may occur upon a 
+orthorhombic to monoclinic transformation. If the whole crystal is
+sheared under this transformation it is, of course, easier to simply
+change the lattice constants. If, however, only part of the structure
+is to be deformed to produce for example a fish bone like pattern
+a local shear operation may be required.
+
+The {\tt shear} menu in \Discus allows to perform a shear operation:
+%
+\begin{equation}
+    S = \left (
+        \begin{array}{cccc}
+                a_{11} & a_{12} & a_{13} & t_{1}  \\
+                a_{21} & a_{22} & a_{23} & t_{2}  \\
+                a_{31} & a_{32} & a_{33} & t_{3}  \\
+                0 & 0 & 0 & 1
+        \end{array} \right )
+        \label{cry-eq2}
+\end{equation}
+%
+Here the matrix elements may take up any value in order to perform the
+desired distortion. \Discus allows several ways to set up the shear
+operation, see the on-line help for details. You can specify the full
+matrix, define the Eigenvectors of a shear or define the shear by 
+a plane parallel to which a shear operation is performed.
+
+Additionally \Discus allows one to select the atom or molecule
+types to be included in the shear operation using the {\tt
+sele/dese} and {\tt msel/mdes} commands.
+
+%------------------------------------------------------------------------
+
+\section{Unit cell transformations \label{cryst-trans}}
+
+A common task in crystallography is to transform the unit cell of a
+crystal, i.e.  use an alternative setting for some specific reason.
+Subsequently one needs to transform the coordinates of the atoms
+within the crystal to the new set of basis vectors.  The {\tt trans}
+segment of \Discus gives various options to perform this type
+of task.  The transformation can either be defined as new unit cell
+in terms of the old unit cell or in terms of the new atom
+coordinates with respect to the old ones and {\it vice versa}.
+Independent of this choice, the origin can be shifted by a user
+defined amount.  \Discus allows the user to select individual
+atoms or to transform the complete crystal to the new system. If all
+atoms in the crystal are transformed to the new base vectors, then
+the unit cell dimensions and the metric tensor are transformed as
+well. \par
+
+Let us assume we have a cubic crystal defined by $a = b = c = 5$\AA.
+The base vectors for the old system are ${\bf a},{\bf b}, {\bf c}$.
+The new set of basis vectors defining the new unit cell shall given
+by ${\bf a}',{\bf b}',{\bf c}'$ which are given by the relations
+${\bf a}' = {\bf a}+{\bf b}$, ${\bf b}' = {\bf a}-{\bf b}$ and ${\bf
+c}'={\bf c}$.  After entering the {\tt trans} segment of the program
+\Discus, these definitions could be entered as follows:
+%
+\begin{MacVerbatim}
+     anew 1.0, 1.0, 0.0
+     bnew 1.0,-1.0, 0.0
+     cnew 0.0, 0.0, 1.0
+\end{MacVerbatim}
+%
+Note that the relation between the old and the new system could also
+be defined with respect to the atom coordinates.  All those
+relationships are calculated by \Discus and can be displayed
+using the {\tt show} command. Part of the output for our example can
+be found below:
+%
+
+\begin{MacVerbatim}
+     ( a(new) ) = (   1.00000,  1.00000,   .00000 )   ( a(old) )
+     ( b(new) ) = (   1.00000, -1.00000,   .00000 ) * ( b(old) )
+     ( c(new) ) = (    .00000,   .00000,  1.00000 )   ( c(old) )
+
+     ( a(old) ) = (    .50000,   .50000,   .00000 )   ( a(new) )
+     ( b(old) ) = (    .50000,  -.50000,   .00000 ) * ( b(new) )
+     ( c(old) ) = (    .00000,   .00000,  1.00000 )   ( c(new) )
+
+     ( x(new) ) = (    .50000,   .50000,   .00000 )   ( x(old) )   (   .00000)
+     ( y(new) ) = (    .50000,  -.50000,   .00000 ) * ( y(old) ) + (   .00000)
+     ( z(new) ) = (    .00000,   .00000,  1.00000 )   ( z(old) )   (   .00000)
+
+     ( x(old) ) = (   1.00000,  1.00000,   .00000 )   ( x(new) )   (   .00000)
+     ( y(old) ) = (   1.00000, -1.00000,   .00000 ) * ( y(new) ) + (   .00000)
+     ( z(old) ) = (    .00000,   .00000,  1.00000 )   ( z(new) )   (   .00000)
+\end{MacVerbatim}
+%
+This particular example might seem very simple but as soon as e.g.
+a unit cell transformation in a triclinic system is needed, this
+part of \Discus becomes the most popular feature.
+
+%------------------------------------------------------------------------

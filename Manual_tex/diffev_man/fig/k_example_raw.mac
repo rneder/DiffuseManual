@@ -1,0 +1,33 @@
+rese
+buff 0.12,0.12,0.12,0.05
+#
+load xy, data.noisy
+func 100.*(atan((abs(r[0]-100.23))/0.1)), -50,150,0.10
+kcal sub,1,2
+#
+fnam off
+font size,3,18
+font size,4,18
+skal -50,150,-50,210
+mark 20,50
+achx x
+achy y
+lcol 1,3
+lcol 2,1
+lwidt 1,0.1
+lwidt 2,0.6
+plot
+save ps, example.ideal.ps
+sys ps2epsi example.ideal.ps
+sys mv example.ideal.epsi ../pic/example.ideal.eps
+rval 1,2,one
+wait return
+#
+kfra 1,1
+skal -50,150,0,210
+mark 20,50
+plot
+save ps, example.raw.ps
+sys ps2epsi example.raw.ps
+sys mv example.raw.epsi ../pic/example.raw.eps
+

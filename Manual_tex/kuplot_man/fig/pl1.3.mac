@@ -1,0 +1,15 @@
+orient port
+sfra 1,0.0,0.0,1.0,0.3
+#
+load cr,mark.cr
+skal -0.5,13.5,0.5,3.5
+mark 1,50
+font just,cen
+fset 2
+achy OFF
+achx marker type number
+msiz 1,0.8
+fnam off
+aver 1.
+buf 0.05
+plot

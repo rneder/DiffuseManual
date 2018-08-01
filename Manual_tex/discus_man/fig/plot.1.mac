@@ -1,0 +1,17 @@
+read
+cell cell.cll,20,20,1
+#
+therm 2d
+#
+plot
+ext all
+set zr,3,6,1.0
+sel zr
+outfile plot.cr.plot
+run
+#
+type proj
+outfile plot.de.plot
+run
+#
+exit

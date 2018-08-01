@@ -1,0 +1,22 @@
+load xy,test.xy
+#
+achx x-axis [units]
+achy y-axis [units]
+tit1 \fs KUPLOT demonstration
+tit2 Example 2
+#
+grid on
+fnam off
+#
+skal -2.5,7.5,-4.5,29.5
+mark 2,5
+#
+lcol 1,6
+lwid 1,0.5
+mtyp 1,3
+mcol 1,3
+msiz 1,0.4
+etyp 1,2
+#
+sleg 1,"Test data"
+sann 1,"Annotation",2,12

@@ -1,0 +1,19 @@
+\begin{thebibliography}{2}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{{\tt #1}}\fi
+
+\bibitem[Chory et~al.()Chory, Neder, Korsunskiy, Niederdraenk, Kumpf, Umbach,
+  Schumm, Lentze, Geurts, Astakhov, Ossau, and Meuller]{chneko2007}
+C.~Chory; R.~B. Neder; V.~I. Korsunskiy; F.~Niederdraenk; Ch. Kumpf; E.~Umbach;
+  M.~Schumm; M.~Lentze; J.~Geurts; G.~Astakhov; W.~Ossau; G.~Meuller.
+\newblock { Influence of liquid-phase synthesis parameters on particle sizes
+  and structural properties of nanocrystalline ZnO powders}.
+
+\bibitem[Neder and Proffen(2007)]{nedpro}
+R.B. Neder; {Th.} Proffen.
+\newblock {\em {Diffuse scattering and defect structure simulations - A cook
+  book using the program DISCUS }}.
+\newblock Oxford University Press, Oxford, UK 2007.
+
+\end{thebibliography}

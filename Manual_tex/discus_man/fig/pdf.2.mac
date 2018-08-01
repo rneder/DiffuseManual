@@ -1,0 +1,31 @@
+read
+cell gaas.cll,1,1,1
+#
+pdf
+set range,13.5,0.02
+set qmax,0.0
+set qsig,0.0
+set therm,gaus
+set rad,xray
+#
+isel all
+jsel all
+stop
+calc
+save pdf,tot.calc
+#
+ides all
+jdes all
+isel ga
+jsel all
+calc
+save pdf,dif_ga.calc
+#
+ides all
+jdes all
+isel ga
+jsel ga
+calc
+save pdf,par_ga.calc
+#
+exit

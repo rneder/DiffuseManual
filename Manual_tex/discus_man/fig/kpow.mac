@@ -1,0 +1,14 @@
+rese
+#
+load xy,powder2.dat
+ccal mul,wy,1,1e-6
+#
+fnam off
+mark 10.0,1.0
+achx 2\gH
+achy Intensity (*10\u6\d)
+lcol 1,6
+font just,cent
+tit1 Powder diffration pattern - LaMnO\d3\u
+plot
+

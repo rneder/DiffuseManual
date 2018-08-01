@@ -1,0 +1,6 @@
+#
+outp
+outf $1
+run
+#
+exit

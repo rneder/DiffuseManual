@@ -1,0 +1,29 @@
+rese
+orient port
+#
+load cr,s1.plot
+load cr,s2.plot
+#
+fnam off
+achx x [l.u]
+achy y [l.u]
+font just,cent
+grid on
+#
+buf 0.08
+nfra 2
+afra 1
+kfra 1,1
+skal -0.25,1.25,-0.25,1.25
+mark  1.0,1.0
+msiz 1,0.24
+aver 1.
+tit2 (a) original
+#
+afra 2
+kfra 2,2
+skal -0.25,1.25,-0.25,1.25
+mark  1.0,1.0
+msiz 2,0.24
+aver 1.
+tit2 (b) after 'symm'

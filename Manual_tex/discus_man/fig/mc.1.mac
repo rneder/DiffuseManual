@@ -1,0 +1,92 @@
+set prompt,off
+set error,exit
+#
+# MC examples
+#
+# Simple 2D MC test simulations for various correlations.
+# Structure and Fourier Transform are saved at some inter-
+# mediate stages.
+#
+# (c) Th. Proffen, 1997
+#
+#############################################################
+#
+@key
+#
+read
+stru ran025.stru
+#
+chem
+set mode,quick,periodic
+exit
+#
+mc
+set neig,rese
+#
+# <10> neighbours
+#
+set vec,1,1,1, 1, 0, 0
+set vec,2,1,1,-1, 0, 0
+set neig,vec,1,2
+set neig,add
+#
+# <01> neighbours
+#
+set vec,3,1,1, 0, 1, 0
+set vec,4,1,1, 0,-1, 0
+set neig,vec,3,4
+set neig,add
+#
+# <11> neighbours
+#
+set vec,5,1,1, 1, 1, 0
+set vec,6,1,1,-1,-1, 0
+set neig,vec,5,6
+set neig,add
+#
+# <1-1> neighbours
+#
+set vec,7,1,1,-1, 1, 0
+set vec,8,1,1, 1,-1, 0
+set neig,vec,7,8
+#
+set atom,zr,void
+set mode,swchem
+#
+set energy,cocc,all
+#
+# Setting of target correlations
+# (Neighbour definitions have to be first)
+#
+# 1 : <10>, 2: <01>, 3: <11>, 4: <1-1>
+#
+set target,1,-0.3
+set target,2,-0.3
+set target,3, 0.8
+set target,4, 0.8
+#
+# Setting of temperature, feedback
+#
+set temp,1.0
+set feed,100*100
+#
+exit
+#
+#############################################################
+# Here starts the main loop
+#############################################################
+#
+do i[1]=1,5
+#
+mc
+set cyc,200*100*100
+run
+exit
+#
+@plot i[1]*200
+#@four i[1]*200
+save "mc.%d.stru",i[1]*200
+#
+enddo
+#
+exit

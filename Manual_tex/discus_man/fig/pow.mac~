@@ -1,0 +1,25 @@
+read
+cell lmo.cll,5,5,5
+#
+powder
+set dh,0.2
+set dk,0.2
+set dl,0.2
+set dtth,0.05
+set tthmin, 0.1
+set tthmax,60.0
+#
+neut
+set wvle,1.0
+set four,four
+set temp,ignore
+#
+run
+exit
+#
+output
+format powder
+outf powder.dat
+run
+exit
+

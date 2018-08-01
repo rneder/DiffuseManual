@@ -1,0 +1,283 @@
+%------------------------------------------------------------------------
+% Chapter:  Introduction
+%------------------------------------------------------------------------
+
+\chapter{Introduction}
+\section{What is DISCUS ?}
+
+\Discus \citep{prne97} is intended as a versatile tool to
+simulate crystal structures and the corresponding intensity
+distribution in reciprocal space.  The program offers several
+features that enable the user to easily generate a structure and
+to introduce various defects.  The main intend is to simulate
+defect structures, the program, however, is not limited in that
+respect.  Ideal structures can be simulated as well and usually
+will form the basis from which the defect structure is developed.
+\par
+
+The program can read a whole crystal or the asymmetric unit of a
+unit cell. The latter is expanded to the whole unit cell by use of
+the space group symbol. The definition of rigid molecules is
+supported by \discus. The structure can be stored as structure
+file or certain layers or projections of the crystal can be saved
+for graphical display. The program \Discus is part of the
+diffuse program package. Several tools are available to
+modify single atoms or molecules within the structure or to alter
+the complete crystal. These tools include thermal displacements,
+waves, domains, stacking faults and generalized symmetry
+operations. One feature of \Discus is the possibility to
+introduce correlated defects and distortions using Monte Carlo (MC)
+simulations. Various tools allow the analysis of a given defect
+structure including the calculation of the PDF of a given structure.
+\par
+
+The Fourier transform segment of the program allows the user to
+calculate  the intensity distribution along a line, arbitrarily 
+oriented plane or a three dimensional volume
+through reciprocal space. The resolution in reciprocal space can be
+chosen by the user. The resulting intensity maps can be written in
+several output formats, to be displayed by standard visualization
+programs, the program {\it KUPLOT} or be printed directly.
+The list of output formats includes the NeXus format.  Neutron-
+as well as X-ray and electron scattering can be calculated. 
+\Discus supports
+the subtraction of the average structure factor and the calculation
+of the diffuse intensities as average over many small crystal
+volumes to create smooth noise free diffraction pattern. A detailed
+discussion is given in chapter \ref{four}. The direct analysis of
+measured diffuse scattering is possible using the Reverse Monte
+Carlo segment of the program. The program allows the refinement of
+the scattering intensity directly as well as the refinement of the
+PDF. \par
+
+The program uses a command language to interact with the user. No
+predefined requirement exists for a given sequence of commands. The
+commands can be typed at the \Discus prompt, or read from a
+macro file. The command language includes a FORTRAN style
+interpreter that allows the user to program loops and logical
+structures. Several real and integer variables as well as structural
+variables can be used to design the intended defect structure. On
+line help is provided which gives the user information on any of the
+\Discus commands as well as examples for typical \Discus
+sessions. More detailed information how to get further help is given
+in section \ref{get}.
+
+%------------------------------------------------------------------------
+
+\section{Getting started \label{get}}
+
+After the program \Discus is installed properly and the environment
+variables are set, the program can be started by typing 'discus' at the
+operating systems prompt. Information about the installation of \Discus
+is given in the \Discus package manual.
+
+The program uses a command language to interact with the user.  The
+command {\tt exit} terminates the program and returns control to the
+shell.  All commands of \Discus consist of a command verb,
+optionally followed by one or more parameters.  All parameters must
+be separated from one another by a comma ",".  There is no
+predefined need for any specific sequence of commands.  \Discus
+is case sensitive, all commands and alphabetic parameters MUST be
+typed in lower case letters.  If \Discus has been compiled
+using the {\tt -DREADLINE} option (see installation files) basic
+line editing and recall of commands is possible.  For more
+information refer to the reference manual or check the online help
+using ('help command input').  Names of input or output files are to
+be typed as they will be expected by the shell.  If necessary
+include a path to the file.  All commands may be abbreviated to the
+shortest unique possibility. At least a single space is needed
+between the command verb and the first parameter.  No comma is to
+precede the first parameter. A line can be marked as comment by
+inserting a "{\tt \#}" as first character in the line.\par
+
+The symbols used throughout this manual to describe commands,
+command parameters, or explicit text used by the program \Discus 
+are listed in Table \ref{sym-tab}. There are several sources
+of information, first \Discus has a build in online help, which
+can be accessed by entering the command {\tt help} or if help for a
+particular command $<$cmd$>$ is wanted by {\tt help $<$cmd$>$}. This
+manual describes background and principle functions of \Discus
+and should give some insight in the ways to use this program. \par
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Symbol} & {\bf Description} \\
+  \hline\hline
+  "text"     &  Text given in double quotes is to be understood as typed. \\
+  \hline
+  $<$text$>$ &  Text given in angled brackets is to be replaced by an
+                appropriate value, if the corresponding line is used
+                in \Discus. It could, for example be the actual name
+                of a file, or a numerical value. \\
+  \hline
+  {\tt text} &  Text in single quotes exclusively refers to \Discus
+                commands. \\
+  \hline
+  $[$text$]$ &  Text in square brackets describes an optional parameter or
+                command. If omitted, a default value is used, else
+                the complete text given in the square brackets is to
+                be typed. \\
+  \hline
+  \{text $|$ text\} &  Text given in curly brackets is a list of alternative
+                parameters. A vertical line separates two alternative,
+                mutually exclusive parameters. \\
+  \hline
+\end{tabularx}
+\caption{\label{sym-tab}Used symbols}
+\end{table}
+
+As we have mentioned before, \Discus is controlled by a powerful command
+language which is common to all programs in the \Discus package. 
+A detailed description of the command language can be found in the 
+\Discus Reference Guide which is included in the distribution.
+Variables specific to the program \Discus are shown in Tables 
+\ref{v1-tab} and \ref{v2-tab}. \Discus also provides a number of structure
+related functions which are listed in Tab. \ref{func-cryst} and
+\ref{func-cryst2}.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Variable} & {\bf Description} \\
+  \hline\hline
+  n[1]      & Number of atoms within the crystal \\
+  n[2]      & Number of different scattering types, i.e. atoms \\
+  n[3]      & Number of atoms within the unit cell \\
+  n[4]      & Number of molecules within the crystal \\
+  n[5]      & Number of different molecule types \\
+  n[6]      & Number of molecules within the unit cell \\
+  n[7]      & Number of none-void atoms in the crystal \\
+  \hline
+  cdim[i,1] & Lowest coordinate of any atom (i=1,2,3 for x,y,z) \\
+  cdim[i,2] & Highest coordinate of any atom (i=1,2,3 for x,y,z) \\
+  \hline\hline
+  env[i]    & Index of neighboring atoms after 'find' command \\
+  menv[i]   & Index of neighboring molecules after 'find' command \\
+  \hline\hline
+  lat[i]    & Lattice parameters \
+              (i=1..6 for $a,b,c,\alpha,\beta,\gamma$\\
+  vol[1]    & Unit cell volume \\
+  rvol[1]   & Reciprocal unit cell volume \\
+  \hline
+\end{tabularx}
+\caption{\label{v1-tab}Crystal related variables}
+\end{table}
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Variable} & {\bf Description} \\
+  \hline\hline
+  m[i]   & Number of scattering type (i.e. atom type) for atom i \\
+  b[i]   & isotropic thermal factor B for atom {\bf type} i \\
+  occ[i]   & occupancy parameter for atom {\bf type} i \\
+  at\_name[i] & Atom name for atom i\\
+  in\_mole[i] & Molecule in which atom i is \\
+  prop    [i] & Property of atom i \\
+  \hline
+  at\_type[i] & Atom name for atom type i\\
+  \hline
+  x[i]   & fractional x position of atom i \\
+  y[i]   & fractional y position of atom i \\ 
+  z[i]   & fractional z position of atom i \\
+  \hline\hline
+  mol\_cont[i,j] & Index of atom j in molecule i \\
+  mol\_len[i]    & Number of atoms in molecule i \\
+  mol\_biso[i]   & Isotropic B-value for molecule i\\
+  mol\_dens[i]   & Density of object i \\
+  mol\_type[i]   & Type of object / molecule / domain i \\ 
+  \hline\hline
+  pdf\_dens[i]   & Number density for pdf calculations \\
+  pdf\_scal[i]   & Scale factor   for pdf calculations \\
+  \hline
+\end{tabularx}
+\caption{\label{v2-tab}Variables related to individual atoms and
+         molecules}
+\end{table}
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{10mm}|p{47mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline\hline
+  real & \raggedright bang(u1,u2,u3, v1,v2,v3 [,w1,w2,w3]) &
+       Returns the bond angle in degrees between {\bf u} and {\bf v}
+       at site {\bf w}. If {\bf w} is omitted, the angle between
+       direct space vectors {\bf u} and {\bf v} is returned. \\
+  real & \raggedright blen(u1,u2,u3 [,v1,v2,v3]) &
+       Returns the length of the real space vector {\bf v}-{\bf u}.
+       The vector {\bf v} defaults to zero. \\
+  real & \raggedright dstar(h1,h2,h3 [,k1,k2,k3]) &
+       Returns the length of reciprocal vector {\bf k} - {\bf h} in
+       \AA$^{-1}$. Vector {\bf k} defaults to zero. \\
+  real & \raggedright rang(h1,h2,h3, k1,k2,k3 [,l1,l2,l3]) &
+       Returns the angle between reciprocal vectors {\bf k} - {\bf h} and
+       {\bf k} - {\bf l} at site {\bf k}.  If {\bf l} is omitted, the angle
+       between reciprocal vectors {\bf h} and {\bf k} is returned. \\
+  real & \raggedright scalpro(u1,u2,u3,v1,v2,v3 [,{"dd"|"rr"|"dr"|"rd"}]) &
+       Returns the scalar product between the two vectors {\bf u} 
+       and {\bf v}.  Both vectors may be given in direct
+       or real space coordinates, flagged in parameter no 7. "d" 
+       means real space, "r" reciprocal space. \\
+  real & \raggedright vprod <u1>,<v1>,<w1>, <u2>,<v2>,<w2> [ ,<flag> ] &
+       This is not a function but rather a command that calculates the 
+       vector product {\bf 1} X {\bf 2}. The <flag> is a string of three
+       characters that indicates whether the input vectors or the output
+       vector are given in direct or reciprocal space coordinates. The
+       three characters correspond to:
+
+       first input vector,
+       second input vector
+       resulting vector
+
+       "drd" means: vector one is given in direct space coordinates, vector 2
+                is in reciprocal space coordinates (hkl) and the
+                resulting vector product is to be given in direct space
+                coordinates
+
+       Any combination of "d" and "r" is allowed. \\
+  \hline
+\end{tabularx}
+\caption{\label{func-cryst}Crystallographic functions}
+\end{table}
+
+
+\begin{table}[!tbh]
+\begin{tabularx}{\textwidth}{|p{10mm}|p{47mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline\hline
+   logical & \raggedright isprop(atom [,[and:]property] [,or:property]) &
+       Tests if an atom has the property / properties specified by
+       property. The test can check a single property, if the 
+       property is given by its name as in :
+
+       'normal', 'molecule', 'domain', 'outside', 'external', 'internal',
+       'ligand'. 
+
+       Alternatively several properties can be checked 
+       simultaneously if the property is a list of capital and/or 
+       small letters as in 'NMDOEIL', 'nmdoeil'. A capital letter 
+       signifies that the property must be present, a small letter 
+       that the property must be absent. 
+
+       The properties in the "and:" parameter must ALL be present, 
+       i.e. they are tested with a logical "and". The properties in
+       the "or:" parameter are tested with a logical "or", i.e. the
+       function is true if any of the listed properties fulfills
+       the condition (capital letter==present, small letter==absent).
+       At least one of the two parameters must be present. If only 
+       one parameter is given and the "and:" is omitted, the default
+       is to test with the "and:" condition. \\
+  \hline
+\end{tabularx}
+\caption{\label{func-cryst2}Crystallographic functions continued}
+\end{table}
+
+
+%------------------------------------------------------------------------

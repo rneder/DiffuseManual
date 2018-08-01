@@ -1,0 +1,24 @@
+rese
+#
+load xy,s287.xy
+load xy,s288.xy
+#
+tit1 Experiment A
+achx \gw (\uo\d)
+achy Counts
+mark 0.1,100
+buff 0.1
+fnam off
+fram on
+#
+nfra 2
+#
+afra 1
+kfra 1,1
+tit2 Scan 287
+#
+afra 2
+kfra 2,2
+tit2 Scan 288
+#
+plot

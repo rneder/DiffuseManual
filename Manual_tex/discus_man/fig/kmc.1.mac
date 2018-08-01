@@ -1,0 +1,37 @@
+orient p
+rese
+#
+load xy,const_1.xy
+load xy,const_3.xy
+load xy,corr_1.xy
+load xy,corr_3.xy
+#
+fnam off
+buff 0.08
+#
+nfra 2
+sfra 1,0.0,0.0,1.0,0.5
+sfra 2,0.0,0.5,1.0,1.0
+#
+afra 1
+kfra 1,1,2
+lcol 1,6
+lcol 2,6
+ltyp 1,1
+ltyp 2,4
+achx MC cycle number
+achy Interaction energy J
+skal 0,200,-1.6,0.3
+mark 50,0.3
+#
+afra 2
+kfra 2,3,4
+lcol 3,6
+lcol 4,6
+ltyp 3,1
+ltyp 4,4
+achx MC cycle number
+achy Correlation
+skal 0,200,-0.4,0.9
+mark 50,0.3
+#

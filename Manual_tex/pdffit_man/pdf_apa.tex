@@ -1,0 +1,742 @@
+%------------------------------------------------------------------------
+% Chapter:  Appendix A
+%------------------------------------------------------------------------
+
+\chapter{Computational Details \label{app-deriv}}
+
+Here we give the details of the computation of the model PDF $G(r)$. In
+the introduction we defined $G(r)$ as follows:
+
+\begin{equation}
+  G(r) = \frac{1}{r} \sum_{i}\sum_{j} \left [
+         \frac{b_{i}b_{j}}{\langle b \rangle ^{2}}
+         \delta (r - r_{ij}) \right ]   - 4 \pi r \rho_{0}
+  \label{eq_gr}
+\end{equation}
+
+As we discussed already in this manual, the sums go over all atoms
+within the model crystal and $r_{ij}$ is the separation distance
+between atoms $i$ and $j$. The value $b_{i}$ is the scattering length
+for atom $i$ and $\langle b \rangle$ is the average scattering length
+of the model crystal. Finally $\rho_{0}$ is the number density. \par
+
+As we have seen in the introduction to this users guide, the
+experimental PDF is obtained by Fourier transform of the reduced
+structure factor. However, the accessible range in $Q$ is limited by
+$Q_{max}$. This can be described by a multiplication of the
+structure factor up to infinity with a step function cutting off at
+$Q=Q_{max}$ resulting in the convolution of the PDF with the Fourier
+transform $C(r)$ of the step function. {\it PDFFIT} models the
+finite $Q$-range by convoluting the model PDF $G(r)$ with
+
+\begin{equation}
+  C(r) = \frac{\sin(Q_{max} \cdot r)}{r}
+  \label{eq_sinc}
+\end{equation}
+
+In the following section we will omit this convolution and discuss how
+$G(r)$ and the partial derivatives with respect to the refinement
+parameters, $\partial G(r)/ \partial p_{n}$, are actually calculated.
+
+%------------------------------------------------------------------------
+
+\section{Calculating the PDF}
+
+The program {\it PDFFIT} refines the function $G(r)$ at discreet
+values of $r=r_{k}$ for an experimental dataset $s$. Thus our
+equation for the model PDF becomes:
+
+\begin{equation}
+  G(r_{k},s) = f_{s} B_{k}(s)
+               \sum_{p=1}^{P} f_{p} S_{p}(r_{k},s_{i}) G_{p}(r_{k},s)
+  \label{eq_grk}
+\end{equation}
+
+\noindent
+with
+
+\begin{eqnarray}
+  G_{p}(r_{k},s)  & = & \frac{1}{N_{p}r_{k}}
+                        \sum_{i}\sum_{j} \left [ A_{ij}(p) \cdot
+                        T_{ij}(r_{k},p) \right ] - 4\pi r_{k}\rho_{0}(p) \\
+  \label{eq_grkp}
+  B_{k}(s)        & = & \exp \left [ - \frac{(r_{k}\sigma_{Q}(s))^{2}}
+                        {2}\right ] \\
+  \label{eq_bk}
+  A_{ij}(p)       & = & \frac{c_{i}(p)c_{j}(p)b_{i}b_{j}}
+                        {\langle b \rangle ^{2}}
+  \label{eq_aij}           \\
+  T_{ij}(r_{k},p) & = & \frac{1}{\sqrt{2\pi}\sigma_{ij}(p)}
+                        \exp \left [ - \frac{(r_{k}-r_{ij}(p))^{2}}
+                        {2 \sigma_{ij}^{2}(p)} \right ]
+                        \left [ 1 + \left ( \frac{r_{k} - r_{ij}}{r_{ij}}
+                        \right ) \right ]
+  \label{eq_tij}
+\end{eqnarray}
+
+\noindent where $S_{p}(r_{k},s_{i})$ is a dampening function for
+finite nano-particles discussed in the next section. $f_{s}$ stands
+for the overall scale factor and $B_{k}(s)$ is the experimental
+resolution factor for data set $s$. The first sum in (\ref{eq_grk})
+is over the different structural phases $p$ in a multi phase
+refinement. The relative abundance of each phase $p$ is given by
+$f_{p}$. $G_{p}(r_{k},s)$ is the model PDF for a single phase $p$
+given in (\ref{eq_grkp}). These values are actually stored in an
+array after the PDF is calculated. The indices $i$ and $j$ sum over
+all atoms within the structural phase $p$ or in other words we sum
+over all atom {\it pairs} in that phase. The contribution of each
+pair of atoms $i$ and $j$ is weighted with a factor $A_{ij}(p)$
+which depends on the scattering length $b_{i}$ and concentration
+$c_{i}$ of both atoms. The average scattering length for the sample
+({\bf summed over all phases}) is $\langle b \rangle =
+\sum_{i}c_{i}b_{i}/N_{p}$. The average number density is given by
+$\rho_{0}(p) = N_{p}/V_{p}$ where $N_{p} = \sum_{i}c_{i}$ is the
+number of atoms within phase $p$ and $V_{p}$ is the volume of the
+unit cell in \AA$^{3}$. The calculation of $V_{p}$ is presented
+later in this section. \par
+
+The final term in (\ref{eq_grk}) we need to discuss is
+$T_{ij}(r_{k},p)$. Generally there are two different ways to
+account for displacements (either thermal or static) from the
+average position. First one can use a large enough model
+containing the desired displacements and perform an ensemble
+average. This is the method used by the program {\it DISCUS} where
+thermal displacements can be introduced according to a given
+(isotropic) Debye-Waller factor. Secondly one can convolute each
+contribution given by $\delta (r - r_{ij})$ in (\ref{eq_gr}) with
+a modified Gaussian $T_{ij}(r_{k},p)$ accounting for the
+displacements. The deviation from a Gaussian shape is caused by
+anisotropic averaging and discussed in detail in \cite{thlele02}.
+The width of the function $T_{ij}$ is given by the anisotropic
+thermal factors $U_{lm} = \langle u_{l}u_{m} \rangle$ of atoms $i$
+and $j$. Furthermore the $\sigma_{ij}(p)$ shows an $r$-dependence
+given in (\ref{eq_sharp}). Note that this definition has been
+extended since version 1.2 of PDFFIT. In some cases an additional
+sharpening of the PDF peaks below a user defined cutoff value,
+$r_{cut}$ needs to be introduced (see \ref{fit_pwid} for details).
+This is done in (\ref{eq_cut}).
+
+\begin{equation}
+  \sigma_{ij}(p) = \phi(r_{ij},p) \cdot
+                   \sqrt {\sigma_{ij}^{'2}(p) -
+                          \frac{\delta(p)}{r_{ij}^{2}(p)} -
+                          \frac{\gamma(p)}{r_{ij}(p)} +
+                          \alpha^{2}(s) r_{ij}^{2}(p)}
+  \label{eq_sharp}
+\end{equation}
+
+\noindent
+with
+
+\begin{equation}
+  \phi(r_{ij},p) = \left \{ \begin{array}{ll}
+                    \phi_{0}(p) & \mbox{for $r_{ij} < r_{cut}$} \\
+                    1.0         & \mbox{otherwise} \\
+                    \end{array} \right .
+  \label{eq_cut}
+\end{equation}
+
+\noindent
+and
+
+\begin{equation}
+  \sigma'_{ij}(p) = \frac{1}{|r_{ij}|} \sqrt{\sum_{l,m=1}^{3} \left[
+                    r^{l}_{ij}(p)r^{m}_{ij}(p) (U_{lm}(i) + U_{lm}(j))
+                    \right ]}
+  \label{eq_therm}
+\end{equation}
+
+\noindent
+with $r^{l}_{ij}$ standing for the $l$-th component of the difference
+vector between atoms $i$ and $j$. Note that so far $r_{ij}$ referred to
+a scalar, the distance between the atoms without any directional
+information. \par
+
+The last piece of the puzzle is the relation between $r_{ij}(p)$ and
+$V_{p}$ and the lattice parameters $a,b,c,\alpha,\beta$ and $\gamma$.
+{\it PDFFIT} works with fractional coordinates, i.e. in units
+of the unit cell. However, to calculate the distance between two atoms,
+the difference vector must be converted to \AA. A helpful concept when
+dealing with non-orthogonal coordinate systems is the so-called
+{\it metric tensor}, $g_{ij}$, which is defined as
+
+\begin{equation}
+   g_{ij} = {\bf{a}}_{i} \cdot {\bf{a}}_{j} =
+   \left ( \begin{array}{ccc}
+           a^{2}         & ab \cos\gamma & ac \cos\beta  \\
+           ab \cos\gamma & b^{2}         & bc \cos\alpha \\
+           ac \cos\beta  & bc \cos\alpha & c^{2}
+           \end{array} \right )
+   \label{eq_metric}
+\end{equation}
+
+\noindent
+with $\bf{a}_{i}$ describing the basis vectors of the crystal lattice
+in an orthonormal system. Using this metric tensor, the scalar
+product of two vectors $\bf{u}$ and $\bf{v}$ is simply ${\bf{uv}}
+= \sum_{ij} u_{i}v_{j}g_{ij}$ or \begin{math} V_{p} = abc
+[1 - \cos^{2}\alpha - \cos^{2}\beta - \cos^{2}\gamma + 2 \cos\alpha
+\cos\beta \cos\gamma]^{\frac{1}{2}} \end{math} which is simply the
+determinant of the metric tensor $g_{ij}$. \par
+
+Let us assume we want to calculate the distance between the atoms $i$
+and $j$ on positions ${\bf u}_{i}$ and ${\bf u}_{j}$ in the crystal
+system (We will omit the reference to phase $p$ is this part). Now the
+difference vector still in fractional coordinates is simply
+${\bf d}_{ij} = {\bf u}_{j} - {\bf u}_{i}$. In order to get the
+components $r^{l}_{ij}$ needed to calculate $\sigma'_{ij}$ in (\ref
+{eq_therm}), we simply multiply with the corresponding lattice parameter:
+
+\begin{equation}
+  r^{1}_{ij} = a d^{1}_{ij}, \;
+  r^{2}_{ij} = b d^{2}_{ij}, \;
+  r^{3}_{ij} = c d^{3}_{ij}
+  \label{eq_met1}
+\end{equation}
+
+\noindent
+The length of the difference vector in \AA\ is given by
+$r_{ij} = [{\bf d}_{ij} \cdot {\bf d}_{ij}] ^{\frac{1}{2}}$ which can
+be written as follows using (\ref{eq_metric}):
+
+\begin{eqnarray}
+  r_{ij} & = & [ a^{2} d^{2}_{ij_{x}} +
+                 b^{2} d^{2}_{ij_{y}} +
+                 c^{2} d^{2}_{ij_{z}} + \nonumber \\
+         &   &   2 ab \cos\gamma d_{ij_{x}}d_{ij_{y}} +
+                 2 ac \cos\beta  d_{ij_{x}}d_{ij_{z}} +
+                 2 bc \cos\alpha d_{ij_{y}}d_{ij_{z}} ] ^{\frac{1}{2}}
+  \label{eq_met2}
+\end{eqnarray}
+
+Now we have all necessary relationships to calculate $G(r_{k},s)$ from
+the experimental and structural parameters we might want to refine.
+The needed analytical derivatives are given in the next section and the
+actual parameter names used by {\it PDFFIT} are listed in the last
+section of this appendix.
+
+%------------------------------------------------------------------------
+
+\section{Particle size envelopes}
+
+With the possibility to measure and model PDFs over a wide range in
+distances $r$, the finite size of nano-particles requires an extra
+envelope function $S_{p}(r_{k},s_{i})$ that will depend on the
+shape, size and size distribution of the measured particles. For
+long range ordered crystals, this factor simply becomes unity. The
+parameters $s_{i}$ are the refinable quantities defining the shape,
+size and distribution.
+
+%------------------------------------------------------------------------
+
+\subsection*{Sphere}
+
+At the moment only spherical particles can be simulated. In this
+case the only refinable parameter, $s_{1}=R$, is the radius of the
+particle and the envelope function becomes\cite{hoprco06} :
+
+\begin{equation}
+  S_{p}(r_{k},R) = \left ( 1 - \frac{3} {4} \left ( \frac{r_{k}}{R} \right )
+                             + \frac{1}{16} \left ( \frac{r_{k}}{R} \right )^{3}
+                          \right ) \Theta (2R - r_{k})
+  \label{eq_shape_sphere}
+\end{equation}
+
+\noindent with  $\Theta(x)=0$ for $x<0$ and $\Theta(x)=1$ for $x
+\geq 0$. More shapes and distributions will be added as their
+analytical expression become available.
+
+%------------------------------------------------------------------------
+
+\section{Partial derivatives}
+
+It should be noted that the derivatives given in this section
+actually need to be convoluted with the function given in
+(\ref{eq_sinc}) as well since $\partial (G(r,p) * C(r)) / \partial p
+= (\partial G(r,p) / \partial p) * C(r)$.
+
+\subsection*{Scale factors}
+
+The derivatives with respect to the two scale factors $f_{s}$ and
+$f_{p}$ are straight forward and listed below:
+
+\begin{eqnarray}
+  \frac{\partial G(r_{k},s)}{\partial f_{s}} & = &
+     B_{k}(s) \sum_{p=1}^{P} f_{p} S_{p}(r_{k},s_{i}) G_{p}(r_{k},s) \\
+  \frac{\partial G(r_{k},s)}{\partial f_{p}} & = &
+     f_{s}B_{k}(s) S_{p}(r_{k},s_{i}) G_{p}(r_{k},s)
+  \label{eq_d/ds}
+\end{eqnarray}
+
+%------------------------------------------------------------------------
+
+\subsection*{Experimental resolution factor}
+
+The experimental resolution $\sigma_{Q}$ only appears in $B_{k}(s)$,
+thus the derivative is simply:
+
+\begin{equation}
+  \frac{\partial G(r_{k},s)}{\partial \sigma_{Q}(s)} =
+     - r_{k}^{2} \sigma_{Q}(s) \; f_{s}B_{k}(s)
+                 \sum_{p=1}^{p} f_{p} S_{p}(r_{k},s_{i}) G_{p}(r_{k},s)
+  \label{eq_d/dsq}
+\end{equation}
+
+%------------------------------------------------------------------------
+
+\subsection*{Quadratic dynamic correlation factor}
+
+The dynamic correlation factor $\delta(p)$ appears only in $T_{ij}
+(r_{k},p)$ where $\sigma_{ij}(p)$ appears. Thus we can rewrite the
+derivative for a given phase $p$ (we omit the reference to $p$ in
+the following equations) as follows:
+
+\begin{equation}
+  \frac{\partial G(r_{k},s)}{\partial \delta} =
+    \frac{f_{s}f_{p} S_{p}(r_{k},s_{i}) B_{k}(s)}{N_{p}r_{k}} \sum_{i} \sum_{j}
+    A_{ij} \frac{\partial T_{ij}(r_{k})}{\partial \delta}
+  \label{eq_d/delta1}
+\end{equation}
+
+\noindent
+with
+
+\begin{eqnarray}
+  \frac{\partial T_{ij}(r_{k})}{\partial \delta} & = &
+    \frac{\partial T_{ij}(r_{k})}{\partial \sigma_{ij}}
+    \frac{\partial \sigma_{ij}} {\partial \delta} \nonumber \\
+  & = & \frac{T_{ij}(r_{k})}{\sigma_{ij}}
+    \left [\frac{(r_{k} - r_{ij})^{2}}{\sigma_{ij}^{2}} - 1 \right ]\cdot
+    \frac{- \phi^{2}(r_{ij})}{2 r_{ij}^{2} \sigma_{ij}}
+  \label{eq_d/delta2}
+\end{eqnarray}
+
+\noindent
+which gives the final result for the derivative of
+
+\begin{equation}
+  \frac{\partial G(r_{k},s)}{\partial \delta} =
+    - \frac{f_{s}f_{p} S_{p}(r_{k},s_{i}) B_{k}(s)}{N_{p}r_{k}} \sum_{i} \sum_{j}
+      \frac{\phi^{2}(r_{ij})A_{ij}(p)T_{ij}(r_{k})}{2 r_{ij}^{2} \sigma^{2}_{ij}}
+      \left [ \frac{(r_{k} - r_{ij})^{2}}{\sigma_{ij}^{2}} - 1
+      \right ]
+  \label{eq_d/delta3}
+\end{equation}
+
+%------------------------------------------------------------------------
+
+\subsection*{Linear dynamic correlation factor}
+
+The linear correlation factor $\gamma(p)$ appears only where
+$\sigma_{ij}$ appears. Similar to (\ref{eq_d/delta1}) we find
+using
+
+\begin{equation}
+  \frac{\partial \sigma_{ij}}{\partial \gamma}=
+  \frac{- \phi^{2}(r_{ij})}{2  r_{ij} \sigma_{ij}}
+  \label{eq_d/gamma1}
+\end{equation}
+
+\noindent which gives the resulting expression of
+
+\begin{equation}
+  \frac{\partial G(r_{k},s)}{\partial \gamma} =
+    - \frac{f_{s}f_{p} S_{p}(r_{k},s_{i}) B_{k}(s)}{N_{p}r_{k}} \sum_{i} \sum_{j}
+      \frac{\phi^{2}(r_{ij})A_{ij}(p)T_{ij}(r_{k})}{2 r_{ij} \sigma^{2}_{ij}}
+      \left [ \frac{(r_{k} - r_{ij})^{2}}{\sigma_{ij}^{2}} - 1
+      \right ]
+  \label{eq_d/gamma2}
+\end{equation}
+
+%------------------------------------------------------------------------
+
+\subsection*{Resolution broadening factor}
+
+The resolution broadening $\alpha(s)$ appears only where
+$\sigma_{ij}$ appears. We omit the reference to $s$ in the
+following equations for clarity. Similar to (\ref{eq_d/delta1}) we
+find using
+
+\begin{equation}
+  \frac{\partial \sigma_{ij}}{\partial \alpha}=
+  \frac{\alpha \phi^{2}(r_{ij}) r_{ij}^{2}}{\sigma_{ij}}
+  \label{eq_d/alpha1}
+\end{equation}
+
+\noindent which gives the resulting expression of
+
+\begin{equation}
+  \frac{\partial G(r_{k},s)}{\partial \gamma} =
+      \frac{f_{s}f_{p} S_{p}(r_{k},s_{i}) B_{k}(s)}{N_{p}r_{k}} \sum_{i} \sum_{j}
+      \frac{\alpha \phi^{2}(r_{ij}) r_{ij}^{2}
+            A_{ij}(p)T_{ij}(r_{k})}{\sigma^{2}_{ij}}
+      \left [ \frac{(r_{k} - r_{ij})^{2}}{\sigma_{ij}^{2}} - 1
+      \right ]
+  \label{eq_d/alpha2}
+\end{equation}
+
+%------------------------------------------------------------------------
+
+\subsection*{Peak with ratio}
+
+The parameter $\phi_{0}$ describing the additional sharpening of the
+PDF peaks below $r_{cut}$ appears only where $\sigma_{ij}$ appears.
+For values of $r$ above $r_{cut}$, the derivative is zero since no
+term depends on $\phi_{0}$. For values of $r$ below $r_{cut}$, we
+can write similar to (\ref{eq_d/delta1})
+
+\begin{equation}
+  \frac{\partial G(r_{k},s)}{\partial \phi_{0}} =
+    \frac{f_{s}f_{p} S_{p}(r_{k},s_{i}) B_{k}(s)}{N_{p}r_{k}} \sum_{i} \sum_{j}
+    A_{ij} \frac{\partial T_{ij}(r_{k})}{\partial \phi_{0}}
+  \label{eq_d/rat1}
+\end{equation}
+
+\noindent
+with
+
+\begin{eqnarray}
+  \frac{\partial T_{ij}(r_{k})}{\partial \phi_{0}} & = &
+    \frac{\partial T_{ij}(r_{k})}{\partial \sigma_{ij}}
+    \frac{\partial \sigma_{ij}} {\partial \phi_{0}} \nonumber \\
+  & = & \frac{T_{ij}(r_{k})}{\sigma_{ij}}
+    \left [ \frac{(r_{k} - r_{ij})^{2}}{\sigma_{ij}^{2}} - 1 \right ] \cdot
+    \frac{\sigma_{ij}}{\phi_{0}}.
+  \label{eq_d/rat2}
+\end{eqnarray}
+
+%------------------------------------------------------------------------
+
+\subsection*{Lattice parameters}
+
+The lattice parameters $a_{n}$ (for now symbolic for $a, b, c, \alpha,
+\beta$ and $\gamma$) appear in $r_{ij}(p), \sigma_{ij}(p)$ and
+the unit cell volume $V_{p}$. Thus only $T_{ij}(r_{k},p)$ and
+$\rho_{0}(p)$ depend on these parameters. Again we omit the reference
+to the phase $p$ in the equations below. Let us consider the
+derivative of $T_{ij}$ first.
+
+\begin{eqnarray}
+  \frac{\partial T_{ij}(r_{k})}{\partial a_{n}} & = &
+     \frac{\partial T_{ij}(r_{k})}{\partial \sigma_{ij}}
+     \frac{\partial \sigma_{ij}} {\partial a_{n}} +
+     \frac{\partial T_{ij}(r_{k})}{\partial r_{ij}}
+     \frac{\partial r_{ij}}      {\partial a_{n}} \nonumber \\
+  & = & \frac{T_{ij}(r_{k})}{\sigma_{ij}} \left \{ \left [
+     \frac{(r_{k} - r_{ij})^{2}}{\sigma_{ij}^{2}} - 1 \right ]
+     \frac{\partial \sigma_{ij}} {\partial a_{n}} +
+     \left [ \frac{r_{k} - r_{ij}}{\sigma_{ij}}
+     - \frac{\sigma_{ij} r_{k}}{r^{2}_{ij}}    \right ]
+     \frac{\partial r_{ij}}{\partial a_{n}} \right \}
+  \label{eq_d/da1}
+\end{eqnarray}
+
+\noindent
+Using Equation (\ref{eq_sharp}) we find for the derivative of $\sigma_{ij}$
+with respect to the lattice parameters:
+
+\begin{eqnarray}
+    \frac{\partial \sigma_{ij}} {\partial a_{n}} & = &
+    \frac{\partial \sigma_{ij}} {\partial \sigma'_{ij}}
+    \frac{\partial \sigma'_{ij}}{\partial a_{n}} +
+    \frac{\partial \sigma_{ij}} {\partial r_{ij}}
+    \frac{\partial r_{ij}}      {\partial a_{n}}  \nonumber  \\
+    & = &
+    \frac{\phi^{2}(r_{ij})}{2 \sigma_{ij}} \left [
+    \frac{\partial \sigma'_{ij}}{\partial a_{n}} \cdot 2 \sigma'_{ij}
+    +
+    \frac{\partial r_{ij}}{\partial a_{n}} \left [
+    2 \alpha^{2} r_{ij} + \frac{2 \delta}{r^{3}_{ij}} +
+    \frac{\gamma}{r^{2}_{ij}} \right ] \right ]
+  \label{eq_d/da2}
+\end{eqnarray}
+
+\noindent
+The definition of $\sigma_{ij}$ (\ref{eq_therm}) shows that the lattice
+parameters appear in the distance $r_{ij}$ as well as the components
+of the difference vector $r_{ij}^{l}$ (\ref{eq_met1}). Using these
+relations we get
+
+\begin{eqnarray}
+  \frac{\partial \sigma_{ij}'} {\partial a_{n}} & = &
+    \frac{\partial \sigma_{ij}'} {\partial r^{l}_{ij}}
+    \frac{\partial r^{l}_{ij}}   {\partial a_{n}} +
+    \frac{\partial \sigma_{ij}'} {\partial r_{ij}}
+    \frac{\partial r_{ij}} {\partial a_{n}} \nonumber \\
+  & = & \frac{1}{r_{ij}^{2} \sigma_{ij}'} \left [
+    \sum_{m=1}^{3} a_{m}d_{ij}^{n}d_{ij}^{m} \left (
+    U_{nm}(i) + U_{nm}(j) \right ) \right ] -
+    \frac{\sigma_{ij}'}{r_{ij}}
+    \frac{\partial r_{ij}} {\partial a_{n}}
+  \label{eq_d/da3}
+\end{eqnarray}
+
+\noindent
+The first term in (\ref{eq_d/da3}) is zero for $n=4,5,6$, in other
+words for the derivatives with respect to the cell angles. Next we
+show the derivative of the distance $r_{ij}$ with respect to the
+lattice parameters. Note that we now use $a,b,c,\alpha,\beta$ and
+$\gamma$ explicitly rather than $a_{n}$ as before.
+
+\begin{eqnarray}
+  \frac{\partial r_{ij}} {\partial a} & = &
+    \frac{1}{r_{ij}} (a d_{ij_{x}}^{2} + b\cos\gamma d_{ij_{x}}d_{ij_{y}} +
+    c \cos\beta d_{ij_{x}} d_{ij_{z}} )  \\
+  \frac{\partial r_{ij}} {\partial b} & = &
+    \frac{1}{r_{ij}} (b d_{ij_{y}}^{2} + a\cos\gamma d_{ij_{x}}d_{ij_{y}} +
+    c \cos\alpha d_{ij_{y}} d_{ij_{z}} )  \\
+  \frac{\partial r_{ij}} {\partial c} & = &
+    \frac{1}{r_{ij}} (c d_{ij_{z}}^{2} + a\cos\beta d_{ij_{x}}d_{ij_{z}} +
+    b \cos\alpha d_{ij_{y}} d_{ij_{z}} )  \\
+  \frac{\partial r_{ij}} {\partial \alpha} & = &
+    - \frac{bc}{r_{ij}} (\sin\alpha d_{ij_{y}} d_{ij_{z}} ) \\
+  \frac{\partial r_{ij}} {\partial \beta}  & = &
+    - \frac{ac}{r_{ij}} (\sin\beta  d_{ij_{x}} d_{ij_{z}} ) \\
+  \frac{\partial r_{ij}} {\partial \gamma} & = &
+    - \frac{ab}{r_{ij}} (\sin\gamma d_{ij_{x}} d_{ij_{y}} )
+  \label{eq_d/da4}
+\end{eqnarray}
+
+Finally we need see who the number density $\rho_{0} = N_{p}/V_{p}$ depends
+on the lattice parameters. Considering the definition of the unit cell
+volume, we get
+
+\begin{equation}
+  \frac{\partial \rho_{0}} {\partial a_{n}} =
+    - \frac{N_{p}}{V_{p}^{2}} \frac {\partial V_{p}} {\partial a_{n}} =
+    \left \{ \begin{array}{ll}
+             - \frac{\rho_{0}}{a_{n}} & \mbox{for $a_{n}=a,b,c$} \\ & \\
+             - \frac{\rho_{0}}{V_{p}^{2}}a^{2}b^{2}c^{2}
+               (\sin\alpha\cos\alpha - \sin\alpha\cos\beta\cos\gamma)
+                                          & \mbox{for $a_{n}=\alpha$} \\
+             - \frac{\rho_{0}}{V_{p}^{2}}a^{2}b^{2}c^{2}
+               (\sin\beta\cos\beta   - \sin\beta\cos\alpha\cos\gamma)
+                                          & \mbox{for $a_{n}=\beta$} \\
+             - \frac{\rho_{0}}{V_{p}^{2}}a^{2}b^{2}c^{2}
+               (\sin\gamma\cos\gamma - \sin\gamma\cos\alpha\cos\beta)
+                                          & \mbox{for $a_{n}=\gamma$} \\
+             \end{array}\right.
+   \label{eq_d/da5}
+\end{equation}
+
+\noindent
+Using all equations given in this section, the desired derivative of the
+calculated PDF $G_{p}(r_{k},s)$ with respect to the lattice parameters
+can be calculated using
+
+\begin{equation}
+  \frac{\partial G_{p}(r_{k},s)} {\partial a_{n}} =
+    f_{p}f_{s} S_{p}(r_{k},s_{i}) B_{k}(s) \left \{ \frac{1}{N_{p}r_{k}} \sum_{i} \sum_{j}
+    \left [ A_{ij} \frac{\partial T_{ij}(r_{k})}{\partial a_{n}} \right ]
+    - 4 \pi r_{k} \frac{\partial \rho_{0}} {\partial a_{n}} \right \}
+  \label{eq_d/da6}
+\end{equation}
+
+%------------------------------------------------------------------------
+
+\subsection*{Thermal parameters}
+
+Only the PDF peak width given by  $\sigma_{ij}$ is a function of the
+thermal parameters $U_{lm}(i)$ and $\sigma_{ij}$ appears only in $T_{ij}
+(r_{k})$. Thus with some of the work already done in the previous
+section, the desired derivative can be written as
+
+\begin{equation}
+  \frac{\partial G(r_{k},s)} {\partial U_{lm}(i)} =
+    \frac{f_{p}f_{s} S_{p}(r_{k},s_{i}) B_{k}(s)}{N_{p}r_{k}} \sum_{i} \sum_{j}
+    \left [ A_{ij}(p) \frac{\partial T_{ij}(r_{k})}{\partial \sigma_{ij}(p)}
+    \; \frac{\partial \sigma_{ij}(p)}{\partial \sigma_{ij}'(p)}
+    \; \frac{\partial \sigma_{ij}'(p)}{\partial U_{lm}(i)} \right ]
+  \label{eq_d/du1}
+\end{equation}
+
+\noindent With $\partial T_{ij} / \partial \sigma_{ij}$ already
+calculated in (\ref{eq_d/da1}) and $\partial \sigma_{ij} /
+\partial \sigma_{ij}' = \phi^{2}(r_{ij})/2\sigma_{ij}$ we only need
+
+\begin{equation}
+  \frac{\partial \sigma_{ij}'}{\partial U_{lm}(i)} =
+    \frac{1}{2 r_{ij}^{2} \sigma_{ij}'} r_{ij}^{l}r_{ij}^{m}
+  \label{eq_d/du2}
+\end{equation}
+
+%------------------------------------------------------------------------
+
+\subsection*{Atomic positions}
+
+The atomic positions ${\bf v} = (v_{1},v_{2},v_{3})$ of one specific
+atom $i$ in phase $p$ appear only in $T_{ij}(r_{k})$ in form of
+$\sigma_{ij}$ and $r_{ij}$. We can simply substitute $a_{n}$ in equations
+(\ref{eq_d/da1}) and (\ref{eq_d/da2}) with the fractional coordinate and get
+
+\begin{eqnarray}
+  \frac{\partial T_{ij}(r_{k})}{\partial v_{n}(i)} & = &
+     \frac{\partial T_{ij}(r_{k})}{\partial \sigma_{ij}}
+     \frac{\partial \sigma_{ij}} {\partial v_{n}(i)} +
+     \frac{\partial T_{ij}(r_{k})}{\partial r_{ij}}
+     \frac{\partial r_{ij}}      {\partial v_{n}(i)} \nonumber \\
+  & = & \frac{T_{ij}(r_{k})}{\sigma_{ij}} \left \{ \left [
+     \frac{(r_{k} - r_{ij})^{2}}{\sigma_{ij}^{2}} - 1 \right ]
+     \frac{\partial \sigma_{ij}} {\partial v_{n}(i)} +
+     \left [ \frac{r_{k} - r_{ij}}{\sigma_{ij}}
+           - \frac{\sigma_{ij} r_{k}}{r^{2}_{ij}} \right ]
+     \frac{\partial r_{ij}}{\partial v_{n}(i)} \right \}
+  \label{eq_d/df1}
+\end{eqnarray}
+
+\begin{equation}
+    \frac{\partial \sigma_{ij}}{\partial v_{n}(i)} =
+    \frac{\phi^{2}(r_{ij})}{2 \sigma_{ij}} \left [
+    \frac{\partial \sigma'_{ij}}{\partial v_{n}(i)} \cdot 2
+    \sigma'_{ij} +
+    \frac{\partial r_{ij}}{\partial v_{n}(i)} \left [
+    2 \alpha^{2} r_{ij} + \frac{2 \delta}{r^{3}_{ij}} +
+    \frac{\gamma}{r^{2}_{ij}} \right ] \right ]
+  \label{eq_d/df2}
+\end{equation}
+
+\noindent
+with
+
+\begin{equation}
+  \frac{\partial \sigma_{ij}'} {\partial v_{n}(i)} =
+    \frac{1}{r_{ij}^{2}\sigma_{ij}'} \left [ \sum_{m=1}^{3}
+    a_{n}a_{m}d_{ij}^{m} ( U_{nm}(i) + U_{nm}(j)) \right ] -
+    \frac{\sigma_{ij}'}{r_{ij}} \;
+    \frac{\partial r_{ij}} {\partial v_{n}(i)}
+  \label{eq_d/df3}
+\end{equation}
+
+\noindent
+and
+
+\begin{eqnarray}
+  \frac{\partial r_{ij}} {\partial v_{1}(i)} =
+  \frac{\partial r_{ij}}     {\partial d_{ij_{1}}} \;
+  \frac{\partial d_{ij_{1}}} {\partial v_{1}(i)} & = &
+   -\frac{1}{r_{ij}}(a^{2}d_{ij_{1}}+ab\cos\gamma d_{ij_{2}}+
+                                     ac\cos\beta  d_{ij_{3}})\\
+  \frac{\partial r_{ij}} {\partial v_{2}(i)} & = &
+   -\frac{1}{r_{ij}}(b^{2}d_{ij_{2}}+ab\cos\gamma d_{ij_{1}}+
+                                     bc\cos\alpha d_{ij_{3}})\\
+  \frac{\partial r_{ij}} {\partial v_{3}(i)} & = &
+   -\frac{1}{r_{ij}}(c^{2}d_{ij_{3}}+ac\cos\beta  d_{ij_{1}}+
+                                     bc\cos\alpha d_{ij_{2}})
+  \label{eq_d/df4}
+\end{eqnarray}
+
+\noindent
+Note that $\partial T_{ij}(r_{k}) / \partial v_{n}(i) = - \partial
+T_{ij}(r_{k}) / \partial v_{n}(j)$ because $d_{ij} = - d_{ji}$.
+
+%------------------------------------------------------------------------
+
+\subsection*{Site occupancies}
+
+The site occupancies $c_{n}$ for a given phase $p$ appear in the
+terms $A_{ij}$, $N_{p}$ and $\rho_{0}$. Thus the derivative is
+
+\begin{eqnarray}
+  \frac{\partial G_{p}}{\partial c_{n}} & = &
+      \frac{\partial G_{p}} {\partial N_{p}}
+      \frac{\partial N_{p}} {\partial c_{n}} +
+      \frac{\partial G_{p}} {\partial A_{ij}}
+      \frac{\partial A_{ij}}{\partial c_{n}} +
+      \frac{\partial G_{p}} {\partial \rho_{0}}
+      \frac{\partial \rho_{0}}{\partial c_{n}}\\
+  & = & f_{p}f_{s} S_{p}(r_{k},s_{i}) B_{k}(s) \left \{
+      \frac{1}{N_{p}r_{k}} \left [
+      \frac{1}{c_{n}}\sum_{j}A_{nj}T_{nj}(r_{k}) -
+      \frac{1}{N_{p}}\sum_{i}\sum_{j}A_{ij}T_{ij}(r_{k}) \right ] -
+      \frac{4 \pi r_{k}}{V_{p}} \right \} \nonumber
+  \label{eq_d/dc}
+\end{eqnarray}
+
+%------------------------------------------------------------------------
+
+\subsection*{Particle envelopes}
+
+In this section we give the derivatives with respect to the
+different particle shape envelope functions $S_{p}(r_{k},s_{i})$ for
+the implemented shapes.
+
+\subsubsection*{Sphere}
+
+Since only the shape function $S_{p}(r_{k},R)$ depends on the radius
+$R$, we can use equation \ref{eq_shape_sphere} and write the
+derivative as:
+
+\begin{eqnarray}
+  \frac{\partial G(r_{k},s)}{\partial R} & = &
+     f_{s} B_{k}(s) f_{p} G_{p}(r_{k},s) \cdot
+     \frac{\partial S_{p}(r_{k},R)}{\partial R} \nonumber \\
+  & = &
+     f_{s} B_{k}(s) f_{p} G_{p}(r_{k},s)
+     \cdot 3 r_{k}
+     \left [ \frac{1}{4 R^{2}} - \frac{r_{k}^{2}}{16 R^{4}}\right ]
+     \Theta (2 R - r_{k})
+\end{eqnarray}
+
+%------------------------------------------------------------------------
+
+\section{Calculating standard deviations}
+
+The derivatives presented in the last section were with respect to the
+experimental and structural parameters, which we will refer to as
+$x_{i}$ in this section. {\it PDFFIT} allows the user
+to freely define their relationship to the refinement parameters
+$p_{i}$. However, for the least square refinement the derivatives with
+respect to those refinement parameters are needed. They can be obtained
+using the following relationship
+
+\begin{equation}
+  \frac{\partial G(r_{k},s)}{\partial p_{i}} =
+    \sum_{j=1}^{N} \frac{\partial G(r_{k},s)}{\partial x_{j}} \;
+                   \frac{\partial x_{j}}     {\partial p_{i}}
+\end{equation}
+
+The sum goes over the number of parameters $x$. The derivatives
+$\partial x_{j} / \partial p_{i}$ must be specified analytically by
+the user using the command {\tt par}. These derivatives are also
+used to calculate the resulting standard deviations, $\Delta x_{i}$,
+of the parameters $x_{i}$ from the errors, $\Delta p_{i}$ of the
+refinement parameters using
+
+\begin{equation}
+  \Delta x_{i} = \sqrt {\sum_{n} \left (
+    \frac{\partial x_{i}}{\partial p_{n}} \Delta p_{n} \right ) ^{2}}
+\end{equation}
+
+The sum goes over all refinement parameters $p_{i}$, however in practice
+each structural parameter $x_{i}$ is only allowed to depend on a small
+number of refinement parameters, so only a few derivatives contribute
+to the sum. \par
+
+Finally we will give the definitions of the R-values calculated in
+each cycle of the refinement. The expected R-value is defined as
+
+\begin{equation}
+  R_{exp} = \sqrt {\frac{ N - p}
+                  {\sum\limits_{i=1}^{N} w(r_{i}) G_{obs}^{2}(r_{i})}}
+  \label{eq_rexp}
+\end{equation}
+
+\noindent
+with $G_{obs}$ being the experimental PDF, $N$ the number of data
+points and $p$ the number of (refined) parameters. The weight for
+each data point is given by $w(r_{i})$. The weighted R-value is calculated
+as follows
+
+\begin{equation}
+  R_{w} = \sqrt {\frac{\sum\limits_{i=1}^{N} w(r_{i})
+                       [G_{obs}(r_{i}) - G_{calc}(r_{i})]^{2}}
+                {\sum\limits_{i=1}^{N} w(r_{i}) G_{obs}^{2}(r_{i})}}
+  \label{eq_rw}
+\end{equation}
+
+\noindent
+Here $G_{calc}$ is the calculated PDF. The unweighted R-value is
+simply defined as in (\ref{eq_rw}) just with the weights $w(r_{i})$
+set to unity.
+
+%------------------------------------------------------------------------

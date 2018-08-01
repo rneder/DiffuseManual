@@ -1,0 +1,30 @@
+rese
+#
+load xy,back.xy
+load xy,scal.xy
+#
+fnam off
+tit1 RMC test simulations
+tit2 Frame demonstration
+#
+nfra 2
+sfra 1,0.0,0.0,1.0,1.0
+sfra 2,0.0,0.0,1.0,1.0
+#
+afra 1
+kfra 1,1
+fset 3
+skal 0.1,30.0,0.0,7.0
+mark 5.0,1.0
+achx RMC cycle number
+achy Background b
+#
+afra 2
+kfra 2,2
+fset -3
+skal 0.1,30.0,15.0,21.0
+mark 5.0,1.0
+achx 
+achy Scaling factor f
+sann 1,"(b)",10.0,15.5
+sann 2,"(f)",17.5,20.0

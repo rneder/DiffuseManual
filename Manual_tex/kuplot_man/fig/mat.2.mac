@@ -1,0 +1,21 @@
+rese
+#
+load xy,s288.xy
+#
+do i[1]=1,np[1]
+  dy[1,i[1]]=sqrt(y[1,i[1]])
+enddo
+#
+fnam off
+skal -1.08,-0.76,500.0,1150.0
+mark 0.05,250
+achx \gw (\uo\d)
+achy Counts
+#
+mtyp 1,3
+mcol 1,6
+lcol 1,1
+msiz 1,0.2
+etyp 1,2
+#
+plot

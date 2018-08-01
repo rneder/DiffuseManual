@@ -1,0 +1,180 @@
+%------------------------------------------------------------------------
+% Chapter:  Introduction
+%------------------------------------------------------------------------
+
+\chapter{Introduction}
+\section{What is KUPLOT ?}
+
+\Kuplot is an interactive plotting program controlled by a
+command language.  \Kuplot is part of the diffuse scattering
+simulation package {\sc Discus}, however it can be used totally
+independent of the {\sc Discus} software.  \par
+
+\Kuplot is now using the {\it PGPLOT} library for the actual
+plotting and supports all graphic devices supported by {\it
+PGPLOT} such as X-window terminal or POSTSCRIPT output. As
+mentioned before, the program is controlled by a command language
+which includes a FORTRAN style interpreter which allows the use of
+variables, loops and conditional i statements. This results in a
+high degree of flexibility and allows the creation of quite
+complex graphics. It also allows \Kuplot to be used to
+process large numbers of data files and produce the desired plots
+automatically. \par
+
+\Kuplot can process simple 1d data files.  The program
+supports normal line graphs, marker, error bars as well as spline
+interpolation between the data points.  Line color, marker color,
+line type, line width and various other parameters can be
+adjusted.  \Kuplot allows one to plot 3D data sets using
+contour lines, colored bitmaps or both.  The color map for the
+bitmap can be freely changed using the FORTRAN interpreter (see
+section \ref{var}).  The program also allows one to define
+different contour line sets for one data set, e.g.  finer spaced
+lines for diffuse scattering and larger space lines in a different
+color for the Bragg peaks. A page can be divided into different
+plot areas (see chapter \ref{frame}). Each frame can contain
+graphs or the contents of a text file.  Frames can have different
+background colors.  Each frame has its own parameter set like e.g.
+title, axis labels, fonts.  \par
+
+Loaded data sets can be manipulated using the FORTRAN style
+interpreter or a variety of build-in functions.  An integrated FIT
+sub level, which allows to fit the following functions to a given
+1D data set: polynomial, n Gaussians and n Lorentzians.
+Furthermore 2D data sets can be fitted using a set of 2D
+Gaussians. Additionally \Kuplot allows fitting a user defined
+function to a loaded data set.
+
+%------------------------------------------------------------------------
+
+\section{Getting started \label{get}}
+
+After the program \Kuplot is installed properly and the
+environment variables are set, the program can be started by
+typing: 'kuplot' at the operating systems prompt.  Information
+about how to compile and install the program is described in 
+detail in the {\sc Discus} package reference guide.
+All array sizes that might need to be adjusted to your needs are
+defined in the file `{\it kuplot.inc}'. Check the comments within
+this file for an explanation of the various variables.\par
+%
+\begin{table}[!tb]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Symbol} & {\bf Description} \\
+  \hline\hline
+  "text"     &  Text given in double quotes
+   is to be understood as typed. \\
+  \hline
+  $<$text$>$ &  Text given in angled brackets,
+   is to be replaced by an appropriate value,
+   if the corresponding line is used in \Kuplot.
+   It could, for example be the
+   actual name of a file, or a numerical
+   value. \\
+  \hline
+  {\tt text} &  Text in type writer font
+   exclusively refers to \Kuplot commands. \\
+  \hline
+  $[$text$]$ &  Text in square brackets
+   describes an optional parameter or command.
+   If omitted, a default value is used, else
+   the complete text given in the square
+   brackets is to be typed. \\
+  \{text $|$ text\} & Text given in curly
+   brackets is a list of alternative parameters.
+   A vertical line separates two alternative,
+   mutually exclusive parameters. \\
+  \hline
+\end{tabularx}
+\caption{\label{sym-tab}Used symbols}
+\end{table}
+%
+The program uses a command language to interact with the user. The
+command 'exit' terminates the program and returns control to the
+shell.  All commands of \Kuplot consist of a command verb,
+optionally followed by one or more parameters.  All parameters must
+be separated from one another by a comma `,'. There is no predefined
+need for any specific sequence of commands. \Kuplot is case
+sensitive, all commands and alphabetic parameters MUST be typed in
+lower case letters.  If \Kuplot has been compiled using the
+'{\it -DREADLINE}' option (see installation files) basic line
+editing and recall of commands is possible.  For more information
+about the command language refer to the {\sc Discus} reference manual 
+or check the online help. A list of variables specific to \Kuplot
+is given in Tab. \ref{v1-tab}. 
+
+\begin{table}[!tb]
+\centering
+\begin{tabularx}{\textwidth}{|p{40mm}|X|}
+  \hline
+  {\bf Variable} & {\bf Description} \\
+  \hline \hline
+  n[1]               & Number of loaded data sets ({\bf now writable})\\
+  n[2]$^{*}$         & Maximum allowed number of data sets \\
+  n[3]$^{*}$         & Maximum allowed number of frames \\
+  n[4]$^{*}$         & Maximum allowed number of annotations \\
+  n[5]$^{*}$         & Maximum allowed number of bonds \\
+  \hline
+  nx[$<$ik$>$]$^{*}$ & Number of points in x-direction for data set $<$ik$>$ \\
+  ny[$<$ik$>$]$^{*}$ & Number of points in y-direction for data set $<$ik$>$ \\
+  ni[$<$ik$>$]$^{*}$ & Type of data set $<$ik$>$. (0 for 1D
+                       and 1 for 2D data) \\
+  np[$<$ik$>$]$^{*}$ & Number of points of 1D data set $<$ik$>$ \\
+  \hline
+  xmin[$<$ik$>$]$^{*}$ & Minimum x-value of data set $<$ik$>$ \\
+  xmax[$<$ik$>$]$^{*}$ & Maximum x-value of data set $<$ik$>$ \\
+  ymin[$<$ik$>$]$^{*}$ & Minimum y-value of data set $<$ik$>$ \\
+  ymax[$<$ik$>$]$^{*}$ & Maximum y-value of data set $<$ik$>$ \\
+  zmin[$<$ik$>$]$^{*}$ & Minimum z-value of data set $<$ik$>$ \\
+  zmax[$<$ik$>$]$^{*}$ & Maximum z-value of data set $<$ik$>$ \\
+  pwin[i]$^{*}$        & Current plotting dimensions
+                         (1:xmin,2:xmax,3:ymin,4:ymax) \\
+  \hline
+   x[$<$ik$>$,$<$ip$>$] & X-value of data point $<$ip$>$ of data set $<$ik$>$\\
+   y[$<$ik$>$,$<$ip$>$] & Y-value of data point $<$ip$>$ of data set $<$ik$>$\\
+  dx[$<$ik$>$,$<$ip$>$] & Value of $\sigma_{x}$ for data point $<$ip$>$ of
+                          data set $<$ik$>$\\
+  dy[$<$ik$>$,$<$ip$>$] & Value of $\sigma_{y}$ for data point $<$ip$>$ of
+                          data set $<$ik$>$\\
+   z[$<$ik$>$,$<$ix$>$,$<$iy$>$] &
+                          Z-value of point $<$ix$>$,$<$iy$>$ of
+                          data set $<$ik$>$\\
+  \hline
+  axis[1,i]       & Angle of labels for axis i (1=x,2=y) \\
+  axis[2,i]       & Length of major ticks for axis i (1=x,2=y)\\
+  axis[3,i]       & Length of minor ticks for axis i (1=x,2=y)\\
+  axis[4,i]       & Subdivisions between ticks, axis i (1=x,2=y)\\
+  axis[5,i]       & Distance numbers - axis i (1=x,2=y)\\
+  axis[6,i]       & Distance label - axis i (1=x,2=y)\\
+  \hline
+  cmap[$<$ic$>$,3]    & Color map entry in R,G,B (0..1) for color $<$ic$>$ \\
+  cmax[1]$^{*}$       & Number of bitmap colors available \\
+  \hline
+  p[$<$i$>$]          & Fit variable number $<$i$>$ (see section \ref{fit}) \\
+  s[$<$i$>$]          & Error of p$<$i$>$ \\
+  \hline
+\end{tabularx}
+\caption{\label{v1-tab}\Kuplot specific variables}
+\end{table}
+
+Names of input or output files are to be typed, as
+they will be expected by the shell.  If necessary include a path to
+the file.  Only the first four letters of any command verb are
+significant, all commands may be abbreviated to the shortest unique
+possibility.  At least a single space is needed between the command
+verb and the first parameter.  No comma is to precede the first
+parameter. A line can be marked as comment by inserting a `\#' as
+first character in the line. The symbols used throughout this manual
+to describe commands, command parameters, or explicit text used by
+the program \Kuplot are listed in Table \ref{sym-tab}. \par
+
+There are several sources of information, first \Kuplot has a
+build in online help, which can be accessed by entering the command
+{\tt help} or if help for a particular command $<$cmd$>$ is wanted
+by {\tt help $<$cmd$>$}.  This manual describes background and
+principle functions of \Kuplot and should give some insight in
+the ways to use this program. \par
+
+%------------------------------------------------------------------------

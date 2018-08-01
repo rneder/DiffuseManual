@@ -1,0 +1,12 @@
+#!/bin/sh
+rm -f *.aux
+rm -f *.bbl
+rm -f *.blg
+rm -f *.dvi
+rm -f *.lof
+rm -f *.log
+rm -f *.lot
+rm -f *.bak
+rm -f *.toc
+rm -f *.pdf
+rm -f *.ps

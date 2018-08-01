@@ -1,0 +1,22 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [0][-]{chapter.2}{Example: CeF3}{}% 2
+\BOOKMARK [1][-]{section.2.1}{Preparing the data}{chapter.2}% 3
+\BOOKMARK [1][-]{section.2.2}{Extracting differential PDFs}{chapter.2}% 4
+\BOOKMARK [1][-]{section.2.3}{Calculating differential PDFs from a model}{chapter.2}% 5
+\BOOKMARK [0][-]{appendix.A}{Equations }{}% 6
+\BOOKMARK [1][-]{section.A.1}{Calculating the difference }{appendix.A}% 7
+\BOOKMARK [1][-]{section.A.2}{Using a model }{appendix.A}% 8
+\BOOKMARK [0][-]{appendix.B}{MIXSCAT commands}{}% 9
+\BOOKMARK [1][-]{section.B.1}{Summary}{appendix.B}% 10
+\BOOKMARK [1][-]{section.B.2}{calc}{appendix.B}% 11
+\BOOKMARK [1][-]{section.B.3}{elem}{appendix.B}% 12
+\BOOKMARK [1][-]{section.B.4}{match}{appendix.B}% 13
+\BOOKMARK [1][-]{section.B.5}{read}{appendix.B}% 14
+\BOOKMARK [1][-]{section.B.6}{remove}{appendix.B}% 15
+\BOOKMARK [1][-]{section.B.7}{save}{appendix.B}% 16
+\BOOKMARK [1][-]{section.B.8}{scat}{appendix.B}% 17
+\BOOKMARK [1][-]{section.B.9}{scal}{appendix.B}% 18
+\BOOKMARK [1][-]{section.B.10}{show}{appendix.B}% 19
+\BOOKMARK [1][-]{section.B.11}{variables}{appendix.B}% 20
+\BOOKMARK [1][-]{section.B.12}{xray}{appendix.B}% 21
+\BOOKMARK [0][-]{section.B.12}{Bibliography}{}% 22

@@ -1,0 +1,10 @@
+fopen sin.dat
+fput 'Cool sinus function'
+#
+do i[1]=1,50
+  r[1]=i[1]*0.1
+  r[2]=sin(r[1])
+  fput r[1],r[2]
+enddo
+#
+fclose          

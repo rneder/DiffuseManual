@@ -1,0 +1,132 @@
+set prompt,on
+#
+# This chapter demonstrates the use of the microdomain module
+# of DISCUS. A microdomain in this contents is a small structure
+# within the crystals matrix. 
+#
+# In this example we will distribute the microdomain stored
+# in 'md.inp' throughout a crystal. The file format is indentical
+# to the usual structure file. To have a look at the microdomain
+# structure, start KUPLOT in another window and enter '@k8c'.
+#
+wait return
+################################################################
+#
+# First we have to create a crystal, expanded from the contents
+# of a unit cell.
+#
+read
+cell p.cll,20,20,1
+#
+#@plot
+# 
+# To view the created structure, press <RETURN> in the KUPLOT
+# window.
+#
+wait return
+################################################################
+#
+# Next we will enter the microdomain sublevel. The command
+# 'init' resets the microdomain settings. 
+#
+micro
+init
+#
+wait return
+##########################################################
+#
+# Next we select a random microdomain distribution with
+# a density of 0.1 microdomains per unit cell. 
+# 
+dist random
+dens 0.1
+#
+# Other possible distribution modes are on a superlattice
+# or a paracrystalline distribution. Check the manual and
+# the online help for 'micro' for further details.
+#
+wait return
+##########################################################
+#
+# Next you can specify if the microdomain origins can 
+# take any position ("free") or should be forced on 
+# lattice positions as selected in our example.
+#
+grid host
+#
+wait return
+##########################################################
+#
+# Now we select the type of boundary for the microdomain.
+# All crystal atoms within those boundaries will be
+# removed. Again check the online help or the manual 
+# for all possible options. We select type 'fuzzy' which
+# means the boundary is the extend of the microdomain
+# structure itself. We also set the separation distance
+# between microdomain and crystal to 1A. All closer atoms
+# will be removed.
+# The radius of the microdomains is set to 5.10 Angstroem to
+# prevent accidental overlap of the microdomains.
+#
+radi  5.10
+bound fuzzy
+sep fuzzy,1.0
+#
+wait return
+##########################################################
+#
+# Next we specify the contents for the microdomain in
+# our case the content of file 'md.inp'. After that we
+# insert this microdomain structure in its original 
+# orientation ("1") in the list of microdomains to be
+# created.
+#
+content struc,md.inp
+orient 1
+insert
+#
+wait return
+##########################################################
+#
+# Now we define an orientation matrix for a second
+# orientation of our microdomain (inverse) and insert
+# the same microdomain structure in this second 
+# orientation in the list.
+#
+mrow 3, 0.0, 0.0,-1.0, 0.0
+mrow 2, 0.0,-1.0, 0.0, 0.0
+mrow 1,-1.0, 0.0, 0.0, 0.0
+orient 2
+insert
+#
+wait return
+##########################################################
+#
+# Now we have a final look at the settings:
+#
+show
+#
+# Next we create the origin distribution ('create') and
+# finally insert the microdomains.
+#
+wait return
+##########################################################
+#
+create
+run
+exit
+#
+wait return
+################################################################
+#
+# Finally we want to see the result. 
+#
+@plot
+#
+# Press <RETURN> in the KUPLOT window to see the created
+# microdomain distribution.
+#
+# Now you can play around with DISCUS or exit the program using
+# the command 'exit'. Alternatively the command '@8' takes you
+# back to the table of contents of the DISORDER II chapter or 
+# '@tutorial' will take you to the main table of contents.

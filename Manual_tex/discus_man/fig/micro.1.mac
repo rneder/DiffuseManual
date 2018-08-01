@@ -1,0 +1,26 @@
+read
+cell p.cll,20,20,1
+#
+micro
+init
+dist random
+dens 0.1
+grid host
+radi 5.10
+bound fuzzy
+sep fuzzy,1.0
+#
+content struc,md.inp
+orient 1
+insert
+#
+mrow 3, 0.0, 0.0,-1.0, 0.0
+mrow 2, 0.0,-1.0, 0.0, 0.0
+mrow 1,-1.0, 0.0, 0.0, 0.0
+orient 2
+insert
+#
+create
+run
+exit
+@plot micro.1.plot

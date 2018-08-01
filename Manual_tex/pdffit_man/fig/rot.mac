@@ -1,0 +1,15 @@
+reset
+read stru,rot.stru
+read data,n,0.0,0.0,rot.data
+#
+r[1]=x[1]
+r[2]=y[1]
+r[3]=x[2]
+r[4]=y[2]
+#
+par x[1]=    r[1]*cosd(p[5])+r[2]*sind(p[5]),-1.*r[1]*sind(p[5])+r[2]*cosd(p[5])
+par y[1]=-1.*r[1]*sind(p[5])+r[2]*cosd(p[5]),-1.*r[1]*cosd(p[5])-r[2]*sind(p[5])
+par x[2]=    r[3]*cosd(p[5])+r[4]*sind(p[5]),-1.*r[3]*sind(p[5])+r[4]*cosd(p[5])
+par y[2]=-1.*r[3]*sind(p[5])+r[4]*cosd(p[5]),-1.*r[3]*cosd(p[5])-r[4]*sind(p[5])
+#
+p[5]=4.5

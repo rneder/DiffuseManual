@@ -1,0 +1,50 @@
+rese
+#
+load xy,s288.xy
+load xy,s288.xy.fit
+load xy,s288.xy.dif
+load xy,s288.xy.fit.a
+load xy,s288.xy.dif.a
+alloc 2
+x[6,1]=xmin[1]
+y[6,1]=500
+x[6,2]=xmax[1]
+y[6,2]=500
+ccal add,wy,3,500
+ccal add,wy,5,500
+#
+fnam off
+achx \gw (\uo\d)
+achy Counts
+font just,cent
+#
+ltyp 1,0
+mtyp 1,3
+msiz 1,0.2
+mcol 1,1
+#
+lcol 2,3
+lcol 3,2
+lcol 4,3
+lcol 5,2
+lcol 6,6
+#
+buff 0.07
+skal -1.08,-0.76,400,1200
+mark 0.1,100
+sleg 1,Data
+sleg 2,Fit
+sleg 3,Difference
+sleg 4,Fit
+sleg 5,Difference
+#
+nfra 2
+#
+afra 1
+kfra 1,1,2,3,6
+tit2 Fit \fisingle\fr Gaussian
+#
+afra 2
+kfra 2,1,4,5,6
+tit2 Fit \fitwo\fr Gaussians
+#

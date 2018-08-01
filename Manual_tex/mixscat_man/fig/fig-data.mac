@@ -1,0 +1,37 @@
+reset
+load xy,CeF3_Neutron.gr
+load xy,CeF3_Xray.gr
+#
+achx r(\A)
+achy G(r) (\A\u-2\d)
+fnam off
+tit1
+tit2
+sleg 1,Neutrons
+sleg 2,X-rays
+lwid 1,0.6
+lwid 2,0.6
+etyp 1,0
+etyp 2,0
+ecol 1,6
+ecol 2,6
+#
+nfra 2
+sfra 2,0.0,0.0,1.0,0.5
+sfra 1,0.0,0.5,1.0,1.0
+kfra 1,1
+kfra 2,2
+#
+afra 1
+buff 0.08,0.08,0.01,0.08
+skal 0.00,20.0,1.1*ymin[1],1.1*ymax[1]
+achx OFF
+mark 5,50
+#
+afra 2
+buff 0.08,0.08,0.08,0.01
+skal 0.0,20.0,1.1*ymin[2],1.1*ymax[2]
+mark 5,5
+#
+plot
+save ps,../pic/cef-data.eps

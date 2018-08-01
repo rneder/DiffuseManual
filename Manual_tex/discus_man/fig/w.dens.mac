@@ -1,0 +1,24 @@
+#
+# Demonstration macro for density waves
+#
+# longitudinal
+#
+read
+cell cell.cll,20,20,1
+#
+wave
+dens
+func sinus
+len 40.0
+amp 2.0
+phase 0.0
+shift 0.0
+vect 1,0,0
+plow 0.0
+phigh 1.0
+repl zr,void
+show
+run
+exit
+#
+@plot dsin.plot

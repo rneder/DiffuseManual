@@ -1,0 +1,14 @@
+#!/bin/sh
+cd diffev_man
+../clean
+cd ../discus_man
+../clean
+cd ../kuplot_man
+../clean
+cd ../mixscat_man
+../clean
+cd ../package_man
+../clean
+cd ../suite_man
+../clean
+cd ..

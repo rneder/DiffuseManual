@@ -1,0 +1,228 @@
+%------------------------------------------------------------------------
+%                           DISCUS Users guide
+%------------------------------------------------------------------------
+
+\documentclass[11pt]{report}
+
+\usepackage[letterpaper]{geometry}
+\geometry{height=8.5in}
+\geometry{bottom=1.1in}
+\geometry{left=1.1in}
+\geometry{right=1.1in}
+
+\usepackage[dvips]{graphicx}
+\usepackage{fancyhdr}
+\usepackage{floatflt}
+\usepackage{tabularx}
+\usepackage[round]{natbib}
+\usepackage[hang,small,bf]{caption2}
+\usepackage{fancyvrb}
+\usepackage{scalefnt}
+\usepackage{color}
+\usepackage{url}
+\usepackage{hyperref}
+
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+
+\input{../version.tex}
+\newcommand{\discus}{\textsc{Discus}}
+\newcommand{\Discus}{\textsc{Discus\ }}
+\newcommand{\kuplot}{\textsc{Kuplot}}
+\newcommand{\Kuplot}{\textsc{Kuplot\ }}
+\newcommand{\diffev}{\textsc{Diffev}}
+\newcommand{\Diffev}{\textsc{Diffev\ }}
+\newcommand{\Suite}{\textsc{Discus Suite\ }}
+\newcommand{\suite}{\textsc{Discus Suite}}
+
+% General page style
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\bfseries \slshape\leftmark}
+\fancyhead[R]{\bfseries Users Guide}
+\fancyfoot[R]{\bfseries Page \thepage}
+\fancyfoot[L]{\bfseries \Discus \version}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Style for chapter start pages ..
+
+\fancypagestyle{plain} {
+  \fancyhf{}
+  \fancyhead[R]{\bfseries Users Guide}
+  \fancyfoot[L]{\bfseries \Discus \version}
+  \fancyfoot[R]{\bfseries Page \thepage}
+  \renewcommand{\headrulewidth}{0.4pt}
+}
+
+% MacVerbatim style for macros
+
+\definecolor{DarkBlue}{rgb}{0.1,0.0,0.5}
+
+\DefineVerbatimEnvironment%
+{MacVerbatim}{Verbatim}
+{fontfamily=courier,
+ fontsize=\scriptsize,
+ fontseries=b,
+ formatcom=\color{DarkBlue}}
+
+\graphicspath{{pic/}}
+
+\setlength\parindent{0pt}
+
+%------------------------------------------------------------------------
+
+\begin{document}
+
+%------------------------------------------------------------------------
+% Title
+%------------------------------------------------------------------------
+
+\begin{titlepage}
+\begin{flushright}
+
+  \hrule
+  \vspace{15mm}
+  \textbf{{\scalefont{8} \discus}} \\
+  \vspace{15mm}
+  \textbf{{\scalefont{4} Users Guide}} \\
+  \vspace{10mm}
+  \textbf{{\Huge Version  \version}} \\
+  \vspace{10mm}
+
+  \hrule
+  \vspace{40mm}
+  \textbf{written by} \\
+
+  \vspace{5mm}
+  \textbf{\Large Reinhard Neder} \\
+  Email: reinhard.neder@fau.de \\
+
+  \vspace{ 2mm}
+  \textbf{\Large Thomas Proffen} \\
+  Email: tproffen@ornl.gov \\
+
+  \vspace{12mm}
+  \textbf{\Large \url{http://tproffen.github.io/DiffuseCode}} \\
+
+  \vspace{3mm}
+  \hrule
+
+\end{flushright}
+\begin{flushright}
+  \textit{Document created: \today}
+\end{flushright}
+
+\end{titlepage}
+
+%------------------------------------------------------------------------
+% Preface
+%------------------------------------------------------------------------
+
+\chapter*{Preface}
+\subsection*{Disclaimer}
+
+The \Discus software described in this guide is
+provided without warranty of any kind.  No liability is taken for any loss
+or damages, direct or indirect, that may result through the use of \discus.
+No warranty is made with respect to this manual, or the program
+and functions therein.  There are no warranties that the programs are free
+of error, or that they are consistent with any standard, or that they will
+meet the requirement for a particular application.  The programs and the
+manual have been thoroughly checked.  Nevertheless, it can not be
+guaranteed that the manual is correct and up-to-date in every detail. This
+manual and the \Discus program may be changed without notice.\par
+
+\Discus is intended as a public domain program.  It may be used free
+of charge.  Any commercial use is, however, not allowed without the
+explicit written permission of the authors.
+
+%------------------------------------------------------------------------
+
+\subsection*{Acknowledgments}
+
+The parameters for the calculation of bond valence sums were compiled by I.D.
+Brown, McMaster University, Hamilton, ON, Canada.
+
+%------------------------------------------------------------------------
+
+\subsection*{Using DISCUS}
+
+Publication of results totally or partially obtained using the program 
+\Discus should state that \Discus was used and contain the following
+reference:
+
+\begin{quote}
+  {\sc Proffen, Th. \& Neder, R.B.} (1997) "DISCUS, a Program
+  for Diffuse Scattering and Defect Structure Simulations"
+  {\it J. Appl. Cryst.}, {\bf 30}, 171-175
+\end{quote}
+
+%------------------------------------------------------------------------
+
+\newpage
+\subsection*{More information}
+
+This users guide can only provide program specific details. A
+broader discussion of simulation techniques and many \Discus
+examples and macro files can be found in our book
+
+\begin{quote}
+  {\sc Neder, R.B. \& Proffen, Th.} "Diffuse Scattering and Defect Structure
+  Simulations - A cook book using the programs DISCUS", {\it IUCr Texts on
+  Crystallography}, Oxford University Press, 2008.
+\end{quote}
+
+%\begin{figure}[!t]
+%   \centering
+%   \includegraphics[width=0.5\linewidth]{cookbook.eps}
+%   \vspace{10mm}
+%\end{figure}
+
+The macro files used in the cookbook can also be downloaded to the 
+\Discus homepage at \url{https://github.com/tproffen/DiscusCookBookExamples}.
+
+%------------------------------------------------------------------------
+% Table of contents, List of Tables etc..
+%------------------------------------------------------------------------
+
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+%------------------------------------------------------------------------
+% Here all the chapter are included ...
+%
+% Alter or comment the \includeonly command above to work with the
+% complete manual or only certain parts.
+%
+%------------------------------------------------------------------------
+
+\include{dis_int}
+\include{dis_stru}
+\include{dis_four}
+\include{dis_cry}
+\include{dis_mod1}
+\include{dis_mod2}
+\include{dis_chem}
+\include{dis_mc}
+\include{dis_pdf}
+\include{dis_rmc}
+
+%------------------------------------------------------------------------
+% Appendices
+%------------------------------------------------------------------------
+
+\appendix
+\include{appl_dis}
+
+%------------------------------------------------------------------------
+% Bibliography
+%------------------------------------------------------------------------
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliography{discus_man}
+\bibliographystyle{kristal}
+
+\end{document}

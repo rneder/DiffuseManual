@@ -1,0 +1,89 @@
+#
+# Demonstration macro for displacement waves
+#
+# longitudinal
+#
+read
+cell cell.cll,20,20,1
+#
+wave
+long
+acco
+func sinus
+len 35.0
+amp 2.0
+phase 0.0
+shift 0.0
+vect 1,0,0
+sel zr
+show
+run
+exit
+#
+@plot lsin.plot
+#
+# transversal sinus
+#
+read
+cell cell.cll,20,20,1
+#
+wave
+trans
+acco
+func sinus
+len 35.0
+amp 2.0
+phase 0.0
+shift 0.0
+vect 1,0,0
+osci 0,1,0
+sel zr
+show
+run
+exit
+#
+@plot tsin.plot
+#
+# transversal box
+#
+read
+cell cell.cll,20,20,1
+#
+wave
+trans
+acco
+func box
+len 35.0
+amp 2.0
+phase 0.0
+shift 0.0
+vect 1,0,0
+osci 0,1,0
+sel zr
+show
+run
+exit
+#
+@plot tbox.plot
+#
+# transversal triangle
+#
+read
+cell cell.cll,20,20,1
+#
+wave
+trans
+acco
+func triangle
+len 35.0
+amp 2.0
+phase 0.0
+shift 0.0
+vect 1,0,0
+osci 0,1,0
+sel zr
+show
+run
+exit
+#
+@plot ttri.plot

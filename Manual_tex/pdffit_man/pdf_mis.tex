@@ -1,0 +1,116 @@
+%------------------------------------------------------------------------
+% Chapter:  Misc. functions
+%------------------------------------------------------------------------
+
+\chapter{Calculating structural properties \label{misc}}
+
+{\it PDFFIT} offers like {\it DISCUS} the intrinsic functions
+{\tt blen} and {\tt bang} to calculate the bond length and bond
+angles between atoms or general positions within the model
+crystal. However, {\it PDFFIT} allows the user to calculated
+bond length and bond angles with standard deviations propagated
+from the uncertainties of lattice parameters and positions obtained
+during the refinement
+
+%------------------------------------------------------------------------
+
+\section{Calculating single bond lengths and angles \label{misc_simp}}
+
+The bond length between any two atoms within the structure can simply
+be calculated using the command {\tt blen} followed by the two atom
+numbers. The following example calculates the distance between the
+atoms {\tt 5} and {\tt 9}:
+
+\footnotesize
+\begin{MacVerbatim}
+   pdffit > blen 5,9
+       MN (#    5) -    O (#    9)   =   1.965(5) A
+\end{MacVerbatim}
+\normalsize
+
+\noindent The names of the two selected atoms and distance is
+given. If the standard deviations of the lattice parameters or the
+positions of the atoms are not zero, the standard deviation of the
+bond length is given as well. As usual the standard deviation is
+given in round brackets after the last significant digit. In our
+example the bond length is $1.965 \pm 0.005$\AA. The bond angle
+defined by three atoms can be calculated in a similar way using
+the command {\tt bang} as demonstrated below:
+
+\footnotesize
+\begin{MacVerbatim}
+   pdffit > bang 9,5,13
+       O (#    9) -   MN (#    5) -    O (#   13)   =   74.1(9) degrees
+\end{MacVerbatim}
+\normalsize
+
+\noindent It should be noted, that these functions calculates the
+direct distance between the given atoms, although the same atom
+might be closer to a given atom in a neighbouring unit cell. No
+periodic boundary conditions are applied. In order to obtain a
+specific bond length or angle it might be necessary to modify the
+atom coordinates by $\pm 1$. This can simply be done using the
+corresponding variables, e.g. {\tt x[1]=x[1]+1.0}. Note that this
+is actually modifying the current structure. Alternatively one can
+compute all bond length in a given interval as discussed in the
+next section.
+
+%------------------------------------------------------------------------
+
+\section{Calculating multiple bond lengths \label{misc_mult}}
+
+The command {\tt blen} allows one to calculate all bond length
+between selected atom types in a given interval. This can be
+useful to monitor a specific bond length. In the following example
+all $Mn-O$ bonds within a range of $1.8$ and $2.4$\AA\ are
+calculated.
+
+\footnotesize
+\begin{MacVerbatim}
+  pdffit > blen mn,o,1.8,2.4
+   Bond lengths found in current phase :
+     MN (#    5) -    O (#    9)   =          1.965(5) A
+     MN (#    5) -    O (#   13)   =           1.93(1) A
+     MN (#    5) -    O (#   18)   =           2.15(1) A
+     MN (#    5) -    O (#   14)   =           2.15(1) A
+     MN (#    5) -    O (#   17)   =           1.93(1) A
+     MN (#    5) -    O (#   11)   =          1.965(5) A
+
+     MN (#    6) -    O (#   13)   =           2.15(1) A
+     MN (#    6) -    O (#   12)   =          1.965(5) A
+     MN (#    6) -    O (#   18)   =           1.93(1) A
+     MN (#    6) -    O (#   10)   =          1.965(5) A
+     MN (#    6) -    O (#   14)   =           1.93(1) A
+     MN (#    6) -    O (#   17)   =           2.15(1) A
+
+     MN (#    7) -    O (#    9)   =          1.965(5) A
+     MN (#    7) -    O (#   15)   =           1.93(1) A
+     MN (#    7) -    O (#   20)   =           2.15(1) A
+     MN (#    7) -    O (#   11)   =          1.965(5) A
+     MN (#    7) -    O (#   16)   =           2.15(1) A
+     MN (#    7) -    O (#   19)   =           1.93(1) A
+
+     MN (#    8) -    O (#   10)   =          1.965(5) A
+     MN (#    8) -    O (#   19)   =           2.15(1) A
+     MN (#    8) -    O (#   20)   =           1.93(1) A
+     MN (#    8) -    O (#   12)   =          1.965(5) A
+     MN (#    8) -    O (#   15)   =           2.15(1) A
+     MN (#    8) -    O (#   16)   =           1.93(1) A
+\end{MacVerbatim}
+\normalsize
+
+\noindent As one can see around each of the four $Mn$ in the unit
+cell we find six oxygens forming an octahedra. In this mode of the
+command {\tt blen} periodic boundary conditions are applied in the
+same way as for the calculation of the PDF and as a result
+distances to atoms outside the structural box (or unit cell) are
+also found.
+\par
+
+The command {\tt blen} might also be used to identify which atom
+pairs contribute to a given PDF peak. Assume the peak in question
+is between 3.5 and 3.6\AA. Simply enter the command {\tt blen
+all,all,3.5,3.6} and {\it PDFFIT} will list all atom pairs that
+are separated by a distance between 3.5 and 3.6\AA.
+
+%------------------------------------------------------------------------

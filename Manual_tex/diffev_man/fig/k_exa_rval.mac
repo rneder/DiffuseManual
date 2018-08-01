@@ -1,0 +1,37 @@
+rese
+@kpara 0
+ccal mul,wy,1,100
+ccal mul,wy,2,100
+ccal mul,wy,3,100
+#
+buff 0.08,0.05,0.12,0.08
+#
+nfra 2
+sfra 1, 0.00, 0.00, 1.00, 1.00
+sfra 2, 0.10, 0.15, 1.00, 1.00
+kfra 1,1,2,3
+kfra 2,1,2,3
+#
+afra 1
+#
+  skal 0,99,0,ymax[3]*1.01
+  mark 10,50
+  fnam off
+  achx Generation
+  achy R-value
+  tit1
+  tit2 Development of the R-value
+#
+afra 2
+  skal 21,99,8.15,8.79
+  fnam off
+  mark 10,0.2
+  achx Generation
+  achy R-value
+  tit1
+  tit2
+#
+plot
+save ps, example.rval.ps
+sys ps2epsi example.rval.ps
+sys mv example.rval.epsi ../pic/example.rval.eps

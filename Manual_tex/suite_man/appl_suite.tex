@@ -1,0 +1,144 @@
+\chapter{SUITE commands}
+\section{Summary}
+\par
+You can switch to the individual sections "discus", "diffev", 
+and "kuplot" by typing the respective section name. To return 
+to the suite type "exit" at the main menu of each section. 
+\par
+The variables i[*], r[*] and res[*] are global variables, 
+a change in any section will be seen in any other section 
+as well. 
+The same holds for all user defined variables! 
+\par
+The section specific variables are local within each section. 
+\par
+If an output filename in "discus" starts with "kuplot", the 
+data are written directly into the next available KUPLOT 
+data set. This is available for Fourier output, powder, pdf. 
+\section{News}
+\subsection*{2018\_June}
+\par
+Revised the reaction to a CTRL-C 
+\par
+Added a ==$> $ 'set error, ... , "save" option 
+\subsection*{2018\_Jan}
+\par
+The logical comparisons may now take the operators: 
+$ <$, $ <$=, ==, /=, $> $=, $> $/ 
+The classical fortran77 operators are still valid 
+\par
+New logical functions "isvar" and "isexp" can be used within an 
+"if" construction. See help entry ==$> $'function' in the 
+general "Command\_lang" section 
+\subsection*{2017\_Sep}
+\par
+Throughout the program the internal calculation of random numbers 
+was changed to the FORTRAN 90 intrinsic function. 
+\subsection*{2016\_Dec}
+\par
+At a few select points colors are introduced into the output. 
+Currently these are just the error messages. 
+\subsection*{2016\_Oct}
+\par
+A new command 'parallel' has been added to the Windows version 
+This allows to execute a macro in parallel. 
+\par
+\subsection*{2016\_June}
+\par
+The SUITE may now be interruted gracefully with a CTRL-c. 
+This will cause the DISCUS part to write the current structure, 
+and DIFFEV to shut down MPI if active. 
+\subsection*{2015\_December}
+\par
+The branch command within the sections discus, diffev, kuplot may 
+now take the form : 
+branch discus -macro macro\_name par1, par2, ... 
+\subsection*{2015\_June}
+\par
+Starting with Version 5.1, we have migrated to a X-Window 
+environment for WINDOWS as well. As a small side effect, 
+the technique to jump to the desired folder has changed slightly. 
+See the help entry on "cd" in the general "Command\_lang" section 
+for further information. The process is described in the 
+package manual as well. 
+\par
+\section{diffev}
+\par
+Switches to the "diffev" section. 
+\par
+Within this section any standard DIFFEV command can be 
+given. The behaviour of "diffev" is essentially the same 
+as in the stand alone version. 
+The 'diffev/run\_mpi' command will start a discus/kuplot 
+section. The syntax of the command is unchanged. 
+All trial parameters are placed into array $ <$r[]$> $ at 
+entries 201, 202, ... 
+The values of generation, member, children and number 
+of parameters are placed into $ <$i[]$> $: 
+i[201] = generation 
+i[202] = member 
+i[203] = children 
+i[204] = parameter 
+\par
+Use an 'exit' to return to the suite. 
+\section{discus}
+\par
+Switches to the "discus" section. 
+\par
+Within this section any standard DISCUS command can be 
+given. The behaviour of "discus" is essentially the same 
+as in the stand alone version. 
+\par
+Within the discus section you can use the command 
+'branch kuplot' to switch to the kuplot branch. 
+\par
+In contrast to the stand alone DISCUS version, one can 
+write an output file directly into the KUPLOT data sets. 
+The number of data sets in KUPLOT is atumatically incremented. 
+Currently this is implemented for the PDF and the powder 
+output. Single crystal diffraction pattern to follow 
+shortly. 
+\section{kuplot}
+\par
+Switches to the "kuplot" section. 
+\par
+Within this section any standard KUPLOT command can be 
+given. The behaviour of "kuplot" is essentially the same 
+as in the stand alone version. 
+\par
+Within the kuplot section you can use the command 
+'branch discus' to switch to the discus branch. 
+\section{parallel}
+{\bf parallel $ \{$$ <$numprocs$> $, $\} $,$ <$macro.mac$> $ $ \{$, $ <$para\_1...$\} $ \par }
+\par
+\vspace{3pt}
+Starts an MPI driven parallel calculation. See the diffev help 
+on a full explanation of parallel processing. 
+\par
+The parallel refinement will execute file $ <$macro.mac$> $, which 
+must reside in the current directory. Make sure you have used 
+cd $ <$path$> $ to change to the proper directory prior to the use 
+of the 'parallel' command. The macro name must be given in 
+full, including the ".mac" extension. If the macro requires 
+parameters you must specify these following the macro name. 
+\par
+Optionally you can place the number or processes that MPI shall 
+start prior tot he macro name. The numebr defaults to the value 
+of the SHELL variable NUMBER\_OF\_PROCESSORS on your system. If this 
+variable is not set, discus\_suite will start 4 processes. 
+\par
+\section{manual}
+{\bf manual ["section:"$ \{$"suite"  $| $ "discus"  $| $ "diffev" $| $ \par }
+{\bf                    "kuplot" $| $ "package" $| $ "mixscat"$\} $ \par }
+{\bf        [,"viewer:"$ <$name$> $] \par }
+\par
+\vspace{3pt}
+Opens a PDF viewer for one of the Manuals 
+\par
+The section defaults to the current program section that you are 
+working with. 
+On Linux systems, the viewer defaults to "qpdfview", on Windows 
+system it defaults to "firefox". If DISCUS does not find the 
+default or the user provided viewer, DISCUS will search 
+a list of common PDF viewers. If none is found an error message 
+points to the folder that contains the manuals. 

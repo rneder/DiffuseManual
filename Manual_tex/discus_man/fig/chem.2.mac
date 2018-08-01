@@ -1,0 +1,12 @@
+read
+stru chem.2.stru
+#
+chem
+set vec,1,1,1,1,0,0
+set neig,vec,1
+disp all,all
+#
+set blen,4.5,5.5
+blen all,all,chem.2.blen
+#
+exit

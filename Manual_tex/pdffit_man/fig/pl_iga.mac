@@ -1,0 +1,57 @@
+rese
+orient p
+#
+# Load data
+#
+load xy,in$1.pdf
+load xy,in$1.data
+load xy,in$1.dif
+#
+# Now we make some common settings
+#
+fnam off
+#
+# Setting frames
+#
+nfra 3
+sfra 1,0.0,0.6,1.0,1.0
+sfra 2,0.0,0.2,1.0,0.5
+sfra 3,0.0,0.0,1.0,0.2
+#
+afra 1
+buff 0.1,0.1,0.0,0.1
+kfra 1,1,2
+lcol 1,6
+ltyp 2,0
+mtyp 2,3
+mcol 2,6
+msiz 2,0.08
+achx r [\A]
+achy G(r) [\A\u-2\d]
+skal 1.8,3.2,1.1*ymin[2],1.1*ymax[2]
+mark 0.5,2.0
+tit2 (a)
+#
+afra 2
+buff 0.1,0.1,0.0,0.0
+kfra 2,1,2
+lcol 1,6
+ltyp 2,0
+mtyp 2,3
+mcol 2,6
+msiz 2,0.08
+achx OFF
+achy G(r) [\A\u-2\d]
+skal xmin[1],xmax[1],1.1*ymin[2],1.1*ymax[2]
+mark 1.0,2.0
+tit2 (b)
+#
+afra 3
+buff 0.1,0.1,0.1,0.0
+kfra 3,3
+lcol 3,6
+achx r [\A]
+achy Difference
+skal xmin[1],xmax[1],1.8*ymin[3],1.8*ymax[3]
+mark 1.0,1.0
+#

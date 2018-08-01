@@ -1,0 +1,17 @@
+
+
+  \fi Measurement Details
+
+   Sample         : Ca-CSZ 
+   Doping         : 15 Mol %
+   Volume         : ~ 1.2 cm\u3\d
+
+   Wavelength     : 1.093 \A
+   Diffractometer : MAN II
+   Source         : FRM I
+   Location       : Garching
+   Country        : Germany
+
+   Date           : 07/1990
+   Experimentator : R.B. Neder
+

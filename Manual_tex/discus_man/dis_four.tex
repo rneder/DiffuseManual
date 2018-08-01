@@ -1,0 +1,258 @@
+%------------------------------------------------------------------------
+% Chapter:  Fourier transform
+%------------------------------------------------------------------------
+
+\chapter{Fourier transform \label{four}}
+
+\section{Calculating scattering intensities \label{four-int}}
+
+Basically {\Discus} calculates the Fourier transform (neutron, 
+X-ray, or electron)
+according to the standard formula for kinematic scattering given in
+equation \ref{four-eq1}.
+
+\begin{equation}
+        F({\bf h}) = \sum_{i=1}^{N} f_{i}({\bf h}) e ^{2 \pi i {\bf hr}_{i}}
+                     \cdot e ^{- \frac{B |{\bf h}|^{2}}{4}}
+        \label{four-eq1}
+\end{equation}
+
+The sum is over all N atoms in the crystal, where $f_{i}$ is the
+atomic form factor (or scattering length in case of neutrons), ${\bf
+r}_{i}$ the fractional coordinate of the atom.  The sum is
+calculated at all points {\bf h} in reciprocal space.  The form
+factors are tabulated and calculated once at each {\bf h} for all
+species present in the crystal.  Optionally the Debye-Waller factor
+is calculated.  Isotropic B are used for the representation of
+thermal disorder. The realization of the actual code to calculate
+the Fourier transform is based on the program {\it DIFFUSE}
+\citep{buwe92}.  By limiting the calculation to an equidistant grid
+and splitting the sum into sums over equal atom types, the computing
+time required dropped by a factor of 4 to 6 (depending on compiler
+and hardware) compared to calculating the sum given in equation
+\ref{four-eq1} in a straight forward way.  More details about the
+algorithm used can be found \citet{buwe92}. There are two
+considerations when calculating the scattering intensities: Unwanted
+scattering contributions due to the finite size of the model crystal
+and the fact that the complete model scatters coherently, which
+leads to unwanted high frequency oscillations in the calculated
+pattern. Finite size effects are avoided by using a grid of $n/N$
+where $N$ is the number of unit cells. Coherence might be limited by
+using the {\tt lots} command in the {\tt four} module (see online
+help). A detailed discussion of these topics can be found in
+\cite{nedpro}.
+\par
+
+Let us consider a simple example. Assuming a structure has been read
+or created, the scattering pattern can be calculated using these
+commands:
+
+\begin{MacVerbatim}
+     1  four
+     2    xray
+     3    wvle moa1
+     4    ll 0.0,0.0,0.0
+     5    lr 2.0,0.0,0.0
+     6    ul 0.0,2.0,0.0
+     7    na 101
+     8    no 101
+     9    set aver,0.0
+    10    lots off
+    11    run
+    12  exit
+\end{MacVerbatim}
+
+After entering the Fourier segment of {\Discus} (line 1),
+$MoK\alpha$ radiation is selected in lines 2 and 3. Next the lower
+left, lower right and upper left corner of the desired plane in
+reciprocal space are specified (lines 4-6). The number of grid
+points in both directions are set in lines 7 and 8. Finally the
+subtraction of the average scattering intensity (Bragg peaks)
+$\langle F \rangle$ is disabled (line 9) and the lot option is
+switched off (line 10). Then the Fourier transform is calculated
+(line 11). Note that one needs to save the result in the {\tt
+output} segment of {\Discus} as we will discuss later in this
+chapter.
+\par
+Starting with \Discus 5.0 you can also calculate a 3-dimensional 
+volume in reciprocal space. A third axis is added to the 
+values defined in the previous macr:
+
+\begin{MacVerbatim}
+     1  four
+     2    xray
+     3    wvle moa1
+     4    ll 0.0, 0.0, 0.0
+     5    lr 2.0, 0.0, 0.0
+     6    ul 0.0, 2.0, 0.0
+     7    tl 0.0, 0.0, 2.0
+     8    na 101
+     9    no 101
+    10    nt 101
+    11    set aver,0.0
+    12    lots off
+    13    run
+    14  exit
+\end{MacVerbatim}
+
+This third axis defines the {\tt top left} corner of the reciprocal
+space volume. The corresponding data can be saves as a series of slices
+parallel to the layer defined by the corners {\tt ll, lr, ul} or as a
+3D file in the NeXus file format or as a series of 2D slices.
+\par
+%------------------------------------------------------------------------
+
+\section{Powder diffraction \label{four-powder}}
+
+In addition to the calculation of single crystal scattering
+intensities, {\Discus} can also computer a powder diffraction
+pattern of a given structure. There are two ways {\Discus} can
+calculate powder intensities: One is a complete integration of
+reciprocal space which is then mapped onto the desired range between
+$2\Theta_{min}$ and $2\Theta_{max}$. The second algorithm uses the
+Debye scattering equation to calculate the powder pattern. More details as well
+as examples are given in our book \citep{nedpro}. Information about
+the related commands are found in the online help using the command
+{\tt help powder}.
+\par
+
+
+%------------------------------------------------------------------------
+
+\section{Fourier methods \label {four-methods}}
+
+Additional to the Fourier transform of a real space structure,
+three other Fourier transforms are available in the current
+version of {\Discus}: {\it difference Fourier, inverse Fourier}
+and calculation of the {\it Patterson} (Fourier transform of
+scattering intensities). All three of these Fourier transforms use
+the following equation:
+%
+\begin{equation}
+  \rho ({\bf r}) = \frac {1}{V} \sum_{i=1}^{N} F_{i} ({\bf h})
+                   e ^{-2 \pi i {\bf hr}_{i}}
+  \label{four-eq-inv}
+\end{equation}
+%
+The resulting density function $\rho ({\bf r})$ and the Fourier
+coefficient $F ({\bf h})$ take different meanings depending on the
+intended inverse Fourier transformation listed in table
+\ref{inv-tab}.
+%
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{22mm}|p{35mm}|X|}
+  \hline
+  {\bf Command} & {\bf F(h)} & {\bf $\rho$(r)} \\
+  \hline\hline
+  {\tt diff} & $F_{obs} - F_{calc}$ & difference scattering density \\
+  {\tt inv}  & $F_{obs}$ & scattering density \\
+  {\tt patt} & $I_{obs}$ & Patterson density \\
+  \hline
+\end{tabularx}
+\caption{\label{inv-tab}List of available Fourier methods}
+\end{table}
+%
+The Fourier coefficient are in general complex numbers.
+Therefore, {\Discus} requires in most cases two input files for
+the inverse Fourier transforms.  The allowed combinations are
+listed in the help file and the command reference.
+
+%------------------------------------------------------------------------
+
+\section{Output file formats \label{four-out}}
+
+All results of the Fourier transforms are written at the {\tt
+output} segment of {\Discus}.  The following values can be saved:
+%
+\begin{quote}
+        {\it intensity, amplitude, real part, imaginary part and
+             phase angle (in degrees) }
+\end{quote}
+%
+The Fourier transform calculates the real and imaginary part, all
+other values are calculated at the time of output.  If the average
+structure factor $\langle F \rangle$ was subtracted during the
+calculation of the Fourier transform, the corresponding values of
+$\langle F \rangle$ can be saved as well.  Note that if {\tt lots}
+were used to calculate the Fourier transform, only the intensity
+values can be saved to a file.  There is no need to calculate the
+Fourier again, if several of the values listed are to be written to
+file. Just define a new output value and output file name and run
+the output again. The desired output format is selected using the
+{\tt format} command. The available output formats are listed in the
+table \ref{out-tab}.
+%
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{42mm}|X|}
+  \hline
+  {\bf Output format} & {\bf Description} \\
+  \hline\hline
+  {\tt stan} & Output is saved as real numbers in a format suitable for
+               {\Kuplot} which is part of the {\Discus} program
+               package. \\
+  \hline
+  {\tt mrc} &  Create output in the MRC file format. \\
+  \hline
+  {\tt nexus} & Output is saved in the NeXus file format. See
+               nexus.org for information on the NeXus file format
+               and file viewers. \\
+  \hline
+  {\tt gnu}  & Real numbers suitable for the program {\it GNUPLOT} which
+               can be obtained on most software archive sites. \\
+  \hline
+  {\tt pgm, ppm} & Integer bitmaps in PNM format as defined by Jef
+                 Poskanzer (gray scale and colour). Various programs
+                 are capable of reading PNM files and the
+                 {\it pnmplus-package} is a freely available
+                 collection of tools and conversion programs from PNM
+                 to virtually any other graphics format. \\
+  \hline
+  {\tt post} &   Creates a Postscript bitmap suitable for direct printing or
+                 to be imported by other programs. \\
+  \hline
+\end{tabularx}
+\caption{\label{out-tab}Output formats for scattering intensities}
+\end{table}
+%
+The standard and gnu output formats write the actual numbers calculated by the
+Fourier transform.  The {\Kuplot} or standard file format is defined as:
+%
+\begin{MacVerbatim}
+    1      na,no
+    2      xmin,xmax,ymin,ymax
+    3ff    z,z,z,z,z
+\end{MacVerbatim}
+%
+The values 'na' and 'no' given in the first line define the size of
+the section and are identical to the values given for the 'na' and
+'no' commands at the Fourier segment.  {\Kuplot} uses the
+coordinates along the abscissa and ordinate to scale the resulting
+picture.  Since only two pairs of coordinates are read, the user has
+to define the necessary indices. 'xmin' and 'ymin' are the is the
+'x' and 'y' coordinates of the lower left corner in reciprocal
+space, 'xmax' the 'x' coordinate of the lower right corner and
+'ymax' the 'y' coordinate of the upper left corner.  Which of the
+indices, h,k or l is interpreted as 'x' and 'y' coordinate depends
+on the values given for the 'abs' and 'ord' commands at Fourier
+sub level.  If for example the $(hkl)*[1 \overline{1} 0] = 0.0$ layer
+is calculated, suitable values would be 'abs h' and 'ord l'. Now the
+h index of the lower left corner is written as 'xmin', and the l
+index as 'ymin'.  The values are written row by row, each row
+consisting of the values along the abscissa.  An empty line
+separates the rows in the output file.\par
+
+The {\it GNUPLOT} output is written row by row, each data point
+within each row in its own line of output.  The format of one such
+row is: "$ h_{1}, h_{2}, z-value, h_{3}$".  Again the sequence of
+indices h,k and l depends on the values given for the commands {\tt
+abs} and {\tt ord} at Fourier sub menu. For the bitmap output the
+calculated value is scaled linearly to values between 0 and 255. All
+values less than a definable threshold using the 'thresh' command
+are set to zero, all values above a maximum threshold are set to
+255. Again, the bitmap is written row by row.  A color map included
+in file {\it color.map} is used to attribute colors to the output
+values.
+
+%------------------------------------------------------------------------

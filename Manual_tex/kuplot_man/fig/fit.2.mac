@@ -1,0 +1,15 @@
+fit 1
+#
+mfen 3
+func gau2,3
+par
+#
+run
+#
+par  7,1
+par 23,1
+#
+run
+save
+#
+exit

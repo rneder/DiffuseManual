@@ -1,0 +1,28 @@
+rese
+#
+load ni,test.nipl
+glat 1,3
+#
+fnam off
+achx [h h 0]
+achy [0 0 l]
+tit1 Diffuse scattering of CSZ
+hlin 1,100,50,10
+buf 0.06
+#
+nfra 2
+#
+afra 1
+kfra 1,1
+tit2 Bitmap
+aver 0.707
+mark 1,1
+hart 1,2
+#
+afra 2
+kfra 1,1
+tit2 Bitmap & Contours
+mark 1,1
+aver 0.707
+hart 1,3
+achz Intensity

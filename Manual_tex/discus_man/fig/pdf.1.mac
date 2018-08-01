@@ -1,0 +1,14 @@
+read
+cell ni.cll,5,5,5
+#
+therm
+#
+pdf
+set rang,10.0,0.02
+set qmax,20.0
+set qsig,0.0
+set rad,xray
+show
+calc
+save pdf,ni_20.pdf
+exit

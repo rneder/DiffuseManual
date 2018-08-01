@@ -1,0 +1,15 @@
+symm 
+#
+uvw 0,0,1
+angl 30.0
+orig 0,0,0,mol
+trans 0,0,0
+type proper
+power 1,single
+mode repl,new
+#
+msel 1
+minc 1,1
+#
+run
+exit

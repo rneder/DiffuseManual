@@ -1,0 +1,41 @@
+rese
+@box  2.0,8.0
+#
+four 1,ria
+#
+fnam off
+buf 0.07,0.01,0.08,0.07
+font just,cen
+#
+nfra 4
+#
+afra 3
+kfra 3,1
+lart 1,2
+achx x\di\u
+achy f(x\di\u)
+skal -25,25,0.0,11.0
+mark 10.0,2.5
+tit2 Real space data
+#
+afra 1
+kfra 1,2
+achx h\dn\u
+achy Re[F(h\dn\u)]
+mark 0.25,25
+tit2 Real part
+#
+afra 2
+kfra 2,3
+achx h\dn\u
+achy Im[F(h\dn\u)]
+mark 0.25,25
+tit2 Imaginary part
+#
+afra 4
+kfra 4,4
+achx h\dn\u
+achy |F|(h\dn\u)
+mark 0.25,25
+tit2 Fourier amplitude
+#

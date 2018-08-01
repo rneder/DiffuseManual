@@ -1,0 +1,35 @@
+rese
+orient p
+sfra 1,0.0,0.0,1.0,0.7
+#
+# Load data
+#
+load xy,lmo.sin.data
+load xy,lmo_$1.pdf
+load xy,lmo_$1.dif
+#
+alloc 2
+  x[4,1]=xmin[2]
+  y[4,1]=1.3*ymin[2]
+  x[4,2]=xmax[2]
+  y[4,2]=y[4,1]
+#
+ccal add,wy,3,1.3*ymin[2]
+#
+fnam off
+#
+ltyp 1,0
+mtyp 1,3
+mcol 1,6
+msiz 1,0.08
+lcol 2,6
+lcol 3,6
+lcol 4,6
+#
+achx r [\A]
+achy G(r) [\A\u-2\d]
+skal xmin[2],xmax[2],1.2*ymin[3],1.2*ymax[2]
+mark 1.0,0.5*int(ymax[2])
+tit2 LaMnO\d3\u
+#
+plot

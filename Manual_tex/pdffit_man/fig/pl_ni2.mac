@@ -1,0 +1,41 @@
+orient p
+reset
+#
+load xy,ni_ref.calc
+load xy,ni.data
+load xy,ni_ref.dif
+#
+msiz 2,0.08
+#
+# Now we make some common settings
+#
+fnam off
+font size,1.3
+fset 2
+#
+# Setting frames
+#
+nfra 2
+sfra 1,0.0,0.15,1.0,0.7
+sfra 2,0.0,0.0,1.0,0.15
+#
+afra 1
+buff 0.1,0.1,0.0,0.1
+kfra 1,1,2
+lcol 1,6
+ltyp 2,0
+mtyp 2,3
+mcol 2,6
+achx OFF
+achy G(r) [\A\u-2\d]
+skal xmin[1],xmax[1],1.1*ymin[1],1.1*ymax[1]
+mark 2.0,10.0
+#
+afra 2
+buff 0.1,0.1,0.1,0.0
+kfra 2,3
+lcol 3,6
+achx r [\A]
+achy Diff.
+skal xmin[3],xmax[3],-6,6
+mark 2.0,10.0

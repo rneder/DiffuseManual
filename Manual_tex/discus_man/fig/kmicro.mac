@@ -1,0 +1,9 @@
+rese
+fnam off
+load cr,micro.1.plot
+font just,center
+tit2 Microdomain distribution
+skal -10.5,9.5,-10.5,9.5
+aver 1.0
+msiz 1,0.25
+fset 2

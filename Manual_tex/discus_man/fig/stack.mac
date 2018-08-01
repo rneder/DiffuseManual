@@ -1,0 +1,39 @@
+read
+cell l1.cll,50,1,1
+save l1.stru
+#
+read
+cell l2.cll,50,1,1
+save l2.stru
+#
+stack
+layer l1.stru
+layer l2.stru
+number 50
+#
+trans 1,1, 0.0,1.0,0.0
+trans 1,2, 0.5,1.0,0.0
+trans 2,1,-0.5,1.0,0.0
+trans 2,2, 0.0,1.0,0.0
+#
+crow 1,0.3,0.7
+crow 2,0.7,0.3
+#
+mod 1,0,0,0,0,1
+set mod,on
+set trans,aver
+show
+#
+create  
+run
+exit
+#
+@plot stack.1.plot
+#
+stack
+set mod,off
+crea
+run
+exit
+#
+@plot stack.2.plot

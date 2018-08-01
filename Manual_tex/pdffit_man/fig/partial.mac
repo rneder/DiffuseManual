@@ -1,0 +1,22 @@
+reset
+read stru,gaas.stru
+alloc x,25.0,0.0,1.5,13.5,601
+#
+isel 1,all
+jsel 1,all
+calc
+save pdf,1,tot.calc
+#
+ides 1,all
+jdes 1,all
+isel 1,ga
+jsel 1,all
+calc
+save pdf,1,dif_ga.calc
+#
+ides 1,all
+jdes 1,all
+isel 1,ga
+jsel 1,ga
+calc
+save pdf,1,par_ga.calc

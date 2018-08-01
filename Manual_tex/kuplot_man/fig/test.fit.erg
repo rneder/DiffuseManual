@@ -1,0 +1,61 @@
+ General fit parameter settings : 
+   Title            :  
+            
+   Fit function     : Gaussian (3D)
+   Data file name   : test.fit
+   # of data pts.   :     33
+   # of parameters  :     25
+   Urf              :     .1000
+   Max. cycle       :     30
+   MFEN for maxima  :      3
+   Weighting scheme : w(i) = 1.0/i
+
+ Information about the fit : 
+   Sum n-1    :  1038.98                 Sum n   :  1040.29    
+   Difference :  1.31653    
+   Urf final  :  1.00047    
+   R4 value   :  .106378                 R exp   :  .773278E-01
+
+ Correlations larger than 0.8 :
+   ** none **
+  
+ Fitted  3 Gaussian(s) : 
+
+   p( 1) : backgr. 1 :  69.2818     +-  .998061        pinc : 1.
+
+ Gaussian :   1
+
+   p( 2) : peak      :  407.332     +-  11.3879        pinc : 1.
+   p( 3) : position x:  .665616     +-  .237253E-02    pinc : 1.
+   p( 4) : position y:  3.74364     +-  .279809E-02    pinc : 1.
+   p( 5) : fwhm a    :  .237793     +-  .554539E-02    pinc : 1.
+   p( 6) : fwhm b    :  .235389     +-  .593890E-02    pinc : 1.
+   p( 7) : angle a,x : -98.8801     +-  85.1452        pinc : 1.
+   p( 8) : asym. a   :  1.00000     +-  .000000E+00    pinc : 0.
+   p( 9) : asym. b   :  1.00000     +-  .000000E+00    pinc : 0.
+           integral  :  25.8344     +-  1.97653    
+
+ Gaussian :   2
+
+   p(10) : peak      :  172.779     +-  3.71865        pinc : 1.
+   p(11) : position x:  .675165     +-  .211952E-01    pinc : 1.
+   p(12) : position y:  3.95072     +-  .353202E-02    pinc : 1.
+   p(13) : fwhm a    :  1.59766     +-  .565708E-01    pinc : 1.
+   p(14) : fwhm b    :  .359084     +-  .968857E-02    pinc : 1.
+   p(15) : angle a,x :  .000000E+00 +-  .000000E+00    pinc : 0.
+   p(16) : asym. a   :  1.00000     +-  .000000E+00    pinc : 0.
+   p(17) : asym. b   :  1.00000     +-  .000000E+00    pinc : 0.
+           integral  :  112.315     +-  9.42460    
+
+ Gaussian :   3
+
+   p(18) : peak      :  371.246     +-  8.93606        pinc : 1.
+   p(19) : position x:  1.39861     +-  .233778E-02    pinc : 1.
+   p(20) : position y:  3.69895     +-  .277816E-02    pinc : 1.
+   p(21) : fwhm a    :  .267529     +-  .519117E-02    pinc : 1.
+   p(22) : fwhm b    :  .291320     +-  .590080E-02    pinc : 1.
+   p(23) : angle a,x :  33.7331     +-  8.78073        pinc : 1.
+   p(24) : asym. a   :  1.00000     +-  .000000E+00    pinc : 0.
+   p(25) : asym. b   :  1.00000     +-  .000000E+00    pinc : 0.
+           integral  :  32.7845     +-  2.08935    
+  

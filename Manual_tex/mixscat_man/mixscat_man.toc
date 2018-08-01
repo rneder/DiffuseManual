@@ -1,0 +1,22 @@
+\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}
+\contentsline {chapter}{\numberline {2}Example: CeF$_3$}{4}{chapter.2}
+\contentsline {section}{\numberline {2.1}Preparing the data}{4}{section.2.1}
+\contentsline {section}{\numberline {2.2}Extracting differential PDFs}{4}{section.2.2}
+\contentsline {section}{\numberline {2.3}Calculating differential PDFs from a model}{7}{section.2.3}
+\contentsline {chapter}{\numberline {A}Equations }{9}{appendix.A}
+\contentsline {section}{\numberline {A.1}Calculating the difference }{9}{section.A.1}
+\contentsline {section}{\numberline {A.2}Using a model }{11}{section.A.2}
+\contentsline {chapter}{\numberline {B}MIXSCAT commands}{12}{appendix.B}
+\contentsline {section}{\numberline {B.1}Summary}{12}{section.B.1}
+\contentsline {section}{\numberline {B.2}calc}{12}{section.B.2}
+\contentsline {section}{\numberline {B.3}elem}{12}{section.B.3}
+\contentsline {section}{\numberline {B.4}match}{12}{section.B.4}
+\contentsline {section}{\numberline {B.5}read}{13}{section.B.5}
+\contentsline {section}{\numberline {B.6}remove}{13}{section.B.6}
+\contentsline {section}{\numberline {B.7}save}{14}{section.B.7}
+\contentsline {section}{\numberline {B.8}scat}{14}{section.B.8}
+\contentsline {section}{\numberline {B.9}scal}{14}{section.B.9}
+\contentsline {section}{\numberline {B.10}show}{15}{section.B.10}
+\contentsline {section}{\numberline {B.11}variables}{15}{section.B.11}
+\contentsline {section}{\numberline {B.12}xray}{15}{section.B.12}
+\contentsline {chapter}{Bibliography}{16}{section.B.12}

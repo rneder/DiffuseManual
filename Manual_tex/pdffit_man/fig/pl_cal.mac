@@ -1,0 +1,17 @@
+reset
+#
+load xy,cal_25.calc
+load xy,cal_35.calc
+#
+skal 1.5,6.5,-9.0,35.0
+mark 0.5,5.0
+achx r [\A]
+achy G(r) [\A\u-2\d]
+fnam off
+sleg 1,Q\dmax\u: 25\A\u-1\d
+sleg 2,Q\dmax\u: 35\A\u-1\d
+#
+lcol 1,6
+lcol 2,6
+ltyp 1,1
+ltyp 2,4

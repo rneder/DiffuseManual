@@ -1,0 +1,32 @@
+reset
+read stru,ni221.stru
+read data,x,16.0,0.0,ni-inhs.data
+#
+par lat[1]=p[1],1.0
+par lat[2]=p[1],1.0
+par lat[3]=p[1],1.0
+#
+do i[1]=1,n[1]
+  par u[1,i[1]]=p[2],1.0
+  par u[2,i[1]]=p[2],1.0
+  par u[3,i[1]]=p[2],1.0
+enddo
+#
+par csca[1]=p[10],1.0
+par qsig[1]=p[11],1.0
+par delt[1]=p[12],1.0
+#
+p[1]=lat[1]
+p[2]=u[1,1]
+#
+p[10]=1.50
+p[11]=0.03
+p[12]=0.10
+#
+range 1,0.5,13.0
+stop
+run
+#
+save pdf,1,ni221_ref.calc
+save stru,1,ni221_ref.stru
+save res,ni221_ref.out
