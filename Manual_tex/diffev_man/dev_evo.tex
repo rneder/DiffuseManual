@@ -403,6 +403,67 @@ search does not provide a clear effect on the refinement efficiency.
 In general, the original differential refinement algorithm seems to 
 work better. 
 
+\subsection{Limiting Parameters}
+
+Sometimes it is advantageous to fix one or several parameters in order
+to be able to perform a limited search. This is mostly helpful in the 
+early stages of a refinement. Here one can refine a limited set of
+parameters just to get a rough idea where the likely global minimum is
+located. If parameters are not correlated one can limit the refinement
+to a small subset or even to a single parameter. The optimized value
+for this parameter should be reasonably close to the global minimum, 
+if the parameter is that is refined is not correlated to the other
+parameters. The main advantage of such a search is that the dimension of
+the search space is much smaller and thus a much smaller population size 
+will be sufficient.
+
+To {\tt fix} and to {\tt unfix} a parameter, \Diffev offers the two
+commands {\tt fix} and {\tt release} with the respective syntax:
+
+\begin{MacVerbatim}
+fix P_lata, best
+fix P_latx, 5.00
+\end{MacVerbatim}
+
+With the second parameter set to {\tt best}, the parameter is set to the 
+value of the member with the current lowest cost function, i.e. R-value.
+Alternatively you can set the parameter to another value, with the limitation
+that the parameter must be within the absolute boundaries for this 
+parameter that were set with the {\tt newpara} command or by assigning a
+value to the variables {\tt pop\_xmin[]} and {\tt pop\_xmax[]}.
+
+For all subsequent cycles, the value of this parameter will be fixed to
+the chosen value. As this will change the parameter combination of all
+but the best member, the respective R-values for the next refinement 
+cycle are invalidated to ensure correct testing of the next generation 
+with respect to the generation prioor to the {\tt fix} command.
+
+The complementary {\tt release} command allows you to set a new range of
+trial parameters for this parameter:
+
+\begin{MacVerbatim}
+release P_lata, range:sigma
+release P_latc, range:sigma, value:set_point, min:par_min, max:par_max
+\end{MacVerbatim}
+
+In the simplest form, the parameter is initialized again within a 
+window of +-sigma around the value of the current best member. 
+
+The absolute window for this parameter is set to a range of +-3*sigma
+around the value of the current best member.
+
+This new absoute window might be too wide or may include parameter 
+values outside a physically sensible limit. As an example, a 
+atomic displacement parameter may end up with a negative lower 
+boundary. To prevent this behavior, the optional parameters
+{\tt min:par\_min} and {\tt max:par\_max} allow yo to fix the 
+absolute boundaries to proper values. 
+
+The optional parameter {\tt value:set\_point} allows you to center
+the initialization window at a value {\tt set\_point} instead
+of the automatic centering around the current best value.
+
+
 \section{Invoking the slave program \label{diff-invoke}}
 
 The typical refinement requires the following steps:
