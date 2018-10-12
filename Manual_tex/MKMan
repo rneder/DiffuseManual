@@ -50,4 +50,6 @@ else
 #    ./clean
 fi
 
+cd ${MYDIR}
+./clean_all
 echo "Done .."
