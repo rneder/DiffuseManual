@@ -2,7 +2,14 @@
 \section{News}
 \par
 Here you find a list of recent changes, additions, bug corrections 
+\subsection*{2018\_September}
+\par
+Modified the do and if constructions to be valid as well for 
+"end do" "end if" and "else if" with arbitrary blanks. 
 \subsection*{2018\_July}
+\par
+Modified the ==$> $ 'fput' and 'fget' commands to take an optional 
+    format string 
 \par
 Modified the ==$> $ 'system' command to be a bit more flexible 
 \par
@@ -265,6 +272,10 @@ These loops, however, are always executed once, and repeated
 until $ <$logical expression$> $ is true. 
 If an error occurs during execution of the loop, the loop is 
 interrupted. 
+\par
+As of version 5.25.1 and later, the word "enddo" 
+may also be spelled "end do", where the number of blanks 
+that follow the "end" is not significant. 
 \section{echo}
 \begin{MacVerbatim}
 echo [<string>]
@@ -303,7 +314,7 @@ echo ">%3D<",44            produces :  >044<
 echo ">%5.1f<",44.1        produces :  > 44.1<
 echo ">%2**2+1.1f<",44.1   produces :  > 44.1<
 echo ">%c<",'bla'          produces :  >bla<
-echo ">%5c<",'bla'         produces :  >  bla<
+echo ">%5c<",'bla'         produces :  >bla  <
 \end{MacVerbatim}
 \section{eval}
 {\bf eval $ <$expr$> $ [, $ <$expr$> $ ...] \par }
@@ -516,6 +527,7 @@ Example: fform 1,F7.3
 \end{MacVerbatim}
 \section{fget}
 {\bf fget $ <$number$> $,$ <$p1$> $,$ <$p2$> $,.. \par }
+{\bf               [, form:'$ <$string$> $'] \par }
 \par
 \vspace{3pt}
 This command allows the user to read data from a file that had been 
@@ -530,16 +542,36 @@ will have to read this into 4 character variables.
 Note that a 'fget' command that does not run into an unexpected 
 end of file sets the value of res[0] to zero! 
 \par
+The optional format string allows to specify an input format. 
+The format string has to specify the format for each input parameter. 
+It thus takes a comma delimited list of Fortran style descriptors: 
+i$ <$length$> $         Integer = Whole number 
+                  As in "i4"  or "i17" 
+f$ <$length$> $.$ <$dec$> $   Floating point number: 
+                  As in "f8.3". Only the overall length $ <$length$> $ 
+                                is relevant, the length of the 
+                                digits after a decimal point is ignored. 
+                                Thus, other than in Fortran you 
+                                can write: 
+f$ <$length$> $         As in "f8" or "f12" 
+a$ <$length$> $         Character = alphanumeric string 
+                  As in "a20" 
+\par
 Example: 
 Assume a file "example.text" with the following content: 
+\par
 3.1415  123456 
 2.7182817 Hello 654321 
+This is a sentence 
+\par
 This can be read with the following instructions 
 \par
 fopen 1, example.text 
 variable character, str\_a 
-fget 1, r[2],i[2] 
-fget 1, r[2],str\_a,i[2] 
+variable character, str\_b ! formats are optional for line 1, and 2 
+fget 1, r[2],i[2]         , form:'f6,i8' 
+fget 1, r[2],str\_a,i[2]   , form:'f9.7,a5,i7' 
+fget 1, str\_b             , form:'a18'        ! whole string is read 
 fclose 1 
 \section{fopen}
 {\bf fopen $ <$number$> $,$ <$file$> $ [,$ \{$"append" $| $ "overwrite"$\} $] \par }
@@ -554,6 +586,7 @@ files will be overwritten if 'fput' is used. Alternatively one can
 append data to a file by specifying the optional parameter "append". 
 \section{fput}
 {\bf fput $ <$number$> $,$ <$p1$> $,$ <$p2$> $, .. \par }
+{\bf               [, form:'$ <$string$> $'] \par }
 \par
 \vspace{3pt}
 This command allows one to write data to the file that had been opened 
@@ -563,11 +596,27 @@ are given, an empty line is written.
 In order to mix character variables or character functions and numbers, 
 the first parameter must be a format descriptor in double "". 
 \par
+The optional format string allows to specify an output format. 
+The format string has to specify the format for each input parameter. 
+It thus takes a comma delimited list of Fortran style descriptors: 
+i$ <$length$> $         Integer = Whole number 
+                  As in "i4"  or "i17" 
+f$ <$length$> $.$ <$dec$> $   Floating point number: 
+                  As in "f8.3". Total width is 8 digits with 3 
+                                digits after a decimal point. 
+a$ <$length$> $         Character = alphanumeric string 
+                  As in "a20" 
+\par
+The optional format string effectively replaces the 
+==$> $ 'fformat' command. 
+\par
 \begin{MacVerbatim}
 Examples:  fput 1, i[1],sqrt(1.0+i[1]*0.01)
            fput 1, 'Current value of i[1] : ',i[1]
            fput 1, "%c %d",'Current value of i[1] : ',i[1]
            fput 1, "%c",fdate(0)
+           fput 1, 1,2,3, form:'i3,i3,i3'
+           fput 1, 1,3.1415,3, form:'i3,f8.4,i3'
 \end{MacVerbatim}
 \section{fsub}
 {\bf fsub $ <$number$> $,[$ <$left$> $,$ <$right$> $] \par }
@@ -750,6 +799,10 @@ if ( <logical expression> ) then
 endif
 \end{MacVerbatim}
 The logical expressions may contain numerical comparisons with syntax: 
+\par
+As of version 5.25.1 and later, the words "elseif" and "endif" 
+may also be spelled "else if" or "end if", where the number of blanks 
+that follow the "end" is not significant. 
 \par
 \begin{MacVerbatim}
 <arithmetic expression> <operator> <arithmetic comparison>

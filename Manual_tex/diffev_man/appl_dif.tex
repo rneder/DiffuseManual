@@ -1,5 +1,14 @@
 \chapter{DIFFEV commands}
 \section{News}
+\section{2018\_Oct}
+\par
+Added a ==$> $ 'release' command that is intended to act 
+complementary to a previopus ==$> $ 'fix' command. 
+\section{2018\_July}
+\par
+A small modification to the "diffev\_best" macro. 
+The value of REF\_NINDIV is written and at the end a 
+"set error, continue' instruction has been added. 
 \subsection*{2018\_June}
 \par
 Revised the reaction to a CTRL-C 
@@ -175,6 +184,7 @@ logfile     ! Defines the file name for the parameters for each generation
 newparam    ! Defines Ra new parameter or new values for a parameter
 pop_name    ! Defines names for the individual parameters
 refine      ! Defines which parameters are refined/fixed
+release     ! Initialize a parameter that had been fixed
 restrial    ! Defines the file name for the current R-values
 run_mpi     ! Run the cost function program in parallel through MPI
 selection   ! Defines how children/parents survive into next generation
@@ -764,6 +774,9 @@ $ <$value$> $ for all members of the population. The ==$> $ refine
 flag is turned of for this parameter. 
 If the second parameter is "best", the parameter is set to the 
 corresponding value of the current member with the best R-value. 
+\par
+As a side effect, the values of pop\_xmin, pop\_xmax, 
+pop\_smin, pop\_smax are fixed to this new value as well. 
 \section{functions}
 \par
 The following DISCUS specific functions exist. For a listing 
@@ -918,6 +931,42 @@ parameter is not refined.
 Currently you can only specify up to 20 variable numbers on 
 one "refine" command line. If you need to specify the behaviour 
 for more than 20 variables, please use several "refine" commands. 
+\section{release}
+{\bf release $ \{$$ <$par\_name$> $$| $ $ <$number$> $$\} $ , range:$ <$sigma$> $ \par }
+{\bf   [value:$ <$setpoint$> $] \par }
+{\bf   [min:$ <$pop\_xmin$> $] \par }
+{\bf   [max:$ <$pop\_xmax$> $] \par }
+\par
+\vspace{3pt}
+This command will initialize a parameter named $ <$par\_name$> $ 
+to a range around the current best value. Its intent is 
+to act complementary to a ==$> $ 'fix' command. It works 
+in a similar fashion as the ==$> $ 'init' command, but the user 
+does not have to ensure that the ranges of 
+pop\_xmin to pop\_xmax and pop\_smin to pop\_smax are non-zero. 
+\par
+The parameter will be refined, i.e. the 'release' command 
+implies a ==$> $ refine $ <$par\_name$> $ command. 
+\par
+If the optional parameter 'value:$ <$setpoint$> $' is present, 
+it defines the setpoint around which the parameter values 
+will be initialized. If the optional parameter is omitted, 
+the setpoint defaults to the value of the current best 
+population member. 
+The initalization range is set to the setpoint +- range. 
+\par
+The absolute limits, ==$> $ 'pop\_xmin', 'pop\_xmax' are set 
+to a range of +- 3* $ <$range$> $ around the $ <$setpoint$> $. 
+The original user provided values of 
+pop\_min or pop\_max are repleced by the new values. 
+\par
+If you need different ranges for pop\_xmin and pop\_xmax, 
+or if the new limits might be 
+outside a physical limit you need to set the proper 
+limits explicitely with the optional parameters 
+"min" and "max": 
+   min:pop\_xmin 
+   max:pop\_xmax 
 \section{reset}
 {\bf reset \par }
 \par
