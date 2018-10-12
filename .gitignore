@@ -1,0 +1,9 @@
+Manual_tex/hlp2tex/hlp2tex
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.out
+*.ps
+*.toc
