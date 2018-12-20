@@ -82,6 +82,9 @@ errors        : List of error messages
 \section{News}
 \par
 Here you can find updated info on the latest KUPLOT releases. 
+\subsection*{2018\_Oct}
+\par
+Added the trend of the best value to the 'kpara' plot 
 \subsection*{2018\_June}
 \par
 Revised the reaction to a CTRL-C 
@@ -1425,8 +1428,21 @@ The first form with a single parameter name or number will plot the
 development of this parameter versus the refinement generations. 
 The parameter name may include "Rvalue" or 0 to plot the development 
 of the R-value. 
+The plot displays the upper and lower most parameter value in red, 
+the average parameter in blue with error bars and the best parameter 
+in black. 
 \par
-The second form serves to plot the distribution of two parameters 
+Examples 
+kpara Rvalue    ! Show the R-value versus generations 
+kpara P\_one     ! Same for a parameter named "P\_one" 
+\section{kpar\_par}
+{\bf kpar\_par $ \{$ $ \{$"last"$| $ "-1"$\} $ $| $ $ <$generation\_no$> $ $\} $ , \par }
+{\bf       $ \{$$ <$par\_name$> $ $| $ $ <$par\_number$> $$\} $ , $ \{$$ <$par\_name$> $ $| $ $ <$par\_number$> $$\} $ \par }
+\vspace{3pt}
+This command serves to create a standardized plot of the parameters 
+refined via DIFFEV. 
+\par
+The command serves to plot the distribution of two parameters 
 in a given generation. If the first command parameter is either 
 "last" or "-1" the last generation is used. This can be helpful to 
 repeatedly plot the parameters during a refinement. 
@@ -1437,11 +1453,9 @@ Either of the two parameter names/numbers may be "Rvalue" or "0"
 to show the correlation between parameter value and the R-value. 
 \par
 Examples 
-kpara Rvalue    ! Show the R-value versus generations 
-kpara P\_one     ! Same for a parameter named "P\_one" 
-kpara last, P\_one, Rvalue  ! Show R-values versus Parameter value 
+kpar\_par last, P\_one, Rvalue  ! Show R-values versus Parameter value 
                            ! in the last generation 
-kpara last, P\_one, P\_two   ! Dislay (possible) correlation 
+kpar\_par last, P\_one, P\_two   ! Dislay (possible) correlation 
                            ! between these two parameters 
 \section{lart}
 {\bf lart $ <$ik$> $,$ <$p$> $ \par }
