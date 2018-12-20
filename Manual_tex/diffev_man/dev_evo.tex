@@ -34,6 +34,7 @@ minimize the value of a weighted residual wR:
 \begin{equation}
    wR = \sqrt{\frac{\sum_{i} w_{i} (y_{obs}(i) - y_{calc}(i))^2}
                    {\sum_{i} w_{i} y_{obs}(i)^2}}
+  \label{diff-eq-rval}
 \end{equation}
 Here each difference is multiplied by a weight w$_{i}$ that reflects
 the uncertainties of the experimental values. In case of crystal 
@@ -90,7 +91,11 @@ but a group of parameter sets.
 The algorithm begins by creating a group of parameter sets, see Fig.
 \ref{evo-evol}. Each group 
 member is a list of parameter values M:[$p_{0}, p_{1}, ..., p_{n}$],
-and for each member the R-value is calculated. Next, a new group of
+and for each member the R-value or more generally speaking the
+cost function is calculated. Within crystallographic applications, 
+the R-value is usually calculated as described by Eq. \ref{diff-eq-rval}
+
+Next, a new group of
 parameter sets is generated. Several different algorithms for this
 step exist. One possibility is to change each parameter by a Gaussian
 distributed random number with mean zero, which is added to the original

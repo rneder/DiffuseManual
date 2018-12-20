@@ -1,10 +1,22 @@
 \chapter{DIFFEV commands}
 \section{News}
-\section{2018\_Oct}
+\subsection*{2018\_Nov}
+\par
+Added a new command 'restart $ <$user\_generation$> $' This command compares 
+the user value to the current value in GENERATION. If the user 
+value is smaller, the Logfiles, Summary and Last files are 
+shortened and the GENERATION file is adapted. This lets you step 
+back to an earlier refinement status. Keep in mind that the later 
+cycles are irrevocably lost. If in doubt make a backup first. 
+\par
+reinstated the ==$> $ 'read' command 
+\par
+Added further options to the ==$> $ 'release' command 
+\subsection*{2018\_Oct}
 \par
 Added a ==$> $ 'release' command that is intended to act 
 complementary to a previopus ==$> $ 'fix' command. 
-\section{2018\_July}
+\subsection*{2018\_July}
 \par
 A small modification to the "diffev\_best" macro. 
 The value of REF\_NINDIV is written and at the end a 
@@ -919,6 +931,25 @@ The command summarizes the individual commands
 \par
 \vspace{3pt}
 This command has been removed. 
+Activated again in version 5.29.0 
+\par
+The read command instructs DIFFEV to read the GENERATION file 
+and to determine the population from the Parameter files. 
+\par
+This command is only needed if you want to add a new parameter 
+to a refinement that you want to continue and the ==$> $ 'newparam' 
+command is the first command in DIFFEV after starting the 
+program prior to the ==$> $ 'run\_mpi'command. 
+\par
+Example: 
+read 
+newpara  P\_new, 0.0, 10.0,  10.0, 9.0 
+run\_mpi discus, dis.diffev.mac, repeat:5, compute:parallel 
+compare 
+\par
+The 'read' command is not necessary if now new parameters 
+are defined. In this case, the 'run\_mpi' command will 
+automatically determine the refinement state from 'GENERATION' 
 \section{refine}
 {\bf refine $ \{$"all"$| $"none"$| $$ <$number$> $ [,$ <$number$> $...]$\} $ \par }
 {\bf refine $ \{$"all"$| $"none"$| $$ <$par\_name$> $ [,$ <$par\_name$> $...]$\} $ \par }
@@ -936,6 +967,10 @@ for more than 20 variables, please use several "refine" commands.
 {\bf   [value:$ <$setpoint$> $] \par }
 {\bf   [min:$ <$pop\_xmin$> $] \par }
 {\bf   [max:$ <$pop\_xmax$> $] \par }
+{\bf   [dismiss:$ <$number$> $] \par }
+{\bf   [dismiss:"all"] \par }
+{\bf   [dismiss:"best"] \par }
+{\bf   [dismiss:"none"] \par }
 \par
 \vspace{3pt}
 This command will initialize a parameter named $ <$par\_name$> $ 
@@ -967,6 +1002,23 @@ limits explicitely with the optional parameters
 "min" and "max": 
    min:pop\_xmin 
    max:pop\_xmax 
+\par
+If all the children will produce R-values that are worse 
+than the parents, DIFFEV will discard these children and 
+create the next generation based on all parents. As all 
+parents reflect the state prior to the release, they all 
+correspond to identical values of the parameter that you 
+wanted to release. In effect, the release is lost. 
+To prevent this, the 'dismiss:' option will set the R-value 
+of a user specified number of parents to a very large 
+value. This ensures that the corresponding children will 
+certainly survive into the next generation. 
+The values that the 'dismiss:' parameter may take are: 
+$ <$number$> $  : A number from 0 to the population size pop\_n[1] 
+            The $ <$number$> $ worst parents are dismissed. 
+"all"     : All members are dismissed. 
+"best"    : All but the best member are dismissed. 
+"none"    : No member is dismissed. Same as $ <$number$> $=0. 
 \section{reset}
 {\bf reset \par }
 \par
@@ -980,6 +1032,17 @@ Use this command if you want to combine several refinements
 for different experimental data to be executed one after the other. 
 Without the reset, the old parameters would persist and may 
 interfere with your new parameters. 
+\section{restart}
+\begin{MacVerbatim}
+restart <user_generation>
+\end{MacVerbatim}
+If you set $ <$user\_generation$> $ to a value that is less than 
+the current value in GENERATION, 
+the Logfiles, Summary and Last files are 
+shortened and the GENERATION file is adapted. 
+This lets you step back to an earlier refinement status. 
+Keep in mind that the later cycles are irrevocably lost. 
+If in doubt make a backup first. 
 \section{summary}
 {\bf summary $ <$filename$> $ \par }
 \par

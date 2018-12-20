@@ -57,7 +57,7 @@ diffev                        ! Switch to diffev section
 #
   @cleanup.mac                ! Remove old files
 #
-  @setup.mac                  ! Define number of individual repetitions
+  REF_NINDIV = 20             ! Define number of individual repetitions
   @get_model.mac              ! Define the refinement model to use
   @diffev_setup.mac           ! Define refinement details
 #
@@ -76,14 +76,12 @@ exit                          ! Finish the suite as well
 With the first line the \Suite is  instructed to switch to the \Diffev section. 
 The {\tt cleanup.mac} macro contains line to remove all files from a previous
 refinement run. The commands work on all operating systems and do not ask to
-confirm the removal of the files. Next macro {\tt setup.mac} defines the number 
+confirm the removal of the files. Next the line REF\_NINDIV  defines the number 
 of individual repetitions that need to be performed for each parameter set i.e. 
-for each member of the population.  the macro is short, and essentially consists
-of the one line:
-\begin{MacVerbatim}
-REF_NINDIV = 20
-\end{MacVerbatim}
+for each member of the population.
+
 If you look at the remainder of the main macro, you'll notice that 
+the vairable REF\_NINDIV 
 corresponds to the parameter for the optional {\tt repeat:} on 
 the {\tt run\_mpi} line.
 You can run the individual repetitions either serially in {\tt dis.diffev.mac}
@@ -102,7 +100,8 @@ specify four different nanoparticle types:
 \end{itemize}
 Macro {\tt get\_model.mac} reads the users choice. If the user had chosen 
 a particle with no stacking faults, there will be no need to average
-several individual particles. Accordingly, the choice in {\tt setup.mac} is
+several individual particles. Accordingly, the choice in the main
+refinement macro is
 overwritten by setting the value of {\tt REF\_NINDIV} to one.
 Next, macro {\tt diffev\_setup.mac} does all the detailed setup for the 
 refinement. Once the setup is done, {\tt init silent} initializes the first
@@ -1025,6 +1024,28 @@ Control is returned to {\tt kup.diffev.mac} which finishes with the
 calculation of the R-value (line 8), a reset (line 9) and the exit 
 back to \Discus.
 
+\Kuplot calculates the aggreement between the two data sets according
+to Eq. \ref{eq-exa-rval}.
+
+\begin{equation}
+   wR = \sqrt{\frac{\sum_{i} w_{i} (y_{obs}(i) - y_{calc}(i))^2}
+                   {\sum_{i} w_{i} y_{obs}(i)^2}}
+  \label{eq-exa-rval}
+\end{equation}
+
+Here $y_{obs}$ and $y_{calc}$ are the observed and calculated function
+values, in our current example the PDF. The weighting scheme $w_{i}$
+assigns a weight to each individual data point. For a diffraction
+pattern the weight is commonly $1/\sigma^2$, where $\sigma$ is the
+uncertainty of the experimental data point. Currently the commonly
+available data treatment software will not provide an uncertainty 
+for each data point in the experimental PDF. A unit weight is 
+most often used. As the errors in the PDF tend to decrease with 
+increasing distance r, a weighting scheme with $\sigma \propto 1/r$
+is also used. As the values of the PDF below a distance of 
+approximately 1\AA are not reliable, these data points should 
+receive a low weight, respectivaly a high uncertainty.
+
 At this point we have gone through all macros that are part of the 
 nanoparticle refinement.
 
@@ -1399,6 +1420,103 @@ the large amount of noise in the {\em experimental} data.
 These conditions were, however, chosen on purpose to illustrate
 the ability of the differential evolutionary algorithm to jump out
 of local minima, even under adverse conditions.
+
+\section{Fixing, Releasing refinement parameters}
+
+Most of the time, one will want to refine the parameters that have 
+been defined and given a range with the {\tt newpara} command. 
+This was done in the macro {\tt diffev\_setup.mac} in section
+\ref{example}.
+
+There are, of course, situations when you might want to fix one or
+several parameters. This can be done with the \Diffev command
+{\tt fix} that takes the form:
+
+\begin{MacVerbatim}
+  fix <Parameter_name>, <value>
+  fix <Parameter_name>, best
+\end{MacVerbatim}
+
+The first command form fixes the parameter called {\tt Parameter\_name}
+to the number given by {\tt value}. The second form  fixes the parameter 
+to the value that correspond to the current best member in the population.
+
+Instead of the parameter name, the parameter number can also be given, but
+the preferred syntax would be to use the parameter name.
+
+The {\tt fix} command sets the refine glag for the parameter off. The
+command also sets the absolute and the starting boundaries to the 
+parameter value. 
+
+The complementary command to {\tt release} a fixed parameter takes the 
+form:
+\begin{MacVerbatim}
+  release <Parameter_name>, range:<sigma>
+\end{MacVerbatim}
+
+This command initializes the parameter to a range {\tt current value $\pm$ 
+sigma}. The lower and upper absolute parameter boundaries are fixed to
+{\tt current value $\pm$ 3*sigma}. The refine flag is set to {\tt refine}.
+
+To fine tune the {\tt release} command the following further optional 
+parameter are available:
+\begin{MacVerbatim}
+   value:<setpoint>
+   min:<pop_xmin>
+   max:<pop_xmax>
+   dismiss:<number>
+\end{MacVerbatim}
+
+The {\tt value} parameter serves to define a new setpoint for the parameter
+insteiad of the current (fixed) value.  With {\tt min} and {\tt max} you 
+have full control to define the lower and upper absolute parameter boundaries. 
+
+Take as an exampe, the stacking fault parameter from the example in section
+\ref{example}. It could be a good idea to constrain this parameter to a 
+fixed value of 1.00 at the beginning of the refinement. This would correspond
+to an ideal zincblende structure free of stacking faults. Later on the parameter 
+might need to be refined. As the \Discus stacking fault parameter is fixed to a 
+range 0 to 1, the release command is well off to set a new setpoint at a value 
+somewehere between 0 and 1. If we take as an example a setpoint of 0.9, and a range
+of 0.4, \Diffev would initialize the parameter in a range from 0.5 to 1.3. 
+Furthermore, the absolute limits would be set to -1.1 and 2.1. Most of these
+numbers are outside the physical limits of the \Discus stacking fault parameter.
+Thus it is necessary to set the limits explicitly to 0.0 and 1.0 or other
+values within the allowed range.
+
+If a parameter is released, chances are, that the R-values of all children
+are worse than the parents. In this case all trial parameters for the children 
+would be ignored and \Diffev will take the parent values to generate the
+next generation. In this case, all parent values for the parameter that we want
+to release would revert back to the constant fixed value and the release would
+be lost. To prevent this from happening, \Diffev offers the main command
+{\tt dismiss} or the optional {\tt dismiss:} parameter at the {\tt release} 
+command. The purpose is to assign to some of the parents an excessivly high 
+R-value. This will be done to the worst members in the population and ensures
+that for each of these members the child will have a lower R-value and will 
+thus survive into the next generation. The {\tt dismiss:} parameter expects 
+the number that signifies how many of the worst members shall be dismissed.
+The number can be specified either as a constant value or an expression.
+The allowed range is between 0 and the number of members in the population. 
+With a value of "1", only the worst member is dismissed, with "2" the two
+worst members and so on.
+Otherwise the number can be given as keywords "all", "best" or "none".
+
+\begin{tabular}{lp{12cm}}
+     keyword & {Description} \\
+     \hline
+     0 & {No member of the population is dismissed} \\
+         \hline
+     n & {The worst "n" population members are dismissed} \\
+         \hline
+     all & All members are dismissed \\
+         \hline
+     best & All but the best member are dismissed \\
+         \hline
+     none & No member is dismissed, same as number 0 \\
+         \hline
+\end{tabular}
+
 
 %------------------------------------------------------------------------
 
