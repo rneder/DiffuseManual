@@ -57,6 +57,38 @@ wyckoff    ! Shows symmetry operations of the space group
 \section{News}
 \par
 Here you find a list of recent changes, additions, bug corrections 
+\subsection*{2019\_Dec}
+\par
+mmc 
+   The displacement correlation did not really work, fixed. 
+\par
+CIF interpreter 
+   Further improvements to interpret CIF files. For unknown 
+   space groups DISCUS attempts to use the symmetry operations. 
+\subsection*{2018\_Nov}
+\par
+m[$ <$number$> $] 
+   If an atom is removed, its scattering curve is set to zero and 
+   the property 'normal' was cleared. 
+   If you manually change the scattering curve back to a non-zero 
+   value, the properies were not set back to 'normal' Fixed. 
+\par
+save 
+   enforced that "scat", "adp" and "occ" and either all written 
+   or all omitted. 
+\par
+powder 
+   For neutron diffraction, the output of the $ <$f$> $$**$2 contained an 
+   error. The negative scattering length were added as $| $b$| $. 
+   Corrected. 
+\par
+mmc 
+   Added a 'set valid, $ <$invalid\_moves$> $' command, that gives you more 
+   control over a termination criterion. 
+\par
+CIF interpreter 
+   Added more flexibility to recognize non standard monoclinic space 
+   groups that are not listed as full Hermann-Mauguin symbol 
 \subsection*{2018\_Oct}
 \par
 In ==$> $ 2017\_July the following "correction" was done, which proved 
@@ -69,6 +101,17 @@ original, correct state. A calculation of a powder /single crystal
 pattern either with "temp use" or a combination "therm and temp ignore" 
 will now produce icdentical results again. 
 \par
+Added a 'show res' to the 'fourier' and 'connectivity' menu. 
+\par
+Improved the memory handling in pdf, makes the program use much 
+less memory. 
+Connected to this, all menus reduce memory usage through the 
+local 'reset' command. The 'reset' command sets all default 
+values within a menu back to program start and initializes all 
+internal arrays to the smallest default size. Most of the time 
+this will not bee needed. The main effect will be within the 
+Fourier menues (fourier, powder, output). The 'pdf' menu is 
+reduced as much as possible automatically. 
 \par
 \subsection*{2018\_Sep}
 \par
@@ -1920,7 +1963,9 @@ atom types! Use the atom type number instead of the atom name
 for a clear distinction. 
 Alternatively read the structure with the "lcell" command 
 \subsection*{create}
+{\bf create $ \{$$ <$central\_atom\_type$> $, $ \{$$ <$def.no.$> $$| $ $ <$def\_name$> $$\} $$\} $ \par }
 \par
+\vspace{3pt}
 Creates the actual connectivity list. 
 The program performs a loop over all atoms and searches for neighbors 
 that are valid under any of the connectivity definitions. The valid 
@@ -1930,6 +1975,17 @@ Warning, keep in mind that ==$> $ 'property' settings will affect the
 search for neighbors as well. 
 \par
 Any old connectivity list is replaced by a new 'create' command. 
+\par
+If the second command form with parameters is chosen, only the 
+connectivity for the specified atom will be created. 
+This is helpful if: 
+  you create (several) connectivities first, 
+  then perform a modifiucation of the crystal that may affect the 
+  original connectivities 
+  Finally need to create a new connectivity but do not want to 
+  change the original connectivities. 
+This command for  is identical to a 
+  recreate $ <$central\_atom\_type$> $, $ \{$$ <$def.no.$> $$| $ $ <$def\_name$> $$\} $ 
 \subsection*{delete}
 {\bf delete \par }
 {\bf delete $ <$central\_atom\_type$> $, $ <$def\_name$> $ \par }
@@ -1949,6 +2005,9 @@ Recreates the connectivity list for the specified atom type and
 connectivity definition. 
 All neighbors to a central atom of this type are redetermined. 
 The previous entry in the connectivity list is completely lost. 
+\par
+If the connectivity does not create, it is created without 
+any error message. 
 \par
 All other connectivities are not affected by this command. 
 \subsection*{remove}
@@ -2098,27 +2157,37 @@ Valid types are:
            A single ligand atom is bonded to the surface atoms. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly one 'set bond...' command is required. 
 "chelate"  The ligand molecule is placed on top of a single surface atom. 
            A pair of ligand atoms is bonded to the identical surface atom. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly two 'set bond...' commands are required. 
 "bridge"   The ligand molecule is placed bridging between two different 
            surface atoms. 
            A single ligand atom is bonded to two (neighboring) surface atoms. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly two 'set bond...' commands are required. 
 "double"   The ligand molecule is bonded with individual bonds to two surface 
            atoms. Each bond connects a single surface atom to a single 
            ligand atom. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly two 'set bond...' commands are required. 
 "multi"    The ligand molecule is bonded with several bonds to a group of 
            surface atoms. 
-           A first bond connects a ligand atom to a single surface atom. 
-           A second bond connects (another) ligand atom to 
+           A first bond connects (another) ligand atom to 
            a (group of) surface atom(s). 
+           A second bond connects a ligand atom to a single surface atom. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly two 'set bond...' commands are required. 
 "acceptor" Place a ligand molecule with a hydrogen bond type. 
            The surface atom acts as acceptor atom. The surface atom should 
            be a reasonable acceptor atom like O, N... and the ligand atom 
@@ -2129,6 +2198,8 @@ Valid types are:
            angle. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly one 'set bond...' command is required. 
 "donor"    Place a ligand molecule with a hydrogen bond type. 
            The surface atom acts as donor atom. The surface atom should 
            be a reasonable donor atom like H. and the ligand atom 
@@ -2140,9 +2211,8 @@ Valid types are:
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
 \par
-\begin{MacVerbatim}
-reset   ! Reset and clear all definitions
-\end{MacVerbatim}
+           Exactly one 'set bond...' command is required. 
+\par
 \subsection*{reset}
 {\bf reset \par }
 \par
@@ -2158,6 +2228,8 @@ Starts the decoration.
 {\bf set $ <$name$> $, "ligand", $ <$file$> $, $ <$density$> $ \par }
 {\bf set $ <$name$> $, "bond", $ <$atom\_type$> $ [, $ <$atom\_type$> $,...], $ <$ligand atom no$> $, \par }
 {\bf                                                      $ <$distance$> $ \par }
+{\bf                                  [, "angle:"$ <$b\_angle$> $] \par }
+{\bf                                  [, "anchor:"$ <$n\_anchors$> $] \par }
 {\bf set $ <$name$> $, "axis", $ <$ligand atom no 1 $> $, $ <$ligand atom no 2$> $ \par }
 {\bf  \par }
 {\bf set $ <$name$> $, "tilt", "angle", $ <$value$> $ \par }
@@ -2182,16 +2254,21 @@ set $ <$name$> $, "ligand", $ <$file$> $, $ <$density$> $
 \par
 set $ <$name$> $, "bond", $ <$atom\_type$> $ [, $ <$atom\_type$> $,...], $ <$ligand atom no$> $, 
                     $ <$distance$> $, [, "angle:"$ <$b\_angle$> $] 
+                                [, "anchor:"$ <$n\_anchors$> $] 
     Defines the bonds of length $ <$distance$> $ between surface atoms of type 
     $ <$atom\_type$> $ and atom number $ <$ligand atom no$> $ of the ligand. 
-    The number of surface atom types depends on the type of decoration that 
-    is defined by the "add" command. 
-    For the "normal", "double", "acceptor" and "donor" type exactly 
-        one surface type parameter must be given. 
-    For the "bridge" type exactly two surface type 
-        parameters must be given. 
+\par
+    The number of surface atom types can be flexible, the number 
+    of 'set bond ' commands depend on the 
+    decoration that is defined by the "add" command. 
+    For the "normal", "acceptor" and "donor" type exactly 
+        one 'set bond' command is required. 
+    For the "bridge", "chelate", "double", and "multi" type exactly 
+        two 'set bond' commands are required. 
     For the "multi" type exactly three surface type 
         parameters must be given. 
+        Two 'set bond' commands are required. 
+        The first 'set bond' command requires three surface types. 
 \par
     The surface types can be given as type number or as type name. 
     If the type number is given, this atom type will act as anchor. 
@@ -2200,7 +2277,7 @@ set $ <$name$> $, "bond", $ <$atom\_type$> $ [, $ <$atom\_type$> $,...], $ <$lig
 \par
     The optional parameter "angle:" is relevant to "acceptor" and 
     "donor" bond schemes only. For these schemes the angle is 
-    interpreted as teh hydrogen bond angle in the Hydrogen atom and 
+    interpreted as the hydrogen bond angle in the Hydrogen atom and 
     should be close to 170°. 
 \par
 set $ <$name$> $, "tilt", "angle", $ <$value$> $ 
@@ -2210,20 +2287,22 @@ set $ <$name$> $, "tilt", "atoms", "auto"
 set $ <$name$> $, "tilt", "atoms", $ <$n1$> $, $ <$n2$> $, $ <$n3$> $, $ <$n4$> $ 
     Defines a tilt of the molecules relative to the local surface normal. 
     If the molecule is reasonably flat, one can expect that the molecules 
-    will be tilted around an axis parallel to the local surface and parallel 
-    to the molecule plane. 
-    With "tilt", "plane", "auto" or "tilt", "atoms", "auto" DISCUS will 
+    will be tilted around an axis taht is parallel to both, the 
+    local surface and the molecule plane. 
+    With "tilt, plane, auto" or "tilt, atoms, auto" DISCUS will 
     calculate a least squares plane through the ligand molecule and 
     tilt the molecule around the axis described above. 
     Alternatively you can describe a normal to the molecule with the 
     "tilt", "plane", $ <$h$> $, $ <$k$> $, $ <$l$> $ values. The axis $ <$hkl$> $ should refer to 
     the metric of the molecule file that you define with the 
     "set $ <$name$> $, ligand" command. 
-    Alternatively, DISCSU can construct the normal to the molecule 
+    Alternatively, DISCUS can construct the normal to the molecule 
     if you provide the four atom numbers $ <$n1$> $, $ <$n2$> $, $ <$n3$> $, $ <$n4$> $. 
     The normal will be calculated via the vector product of the 
-    two difference vectorsbetween the pairs: n2-n1  and n4-n1. Make sure 
-    that these two vectors are not parallel. 
+    two difference vectors between the pairs: n2-n1  and n4-n3. Make sure 
+    that these two vectors are not parallel. One of the atoms may 
+    be present in both vectors. The value of $ <$n1$> $ could for example be 
+    identicla to either $ <$n3$> $ or $ <$n4$> $. 
 \par
 set $ <$name$> $, "axis", "auto" 
 set $ <$name$> $, "axis", $ <$ligand atom no 1 $> $, $ <$ligand atom no 2$> $ 
@@ -4023,6 +4102,7 @@ neig    : Setting of the neighbor definitions
 range   : Setting of the neighboring ranges
 target  : Setting of correlations values to be achieved
 temp    : Setting of MMC simulation temperature
+valid   ! Sets maximum number of non_valid cycles
 vec     : Definition of interaction vectors
 \end{MacVerbatim}
 \subsubsection{allowed}
@@ -4233,16 +4313,18 @@ the defined interaction neighborhoods $ <$ic$> $ (-$> $ set neigh).
 \par
 Depending on the neighborhood type you must specify exactly one 
 or several target energy types for each $ <$ic$> $. The neighborhoods 
-"vector", $ <$cor$> $, and "angle" require one energy type, while the 
+"vector", "cor", and "angle" require one energy type, while the 
 neighborhood "environment" may take several different energies. 
 For each interaction $ <$ic$> $ you may specify several targets for different 
 atom combinations. 
 \par
-set "target",$ <$ic$> $,"corr",     $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
-                              $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
-                              $ <$correlation$> $, $ <$energy$> $, $ \{$"CORR" $| $ "ENER"$\} $ 
-set "target",$ <$ic$> $,"corr",    ($ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $[, $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $...]), 
-                             ($ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $[, $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $...]), 
+set "target",$ <$ic$> $,"corr", $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
+                          $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
+                          $ <$correlation$> $, $ <$energy$> $, $ \{$"CORR" $| $ "ENER"$\} $ 
+set "target",$ <$ic$> $,"corr", ($ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $ 
+                           [, $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $...]), 
+                          ($ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $ 
+                           [, $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $...]), 
 \par
 A chemical short range order correlation is defined 
 between the two atom types. 
@@ -4255,10 +4337,10 @@ value of $ <$energy$> $. For negative $ <$energy$> $ values like atoms
 will tend to be neighbors, while a positive $ <$energy$> $ favors 
 opposite atoms next to each other. 
 If you use several targets at the same time, it is necessary to 
-use the "Ener" keyword. Otherwise, the feedback mechanism will 
+use the "ENER" keyword. Otherwise, the feedback mechanism will 
 increase the absolute value of the Ising energy at each feedback 
 until the target $ <$correlation$> $ is achieved. This target will 
-therefor overrule the other targets that all have fixed energy 
+therefore overrule the other targets that all have fixed energy 
 values. 
 If you specify a positive correlation, like tom types will tend to 
 cluster together, while for a negative correlation you will get 
@@ -4272,6 +4354,18 @@ neighbor to another atom of the first group and likewise at a
 different place in the crystal for the second group. A negative 
 correlation will give you a crystal in which an atom of the first 
 group has an atom of the second group as neighbor. 
+\par
+set "target",$ <$ic$> $,"cd",   $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
+                          $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
+                          $ <$correlation$> $, $ <$energy$> $, $ \{$"CORR" $| $ "ENER"$\} $ 
+\par
+The intended correlation is a correlation between the displacements 
+of the atoms in the neighborhood. A positive correlation means 
+that the displacements from the average position shall be in the 
+same direction, while a negative correlation means a preference 
+for opposing displacements. 
+Equal displacements are characterized by a positive value of the 
+scalar product of the two displacement vectors. 
 \par
 \par
 set "target",$ <$ic$> $,"lennard",  $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
@@ -4323,6 +4417,19 @@ In order to be able to use the feedback procedure to determine the
 interaction energies the value of $ <$kt$> $ should be set to 1.0 (default). 
 As a result the interaction energies will be in units of kT. If no 
 feedback is used, $ <$kT$> $ can be set to the desired simulation temperature. 
+\subsubsection{valid}
+{\bf valid $ <$invalid\_moves$> $ \par }
+\par
+\vspace{3pt}
+MMC will pick an atom or an atom pair at random. If a pair of atoms 
+has the same chemistry, a "switch chemistry" move will not change 
+anything. Such a pair is considered an invalid trial. As the structure 
+converges into a highly ordered state, the probability of picking 
+an invalid pair increases. In order to prevent an infinite loop, 
+DISCUS terminates mmc once the number of invalid tried configurations 
+exceeds the number of c factor $ <$invalid\_moves$> $. Default for 
+$ <$invalid\_moves$> $ is 1000. For large structures it might be helpful to 
+increase this number. 
 \subsubsection{vec}
 {\bf set "vec",$ <$iv$> $,$ <$is1$> $,$ <$is2$> $,$ <$dx$> $,$ <$dy$> $,$ <$dz$> $ \par }
 \par
