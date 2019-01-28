@@ -57,7 +57,15 @@ wyckoff    ! Shows symmetry operations of the space group
 \section{News}
 \par
 Here you find a list of recent changes, additions, bug corrections 
-\subsection*{2019\_Dec}
+\subsection*{2019\_Jan}
+\par
+Added a demolcularize menu to delete a molecule entry while 
+keeping the atoms 
+\par
+surface 
+   Added a thickness: optional parameter that allows to define 
+   individual thicknesses to hkl planes. 
+\subsection*{2018\_Dec}
 \par
 mmc 
    The displacement correlation did not really work, fixed. 
@@ -688,6 +696,7 @@ plot       ! Write the structure in a format for plotting
 \par
 Modify a structure 
 decorate   ! Decorate the surface with ligands 
+demolec    ! De-molecularize a molecule 
 domain     ! Place domains into host structure 
 insert     ! Insert objects into the crystal 
 mmc        ! MONTE-CARLO simulations 
@@ -715,8 +724,6 @@ output     ! Write Fourier results to disk
 \par
 pdf        ! Calculate a Pair distribution function 
 \section{Unit\_cell}
-{\bf !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \par }
-{\bf !!          NEW FORMAT OF DATA FILE, STARTING IN DISCUS-3.10          !! \par }
 {\bf !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \par }
 \par
 \vspace{3pt}
@@ -2383,6 +2390,123 @@ define generator,center
 turns on the sequence in which centering generators are applied first 
 \par
 The "symmetry" mode now the default value. 
+\section{demolecularize}
+{\bf demolecularize \par }
+\par
+\vspace{3pt}
+Enters the menue to de-molecularize a molecule. 
+The molecule entry is removed from internal list, and the 
+molecule properties of the atoms that were in the selected 
+molecul(s) are cleared. 
+\par
+\subsection*{deselect}
+{\bf deselect moletype:$ \{$"all"$| $"none"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+{\bf deselect atomtype:$ \{$"all"$| $"none"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+\par
+\vspace{3pt}
+The optional parameter "moletype" deselects which molecule 
+types are to be demolecularized. 
+The parameter defaults to "all", which means that no 
+molecule type will be demolecularized. 
+\par
+The optional parameter "atomtype:" defines which atom 
+types must be present in the selected molecule types. 
+The parameter defaults to "all", which means that no 
+atom type needs to be present. A molecule may contain 
+any atom type to be demolecularized. 
+\subsection*{exit}
+{\bf exit \par }
+\par
+\vspace{3pt}
+Leave the demolecularize menu, go back to the main 
+DISCUS menu. 
+\subsection*{include}
+{\bf include molerange:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+{\bf include atomrange:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+\par
+\vspace{3pt}
+The optional parameter "molerange" selects which molecule 
+range are to be demolecularized. 
+The parameter defaults to "none", which means that no 
+molecule range will be demolecularized. 
+\par
+The optional parameter "atomrange:" defines whether atoms 
+must be within the specified range if the selected 
+molecules are to be demolecularized. 
+The parameter defaults to "none", which means that no 
+specific atom range needs to be present. A molecule may 
+contain any atom range to be demolecularized. 
+\subsection*{prop}
+{\bf prop $ \{$"ignore"$| $"present"$| $"absent"$\} $ , $ <$property$> $ [, $ <$property$> $ ...] \par }
+\par
+\vspace{3pt}
+Defines which properties all atoms in the molecule must have 
+for the molecule to be demolecularized. 
+\par
+"ignore" 
+The properties listed will be ignored. The listed properties do 
+not have an affect on the choice to demolecularize the molecule 
+or not. 
+"present" 
+All atoms in the molecule must have the properties listed, 
+for the molecule to be demolecularized. 
+"absent" 
+All atoms in the molecule are not allowed to have the 
+properties listed. 
+\par
+The properties can be one of: 
+"all" 
+Apply the rule to all properties. 
+"normal" 
+The rules apply if an atom is a normal atom (not a void) 
+"molecule" 
+The rules apply if an atom is part of a molecule 
+"domain" 
+The rules apply if an atom is part of a domain 
+"outside" 
+The rules apply if an atom is outside of the crystal. This status 
+is set if the atom has been cut off by a ==$> $ 'boundary' command. 
+"external" 
+The rules apply if an atom is close to an external surface, either 
+on the inside or on the outside. 
+The flag is set by the ==$> $ 'boundary' command. Individual distances 
+to the boundary can be set within the ==$> $ 'surface' menu through 
+the ==$> $ 'surface/fuzzy' command. 
+"internal" 
+The rules apply if an atom is close to an internal surface, either 
+within the host or within the guest structure. 
+The flag is set by placing a guest structure into the crystal through 
+the ==$> $ 'domain' menu. Individual distances 
+to the boundary can be set within the ==$> $ 'domain' menu through 
+the ==$> $ 'domain/fuzzy' command. 
+\subsection*{select}
+{\bf select moletype:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+{\bf select atomtype:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+\par
+\vspace{3pt}
+The optional parameter "moletype" selects which molecule 
+types are to be demolecularized. 
+The parameter defaults to "none", which means that no 
+molecule type will be demolecularized. 
+\par
+The optional parameter "atomtype:" defines which atom 
+types must be present in the selected molecule types. 
+The parameter defaults to "none", which means that no 
+atom type needs to be present. A molecule may contain 
+any atom type to be demolecularized. 
+\subsection*{show}
+\par
+Show the current settings 
+\subsection*{reset}
+\par
+Reset to system start, which means that: 
+no molecule types are selected 
+the molecule range is set to zero 
+any atom may be present 
+no specific atom range needs to be present 
+\subsection*{run}
+\par
+perform the actual calculation 
 \section{diff-four}
 {\bf diff \par }
 \par
@@ -5773,7 +5897,7 @@ poly "off"
 \vspace{3pt}
 ets the definitions for plotting polyhedra in an interactive plot. 
 urrently only an interactive plot with JMOL is supported. 
-he command ==$> $ 'run inter:yes' gives the details how to start an 
+he command ==$> $ 'run plot:inter' gives the details how to start an 
 nteractve plot session. 
 \par
 \begin{MacVerbatim}
@@ -8616,6 +8740,12 @@ show       ! Show the current surface related settings
          "centx:"$ <$center\_x$> $   The central location for the 
          "centy:"$ <$center\_y$> $   boundary is at this point 
          "centz:"$ <$center\_z$> $   Defaults to (0, 0, 0) 
+                              The units are fractional coordinates 
+         "thick:"$ <$thickness$> $  Defaults to value set by 
+                              set distance, external for atom type 1 
+                              Atoms within a distance of $ <$thickness$> $ 
+                              to the surface are flagged as surface 
+                              atoms. Units are Angstroem 
 \par
          "keep:"$ \{$"inside"$\} $$| $$ \{$"outside"$\} $  Keep atoms on the inside or 
                                         outside of boundary 
@@ -8633,7 +8763,8 @@ show       ! Show the current surface related settings
                                  See description below 
 \par
 This commands removes all atoms that are outside a boundary surrounding 
-the crystal. 
+the crystal. The distance of the surface from the point 0,0,0 is measured 
+in Angstroem. 
 "hkl"  The surface is defined as a plane through the Miller indices 
        $ <$h$> $,$ <$k$> $,$ <$l$> $. The optional $ <$distance$> $ determines the distance 
        between 0,0,0 and the boundary surface. Without this parameter, 
@@ -8694,7 +8825,7 @@ only. Their main purpose is to create interior closed surfaces
 in combination with the "keep:outside" parameter. 
 In low symmetry crystal systems, a closed hollow space has to be 
 created by a combination of several symmetrically non-equivalent 
-faces or forms.. Use the combination: 
+faces or forms. Use the combination: 
 "accum:init, exec:hold" For the first face/form 
 "accum:add, exec:hold"  For further faces and forms 
 "accum:add, exec:run"   For the last face. 
@@ -8703,6 +8834,14 @@ accumulated. With the "exec:run" the actual removal of atoms
 is started. 
 After a "exec:run" parameter, the list of faces is automatically 
 reset. 
+An accumulated set of planes will refer to a common origin, either 
+the default 0,0,0 or the value set by "centx:", "centy:", "centz". 
+Also the keep status is the same for all hkls in the accumulted set. 
+Thus only the last occurence of these optional parameters will 
+actually be effective. It is threfore best to use the optional 
+parameters for accumulated surfaces only once at the last hkl for 
+which the optional parameter "exec:run" is used. A warning message 
+will be flagged otherwise. 
 \subsection*{character}
 {\bf char $ <$atom\_no$> $ [,$ \{$"equal"$\} $$| $$ \{$any$\} $] [, "show"] \par }
 \par

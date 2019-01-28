@@ -6,7 +6,7 @@
 
 Chapter \ref{struc} discussed techniques to create a 
 perfect model crystal from the content of the asymmetric unit.
-This section will give an overview of simple modifications of single
+This chapter will give an overview of simple modifications of single
 atoms within a model crystal.  Section \ref{mod} will describe
 \Discus tools to modify a complete crystal.
 
@@ -224,4 +224,120 @@ essentially a molecule which will be interpreted differently.
 The domain allows you to place an extended defect into a host 
 structure. The {\tt insert domain} menu allows you to specify
 the character and location of the domain to be inserted.
+
+%------------------------------------------------------------------------
+
+\section{Dissolving a molecule \label{mod-demole}}
+
+Under rare cirumstances it might be advantageous to {\it dissolve} a molecule.
+The idea is to remove all molecule info, while retaining the atoms that are in
+the molecule at their original place with all other but molecule related 
+properties to remain the same. The instructions for this task are bundled in
+the "demolecularize" menu.
+
+\begin{MacVerbatim}
+ 1 demolecularize
+ 2   reset
+ 3   select moletype:all,atomtype:none
+ 4   include molerange:all, atomrange:none
+ 5   property {"ignore"|"present"|"absent"} , <property> [, <property> ...]
+ 6   show
+ 7   run
+ 8 exit
+\end{MacVerbatim}
+
+The "select" and "include" commands on line 3 and 4 are the two main instructions
+for this menu. "select" allows you to chose, which molecule types are to be 
+dissolved. Possible values for the parameter are:
+
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Parameter} & {\bf Description} \\
+  \hline\hline
+  none    & No  molecule type  will be dissolved. Default\\
+  all     & All molecule types will be dissolved.\\
+  <n1>    & Only molecule of type <n1> will be dissolved.\\
+  (<n1>,<n2>{,...})    & All  molecule of the specified types 
+                         will be dissolved. The list needs to be enclosed in
+                         round parentheses.\\
+  \hline
+\end{tabularx}
+
+The "include" command defines which numerical range of molecules shall be 
+dissolved. 
+
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Parameter} & {\bf Description} \\
+  \hline\hline
+  none    & No range of molecules will be dissolved. Default\\
+  all     & All molecule numbers will be dissolved.\\
+  <n1>    & Only the molecule number  <n1> will be dissolved.\\
+  (<n1>,<n2>)    & All  molecules in the range from <n1> to <n2>
+                         will be dissolved. If <n1> is equal to -1 or 
+                         "last", all molecules from number <n1> to the 
+                         last molecule will be dissolved. The list needs to be 
+                         enclosed in round parentheses.\\
+  \hline
+\end{tabularx}
+
+The two commands work together as a logical AND. Only molecules that are in the
+list of molecule types and that fall in the range of molecule numbers will be
+dissolved.
+
+To specify even more details, the selection and inclusion can be more fine tuned
+with the "atomtype" and "atomrange" parameters.
+
+The atomtype accepts the following parameters:
+
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Parameter} & {\bf Description} \\
+  \hline\hline
+  none    & The atoms in the molecule do not have to be of a specific type for
+            the molecule to be dissolved. A molecule may consist of any atom 
+            type(s). Default\\
+  all     & A molecule must contain all atom types to be dissolved. If a 
+            molecule is missing any atom type it will not be dissolved. \\
+  <n1>    & A molecule must contain at least one atom of type <n1> to be 
+            dissolved. Other atom types may be present as well and do not affect
+            the decision. \\
+  (<n1>,<n2>{,...})    & A molecule must contain at least one atom of each of 
+                         the specified types to be be dissolved. The list needs
+                         to be enclosed in round parentheses.\\
+  \hline
+\end{tabularx}
+
+The "atomrange" command accepts the following parameters:
+
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Parameter} & {\bf Description} \\
+  \hline\hline
+  none    & No specific range of atoms needs to be present in a molecule for 
+            it to be dissolved. Default\\
+  all     & Any molecule must contain all atoms from number 1 to the last to be 
+            dissolved. \\
+  <n1>    & The molecule must contain exactly the atom number <n1> in order to 
+            be dissolved.\\
+  (<n1>,<n2>)    & All atoms in the molecule must fall into the range from <n1> 
+                   to <n2> for the molecule to be dissolved. It is not necessary
+                   that the entire range is covered. The condition states that 
+                   if any atom in the molecule is outside the range from <n1> 
+                   to <n2> the molecule will not be dissolved. If <n1> is equal 
+                   to -1 or "last", all molecules from number <n1> to the 
+                   last molecule will be dissolved. The list needs to be 
+                   enclosed in round parentheses.\\
+  \hline
+\end{tabularx}
+
+The local properties set with the "property" command define, which properties 
+all atoms in a given molecule must have for this molecule to be demolecularized.
+The properties default to "ignore", which means that an atom may have any
+property, without affecting the choice for the given molecule.
+
+Both, the "atomtype" and "atomrange" and the property selection impose 
+conditions that must be met, they
+are interpreted as a logical AND with the "moletype" and "molerange" parameters.
+
 %------------------------------------------------------------------------
