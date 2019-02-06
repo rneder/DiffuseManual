@@ -225,6 +225,31 @@ The domain allows you to place an extended defect into a host
 structure. The {\tt insert domain} menu allows you to specify
 the character and location of the domain to be inserted.
 
+
+%------------------------------------------------------------------------
+
+\section{Building   a molecule \label{mod-molec}}
+
+To build a molecule or to extend an existing molecule, \discus
+offers the {\tt molecularize} command. 
+\begin{MacVerbatim}
+ 1 molecularize conn, <central> [, <exclude> ...]
+ 2 molecularize range, <from>, <to>, <molecule_type> , <molecule_Biso>
+\end{MacVerbatim}
+
+The first command version builds molecules for the central atom
+number  <central>. Prior to this command a connectivity list must have been
+created with the help of the connectivity menu. This connectivity list is
+searched to find all neighbors to the central atom type and the resulting
+further neighbors in turn. The list of excluded atom number can be used 
+to prevent these excluded atom to become part of the molecule. 
+This allows you to build a partial molecule, which could be helpful
+if a section of a molecule needs to be turned with respect to the rest.
+
+The second command form combines all atoms from number <from> to number <to>
+into a singel molecule. \discus does not check if these atoms are close to 
+each other.
+
 %------------------------------------------------------------------------
 
 \section{Dissolving a molecule \label{mod-demole}}

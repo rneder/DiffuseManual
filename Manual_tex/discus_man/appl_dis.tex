@@ -14,6 +14,7 @@ connect    ! Enter CONNECTIVITY level
 copy       ! Copy atom or molecule within the crystal
 export     ! Exports the structure in a different format
 decorate   ! Enter  DECORATE level
+demolec    ! Enter demolecularization level
 d2r        ! Transform vector from real to reciprocal space
 define     ! Define DISCUS specific settings
 diff-four  ! Enter DIFFERENCE FOURIER transform level
@@ -57,6 +58,16 @@ wyckoff    ! Shows symmetry operations of the space group
 \section{News}
 \par
 Here you find a list of recent changes, additions, bug corrections 
+\subsection*{2019\_Feb}
+\par
+Implemented all alternative settings for the orthorhombic space 
+groups. See the entry ==$> $ "Unit\_cell" for details on how to 
+define alternative settings and the entry ==$> $ "space\_groups" for 
+a complete listing of all non-standard settings in the 
+orthorhombic system. 
+\par
+Added a command 'displacement' that returns the displacement 
+vector of an atom from its average position. 
 \subsection*{2019\_Jan}
 \par
 Added a demolcularize menu to delete a molecule entry while 
@@ -766,6 +777,8 @@ The title can be any character string up to 80 characters long
 \begin{MacVerbatim}
 spcgr {<symbol> | no. } [, "2"]
 \end{MacVerbatim}
+[, setting:$ \{$'abc'$| $ 'bac' $| $ 'cab' $| $ 'cba' $| $ 'bca' $| $ 'acb'$\} $ 
+\par
 The space group symbol is used to generate all atoms within the unit 
 cell. The symbols used should be the Hermann-Mauguin symbols used in 
 Int. Tables Vol.A. A center of inversion should be given as "-" sign 
@@ -773,7 +786,7 @@ immediately preceding the axis. Lattice types need to be given as
 capital characters, mirror planes as small characters. 
 \par
 Monoclinic cell choices 2,3 or unique c-axis will be assumed if the 
-corresponding non standard Hermann-Mauguin symbol is used. 
+corresponding non standard full Hermann-Mauguin symbol is used. 
 \par
 Origin choice 2 is indicated by setting the optional second parameter 
 to "2". 
@@ -783,6 +796,23 @@ and hexagonal settings.
 \par
 The space group symbol is checked for contradictions with the lattice 
 constants. In case of error, the unit cell is not read. 
+\par
+The optional "setting:" parameter can be used in conjunction with an 
+orthorhombic space group to describe a different setting. As an example 
+you can use the space group \# 28 Pma2 in the setting bac to get the 
+non-standard space group Pbm2 with: 
+spcgr Pma2, setting:bac 
+Equivalently, all non-standard orthorhombic settings can be used 
+with the corresponding non-standard space group name. In this case 
+omit the "setting:" parameter: 
+spcgr Pbm2 
+\par
+In both cases, the atom coordinates x,y,z must be provided in the 
+sequence for the non-standard setting. 
+\par
+See the DISCUS manual and the International Tables for 
+Crystallography Volume A for a complete listing of all 
+orthorhombic settings. 
 \subsection*{cell}
 \begin{MacVerbatim}
 cell  <a>,  <b>,  <c>, <alpha>,  <beta>,  <gamma>
@@ -2518,6 +2548,41 @@ All input parameters are identical to "inverse" see the help to
 The difference Fourier can only be calculated from a "shelxl" type 
 file. The program calculates (Fobs-Fcalc) and then calculates the 
 corresponding inverse Fourier. 
+\section{displacement}
+{\bf displacement $ <$iatom$> $ [,out:$ \{$"no"$| $"yes"$\} $] [,aver:$ \{$"no"$| $"yes"$| $"off"$\} $] \par }
+\vspace{3pt}
+                     [,indi:$ \{$"no"$| $"yes"$\} $] 
+\par
+This command calculates the displacement vector of atom number 
+$ <$iatom$> $ from its average position. The result is stored in 
+the result variables res[1] to res[3]. 
+\par
+The optional parameters do: 
+out:$ \{$"no"$| $"yes"$\} $  A short output will be written to screen 
+    Default is "no" 
+aver:$ \{$"no"$| $"yes"$| $"off"$\} $  The average positions are calculated. 
+    Default is "no", it is much faster to do this once 
+    in the chem menu prior to an analysis of the 
+    displacement vector for several atoms. 
+    The first time that the 'displacement' command is used, 
+    DISCUS will automatically calculate the average structure, 
+    unless you explicitly turn this off with "aver:off". 
+\par
+    The automatic calculation of the average structure is 
+    turned back on only with a DISCUS ==$> $ 'reset' or the 
+    'chem' 'reset' commands. If you modify the structure or 
+    read a new cell/structure the automatic calculation will 
+    NOT be turned on again. As this might give very wrong 
+    displacement vectors, it is highly recommended to 
+    calculate the average position with the "chem" 
+    command "aver" prior to the displacement commands. 
+indi:$ \{$"no"$| $"yes"$\} $  The displacement vector is by default 
+    taken relative to the average of all atom species 
+    that may be on a given site. In analogy to the 
+    ==$> $ 'aver indi' command in the ==$> $ 'chem' menu 
+    the displacement vector of an atom may also be 
+    calculated relative to the average position of all 
+    atoms of the same chemical species. 
 \section{domain}
 \par
 This command branches to the domain menu level. 
@@ -11852,6 +11917,81 @@ b) non standard settings of space groups
 # 307 : Pbnm:       #  62: Pnma non-standard orientation
 # 308 : Pmnn:       #  58: Pnnm non-standard orientation
 \end{MacVerbatim}
+Non-standard settings of all orthorhombic space groups are recognized 
+either via the spcgr line in the form: 
+spcgr Pnma, setting:cab 
+or by using the explicit non-standard space group name: 
+\par
+\begin{MacVerbatim}
+        abc      bac      cab      cba      bca      acb
+#  16   P222     P222     P222     P222     P222     P222
+#  17   P2221    P2221    P2122    P2122    P2212    P2212
+#  18   P21212   P21212   P22121   P22121   P21221   P21221
+#  19   P212121  P212121  P212121  P212121  P212121  P212121
+#  20   C2221    C2221    A2122    A2122    B2212    B2212
+#  21   C222     C222     A222     A222     B222     B222
+#  22   F222     F222     F222     F222     F222     F222
+#  23   I222     I222     I222     I222     I222     I222
+#  24   I212121  I212121  I212121  I212121  I212121  I212121
+\end{MacVerbatim}
+        abc      bac      cab      cba      bca      acb 
+\begin{MacVerbatim}
+#  25   Pmm2     Pmm2     P2mm     P2mm     Pm2m     Pm2m
+#  26   Pmc21    Pcm21    P21ma    P21am    Pb21m    Pm21b
+#  27   Pcc2     Pcc2     P2aa     P2aa     Pb2b     Pb2b
+#  28   Pma2     Pbm2     P2mb     P2cm     Pc2m     Pm2a
+#  29   Pca21    Pbc21    P21ab    P21ca    Pc21b    Pb21a
+#  30   Pnc2     Pcn2     P2na     P2an     Pb2n     Pn2b
+#  31   Pmn21    Pnm21    P21mn    P21nm    Pn21m    Pm21n
+#  32   Pba2     Pba2     P2cb     P2cb     Pc2a     Pc2a
+#  33   Pna21    Pbn21    P21nb    P21cn    Pc21n    Pn21a
+#  34   Pnn2     Pnn2     P2nn     P2nn     Pn2n     Pn2n
+#  35   Cmm2     Cmm2     A2mm     A2mm     Bm2m     Bm2m
+#  36   Cmc21    Ccm21    A21ma    A21am    Bb21m    Bm21b
+#  37   Ccc2     Ccc2     A2aa     A2aa     Bb2b     Bb2b
+#  38   Amm2     Bmm2     B2mm     C2mm     Cm2m     Am2m
+#  39   Aem2     Bme2     B2em     C2me     Cm2e     Ae2m
+#  40   Ama2     Bbm2     B2mb     C2cm     Cc2m     Am2a
+#  41   Aea2     Bbe2     B2eb     C2ce     Cc2e     Ae2a
+#  42   Fmm2     Fmm2     F2mm     F2mm     Fm2m     Fm2m
+#  43   Fdd2     Fdd2     F2dd     F2dd     Fd2d     Fd2d
+#  44   Imm2     Imm2     I2mm     I2mm     Im2m     Im2m
+#  45   Iba2     Iba2     I2cb     I2cb     Ic2a     Ic2a
+#  46   Ima2     Ibm2     I2mb     I2cm     Ic2m     Im2a
+        abc      bac      cab      cba      bca      acb
+#  47   Pmmm     Pmmm     Pmmm     Pmmm     Pmmm     Pmmm
+#  48   Pnnn     Pnnn     Pnnn     Pnnn     Pnnn     Pnnn
+#  49   Pccm     Pccm     Pmaa     Pmaa     Pbmb     Pbmb
+#  50   Pban     Pban     Pncb     Pncb     Pcna     Pcna
+#  51   Pmma     Pmmb     Pbmm     Pcmm     Pmcm     Pmam
+#  52   Pnna     Pnnb     Pbnn     Pcnn     Pncn     Pnan
+#  53   Pmna     Pnmb     Pbmn     Pcnm     Pncm     Pman
+#  54   Pcca     Pccb     Pbaa     Pcaa     Pbcb     Pbab
+#  55   Pbam     Pbam     Pmcb     Pmcb     Pcma     Pcma
+#  56   Pccn     Pccn     Pnaa     Pnaa     Pbnb     Pbnb
+#  57   Pbcm     Pcam     Pmca     Pmab     Pbma     Pcmb
+#  58   Pnnm     Pnnm     Pmnn     Pmnn     Pnmn     Pnmn
+#  59   Pmmn     Pmmn     Pnmm     Pnmm     Pmnm     Pmnm
+#  60   Pbcn     Pcan     Pnca     Pnab     Pbna     Pcnb
+#  61   Pbca     Pcab     Pbca     Pcab     Pbca     Pcab
+#  62   Pnma     Pmnb     Pbnm     Pcmn     Pmcn     Pnam
+#  63   Cmcm     Ccmm     Amma     Amam     Bbmm     Bmmb
+#  64   Cmce     Ccme     Aema     Aeam     Bbem     Bmeb
+#  65   Cmmm     Cmmm     Ammm     Ammm     Bmmm     Bmmm
+#  66   Cccm     Cccm     Amaa     Amaa     Bbmb     Bbmb
+#  67   Cmme    *Cmmb     Aemm    *Acmm     Bmem    *Bmam
+#  68   Ccce    *Cccb     Aeaa    *Acaa     Bbeb    *Bbab
+#  69   Fmmm     Fmmm     Fmmm     Fmmm     Fmmm     Fmmm
+#  70   Fddd     Fddd     Fddd     Fddd     Fddd     Fddd
+#  71   Immm     Immm     Immm     Immm     Immm     Immm
+#  72   Ibam     Ibam     Imcb     Imcb     Icma     Icma
+#  73   Ibca     Icab     Ibca     Icab     Ibca     Icab
+#  74   Imma     Immb     Ibmm     Icmm     Imcm     Imam
+\end{MacVerbatim}
+Note: for space groups 67 Cmme and 68 Ccce, the settings 
+bac, cba and acb are given in the traditional name 
+instead of using the 'e' glide plane name. This choice 
+allowsyou to distinguish these settings. 
 \section{wavelength}
 {\bf List of allowed wavelength symbols \par }
 \par

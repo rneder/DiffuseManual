@@ -18,6 +18,9 @@ not all commands are available in molecule mode. Also note, that the
 the analysis of disordered structures with many examples and
 exercises.
 
+These commands within the {\tt chem} menu allow a convenient way to 
+analyze the whole structure. Individual atoms can be checked through
+the general command language, see section \ref{chem-indiv}.
 %------------------------------------------------------------------------
 
 \section{Occupancies \label{chem-occ}}
@@ -275,4 +278,71 @@ conversion between atom index and unit cell / atom site can be made
 using the equation given in section \ref{struc-int} or via the
 command {\tt trans} in the {\tt chem} level of \discus.
 
+%------------------------------------------------------------------------
+
+
+\section{Checking individual atoms \label{chem-indiv}}
+
+Several commands allow to check the status of an individual atom.
+A simple command is 'show atom':
+
+\begin{MacVerbatim}
+ 1 show atom, all
+ 2 show atom, 4
+ 3, show atom, 5, 9
+\end{MacVerbatim}
+
+The command in line one will show the name, type, positions, properties,
+etc. for all atoms. The next line does the same for a single atom here number 4,
+while the thirdd line would show all atoms from 5 to 9. The numbers can of 
+course be given as expressions.
+
+Individual coordinates are accesible through the variables {\tt x[<iatom>], 
+y[<iatom>],z[<iatom>]}
+that each take the number of the atom to be investigates as parameter between the 
+square brackets.
+\begin{MacVerbatim}
+ 1 evaluate x[4]
+ 2 x[3] = x[3] + 0.03
+\end{MacVerbatim}
+
+The type of an atom is available though the variable {\tt m[<iatom>]}, which will 
+give you the type number of the atom <iatom>.
+
+The atom name of an individual atom number <iatom> can be read out with the 
+variable {\tt at\_name[<iatom>]}. Do not confuse this variable with the rather
+similar variable {\tt at\_type[<type]}, which returns the name of atoms of type
+{\tt <type>}.
+
+The {\tt show atom} command does list in which molecule an atom might be included.
+to work with this molecule number, use the variable {\tt in\_mole[<iatom>]}. 
+This variable is the molecule number in which atom <iatom> in included. The value
+is zero, if the atom is not part of any molecule.
+
+The {\tt chem} menu allows to derive information on the average structure and 
+on displacement fields. To quickly analyze the displacement of a single atom 
+use the command {\tt displacement <iatom>}. 
+
+\begin{MacVerbatim}
+ 1 displacement <iatom>
+ 2 displacement <iatom>, out:yes
+ 3 displacement <iatom>, aver:yes, indi:yes
+\end{MacVerbatim}
+
+In its simplest form the command will determine the displacement vector of atom
+<iatom> from its average position and store this vector in the result variable
+{\tt res[1]} to {\tt res[3]}. The optional parameter "out:yes" will additionally 
+create a simple output on the screen.
+
+It is strongly recommended to determine the average structure within {\tt chem}
+prior to the use of the displacement command. Otherwise the displacement 
+command may have to repeat this task for each atom, which can be rather time
+consuming. If necessary the optional parameter "aver:yes" enforces the calculation
+of the average structure. If the optional parameter is ommitted or is "indi:no",
+all atoms of different type that share the same site in a unit cell will be averaged
+to a common position. If the optional parameter is "indi:yes" atoms of different 
+types will each create their own average position, even if they share the same site in 
+the unit cell. The displacement of atom <iatom> will then be calculated off from the
+average position of the proper atom type. See the {\tt aver} command in 
+the {\tt chem} menu for more details on the average position.
 %------------------------------------------------------------------------
