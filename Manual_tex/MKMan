@@ -14,7 +14,7 @@ cd ..
 
 #for PACKAGE in  discus_man 
 if [ "$#" -eq 0 ]; then
-for PACKAGE in  discus_man kuplot_man diffev_man mixscat_man suite_man package_man;
+for PACKAGE in  discus_man kuplot_man diffev_man mixscat_man suite_man refine_man package_man;
 do
     cd ${MYDIR}/${PACKAGE} || exit 1
     echo "#-------------------------------------------------"
