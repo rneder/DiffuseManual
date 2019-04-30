@@ -1,0 +1,10 @@
+branch kuplot
+#
+if(F_DATA==0) then
+   reset
+   func (P_const) + (P_lin)*r[0] + (P_quad)*r[0]**2 + (P_trip)*r[0]**3, F_XMIN, F_XMAX, F_XSTP
+else
+   func (P_const) + (P_lin)*r[0] + (P_quad)*r[0]**2 + (P_trip)*r[0]**3, F_DATA
+endif
+exit
+finished

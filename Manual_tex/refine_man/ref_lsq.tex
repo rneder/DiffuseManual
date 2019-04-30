@@ -1,0 +1,63 @@
+%------------------------------------------------------------------------
+% Chapter:  Least Squares refinement 
+%------------------------------------------------------------------------
+
+\chapter{Least Squares Refinement \label{lsq}}
+\section{Refinement via least squares refinement \label{lsq-algo}}
+
+Every time we measure some physical effect and wish to understand
+how this effect works, we want to determine the parameters of a 
+model function that will replicate the observations. The term 
+refinement refers to the process by which the parameters of the
+function are tuned such as to give the best agreement between
+the observed and calculated values. The term {\it best agreement}
+merits careful definition, for right now it is sufficient to say
+that the sum over all squared differences between the observations and the 
+calculations shall be minimized. Thus, refinement is but a special
+case of general optimization. A very different example for an 
+optimization could be the task to place as many integrated 
+circuits into a chip and simultaneously achieve the fastest computations.
+Quite well known is the traveling salesman problem. Here the 
+optimization task requires to find the shortest route that 
+visits a number of spots distributed in space.  
+
+By far the fastest refinement technique is a least squares algorithm.
+Such an algorithm can always be applied if we can describe the 
+physical effect as a function of parameters:
+\begin{equation}
+  y ~=~ F(p_{0}, p_{1}, ..., p_{n}),
+\end{equation}
+and all the partial derivatives $\partial y/ \partial p_{i}$ can 
+be calculated, either analytically or numerically. For each 
+observed value y$_{obs}$, we calculate a value y$_{calc}$ and 
+minimize the value of a weighted residual wR:
+\begin{equation}
+   wR = \sqrt{\frac{\sum_{i} w_{i} (y_{obs}(i) - y_{calc}(i))^2}
+                   {\sum_{i} w_{i} y_{obs}(i)^2}}
+  \label{diff-eq-rval}
+\end{equation}
+Here each difference is multiplied by a weight w$_{i}$ that reflects
+the uncertainties of the experimental values. In case of crystal 
+structure analysis, the observed values would be the observed 
+intensities in a diffraction pattern and the calculated values 
+those intensities that were calculated based on a structural model. 
+Model parameters will be the lattice parameters, the positions
+of the atoms in the unit cell, atomic displacement parameters etc.
+as well as experimental parameters, such as the background.
+Under the assumption that we have a periodic crystal, the 
+partial derivatives of the intensity with respect to lattice
+parameters, atom positions etc., can all be derived analytically.
+
+For disordered structures, the situation becomes more complicated.
+Except for a few special cases like stacking faults or short-range
+order problems, no general analytical function straightforwardly 
+links the disorder parameter to the intensity. The intensity 
+can still be calculated from structural models. The simulation,
+however, usually involves the application of random choices 
+to generate part or all of the atom positions, and the analytical
+derivative of the intensity with respect to the order parameter
+is no longer available. A numeric calculation of the derivatives
+involves the repeated simulation of a new model for each parameter
+and is fairly time consuming.
+
+%------------------------------------------------------------------------

@@ -1,0 +1,55 @@
+refine
+variable integer, F_DATA
+variable real, F_XMIN
+variable real, F_XMAX
+variable real, F_XSTP
+variable real, P_const
+variable real, P_lin  
+variable real, P_quad 
+variable real, P_trip 
+F_DATA  =  0
+F_XMIN  =  -4.0
+F_XMAX  =   4.0
+F_XSTP  =   0.01
+P_const = -4.0
+P_lin   =  2.0
+P_quad  =  0.5
+P_trip  = -1.1
+@triple.mac
+exit
+#
+kuplot
+#
+#reset
+#func  -4.+2*r[0]+0.5*r[0]**2-0.1*r[0]**3, -12,12, 0.1
+#ccal mul, dy, 1, 0.0
+#ccal add, dy, 1, 1.0
+do LOOP=1,np[1]
+   dy[1,LOOP] = sqrt(max(abs(y[1,LOOP]),0.001))
+   y[1,LOOP] = y[1,LOOP]+ gran(sqrt(abs(y[1,LOOP])))
+enddo
+#
+skal
+mark
+plot
+ksav 1
+  outf DATA/quadratic.noise
+  form xy
+  run
+wait return
+reset
+!
+exit   ! back to SUITE
+#
+refine
+#
+data xy, DATA/quadratic.noise
+!data kuplot, 1
+newparam, P_const, value:-8.01 !1.1
+newparam, P_lin  , value:1.01  !-1.2
+newparam, P_quad , value:1.49  !1.3
+newparam, P_trip , value:0.31 !0.3
+set  cycle,   5
+run triple.mac
+exit   ! back to SUITE
+#variable show
