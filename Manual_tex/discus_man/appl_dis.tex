@@ -58,6 +58,14 @@ wyckoff    ! Shows symmetry operations of the space group
 \section{News}
 \par
 Here you find a list of recent changes, additions, bug corrections 
+\subsection*{2019\_Apr}
+\par
+Added an export option to write the structure in the format for 
+Scatty. 
+\par
+powder 
+   Improved scaling of intensities to be independent of a 
+   profile function. 
 \subsection*{2019\_Feb}
 \par
 Implemented all alternative settings for the orthorhombic space 
@@ -68,6 +76,8 @@ orthorhombic system.
 \par
 Added a command 'displacement' that returns the displacement 
 vector of an atom from its average position. 
+\par
+Added the surface vector to the 'show atom' command 
 \subsection*{2019\_Jan}
 \par
 Added a demolcularize menu to delete a molecule entry while 
@@ -1633,8 +1643,11 @@ for possible further analysis or plotting.
 Displays information about elements in the model crystal like 
 relative abundances of the elements. 'void' stands for a vacancy. 
 The results (range 0..1 rather than \%) are stored in the variable 
-res[$ <$i$> $], with $ <$i$> $ the number of the atomtyp. The optional parameter 
-"on" or "off" controls if screen output is produced. 
+res[$ <$i$> $+1], with $ <$i$> $ the number of the atomtyp. 
+Entry res[0] give the number of atom types. 
+Entry res[1] gives the relative number of VOIDS. 
+The optional parameter "on" or "off" controls if screen 
+output is produced. 
 \subsection*{env}
 {\bf env "atom",$ <$ia$> $,$ <$radius$> $ \par }
 {\bf env "site",$ <$nx$> $,$ <$ny$> $,$ <$nz$> $,$ <$site$> $,$ <$radius$> $ \par }
@@ -2122,6 +2135,7 @@ position and vector $ <$x$> $,$ <$y$> $,$ <$z$> $.
 {\bf export "rmcprofile",$ <$file$ \{$".rmc6f"]$> $  [version:$ \{$"6"$| $"7"$\} $] \par }
 {\bf export "vasp",$ <$file]$> $ \par }
 {\bf export "poscar",$ <$file]$> $ \par }
+{\bf export "scatty",$ <$file]$> $ \par }
 \par
 \vspace{3pt}
 cif 
@@ -2138,6 +2152,11 @@ version 6 or 7 input file
 vasp 
 poscar 
 Exports the atoms of the current structure as a VASP "POSCAR" file. 
+\par
+scatty 
+Exports the atoms of the current structure as a SCATTY file 
+Only the "*\_atoms\_01.txt" file is written. The user has to edit his 
+"scatty\_config.txt" file individually. 
 \section{d2r}
 {\bf d2r $ <$u$> $,$ <$v$> $,$ <$w$> $ \par }
 \par
@@ -2451,8 +2470,8 @@ any atom type to be demolecularized.
 Leave the demolecularize menu, go back to the main 
 DISCUS menu. 
 \subsection*{include}
-{\bf include molerange:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
-{\bf include atomrange:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+{\bf include molerange:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...)$\} $ \par }
+{\bf include atomrange:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...)$\} $ \par }
 \par
 \vspace{3pt}
 The optional parameter "molerange" selects which molecule 
@@ -2510,8 +2529,8 @@ the ==$> $ 'domain' menu. Individual distances
 to the boundary can be set within the ==$> $ 'domain' menu through 
 the ==$> $ 'domain/fuzzy' command. 
 \subsection*{select}
-{\bf select moletype:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
-{\bf select atomtype:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+{\bf select moletype:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...)$\} $ \par }
+{\bf select atomtype:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...)$\} $ \par }
 \par
 \vspace{3pt}
 The optional parameter "moletype" selects which molecule 
