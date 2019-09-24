@@ -442,6 +442,10 @@ loop is
      enddo }
 \end{quote}
 
+Following modern Fortran, the word "enddo" may
+also be spelled as "end do" with arbitrary blanks
+between the words.
+
 Loops may contain constants or arithmetic expressions for
 $<$start$>$, $<$end$>$, and $<$increment$>$.  $<$increment$>$
 defaults to 1.  The internal type of the variables is real.  The
@@ -532,6 +536,10 @@ following form:
      \ldots commands to be executed \ldots \\
      endif }
 \end{quote}
+
+Following modern Fortran, the words "elseif" and "endif" may
+also be spelled as "else if" and "end if" with arbitrary blanks
+between the words.
 
 The logical expressions are explained in section \ref{log-exp}.
 Enclosed within an if block any valid program command can be
@@ -673,7 +681,13 @@ On the command line of the macro command {\tt @}, optional
 parameters can be supplied.  Within the macro these have to be
 referenced as \$1, \$2 etc.  Upon execution of the macro the formal
 parameters \$n are replaced by the character string of the actual
-values from the command line. Parameter \$0 contains the number of
+parameters as they are typed on the command line. Even if the actual
+parameters on the macro command line consist of expressions or 
+variables, initially the string as typed on the command line is
+pasted into the macro. If necessary, these strings are evaluated
+as the macro executes a specific line.
+
+Parameter \$0 contains the number of
 parameters specified on the command line. As any other command
 parameters, these parameters must be separated by comma.  If a
 formal parameter is referenced inside a macro without a
@@ -690,9 +704,68 @@ given.  An example is given below:
 
 If this macro is called with the following line, {\tt @add
 1,2,i[4]}, the result is stored in variable i[4] which now has the
-integer value 3.
+integer value 3. The commands are initially replaced by the 
+macro parameters to yield:
+\begin{MacVerbatim}
+     # Adds two numbers supplied as command line parameters.
+     # The value is stored in variable defined by parameter three
+     #
+     i[4] = 1 + 2
+     eval i[4]
+\end{MacVerbatim}
+
+If macros are nested, the lines of an inner macro are executed
+at the point where the outer macro encounters the inner macro calling 
+line. The text of the inner macro is effectivley pasted into the main
+macro. Keep in mind that this is just a pasting of macro lines into 
+a single strem of lines. In contrast to programming languages, 
+a macro does not provide its own reserved name space. All variables 
+have the same value throughout the program. 
+\par
+Besides the plain string substitution the \Suite offers a second 
+transfer mechanism, that will transfer the value of an expression or
+variable to the macro instead of the string that is placed onto 
+the macro line. To achieve this, enclose the macro parameter with the
+string value(...).
+\begin{MacVerbatim}
+     variable integer, number
+     number = 2
+     @test.mac number, value(number), i[4]
+\end{MacVerbatim}
+
+The effect of this is that the macro listed previously will 
+execute the line:
+\begin{MacVerbatim}
+     i[4] = number + 2
+     eval i[4]
+\end{MacVerbatim}
+In this simple example, no difference results to the standard transfer
+mode. The main application of the {\tt value(..)} transfer mode is the
+possibility to place the result of an expression (character, numeric)
+at a place, where \Suite does not offer the evaluation of such an
+expression. With a macro call in the form:
+\begin{MacVerbatim}
+     variable integer, number
+     number = 2
+     @subsitute.mac value("base_%4D",number)
+\end{MacVerbatim}
+
+The corresponding parameter \$1 in macro {\tt substitute.mac} 
+\begin{MacVerbatim}
+   # macro substitute.mac
+   echo $1
+   variable integer, $1
+\end{MacVerbatim}
+
+would take the form:
+\begin{MacVerbatim}
+   echo base_0002
+   variable integer, base_0002
+\end{MacVerbatim}
+
 \par
 
+\subsection{Command line options}
 If the program is started with command line parameters,
 e.g. {\tt discus 1.mac 2.mac}, the program will execute the given
 macros in the specified order, in our example first {\tt 1.mac} then

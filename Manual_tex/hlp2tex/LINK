@@ -1,9 +1,10 @@
 #!/bin/sh
 
-ln -sf ../../DiffuseCode/discus/prog/appl_dis.hlp  appl_dis.hlp
-ln -sf ../../DiffuseCode/mixscat/prog/appl_mix.hlp appl_mix.hlp
-ln -sf ../../DiffuseCode/diffev/prog/appl_dif.hlp  appl_dif.hlp
-ln -sf ../../DiffuseCode/suite/prog/appl_suite.hlp  appl_suite.hlp
-ln -sf ../../DiffuseCode/kuplot/prog/appl_kup.hlp  appl_kup.hlp
+ln -sf $HOME/develop/DiffuseCode/discus/prog/appl_dis.hlp  appl_dis.hlp
+ln -sf $HOME/develop/DiffuseCode/mixscat/prog/appl_mix.hlp appl_mix.hlp
+ln -sf $HOME/develop/DiffuseCode/diffev/prog/appl_dif.hlp  appl_dif.hlp
+ln -sf $HOME/develop/DiffuseCode/suite/prog/appl_suite.hlp  appl_suite.hlp
+ln -sf $HOME/develop/DiffuseCode/kuplot/prog/appl_kup.hlp  appl_kup.hlp
+ln -sf $HOME/develop/DiffuseCode/refine/prog/appl_ref.hlp  appl_ref.hlp
 
-ln -sf ../../DiffuseCode/lib_f90/lib_f90.hlp lib_f90.hlp
+ln -sf $HOME/develop/DiffuseCode/lib_f90/lib_f90.hlp lib_f90.hlp

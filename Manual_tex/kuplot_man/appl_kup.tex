@@ -82,6 +82,22 @@ errors        : List of error messages
 \section{News}
 \par
 Here you can find updated info on the latest KUPLOT releases. 
+\subsection*{2019\_April}
+\par
+Added "latex" option to ==$> $ 'save' command 
+\par
+Extended 'merge' command to 2D data. 
+\par
+Corrected fit weighting scheme "DAT" to 1/sig$**$2 
+\subsection*{2019\_February}
+\par
+Added a 'blank' separator to 'load csv, separator:blank' 
+\par
+Added a new menu "2dm" that allows to concatenate 
+several 2D data sets into a single 3D data set 
+\subsection*{2018\_Oct}
+\par
+Added the trend of the best value to the 'kpara' plot 
 \subsection*{2018\_June}
 \par
 Revised the reaction to a CTRL-C 
@@ -172,6 +188,152 @@ the technique to jump to the desired folder has changed slightly.
 See the help entry on "cd" in the general "Command\_lang" section 
 for further information. The process is described in the 
 package manual as well. 
+\section{2dm}
+{\bf 2dm \par }
+\par
+\vspace{3pt}
+Branches into the '2dm' menu. 
+This menu allos you to concatenate several 2D i.e. xy data 
+sets into a single 3D data set. 
+\par
+Valid commands at this level are: 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all numerical values back to system start. 
+\subsection*{run}
+{\bf run \par }
+\par
+\vspace{3pt}
+Performs the actual calculation. The map will be 
+stored in the next free data set number. 
+\subsection*{back}
+{\bf back "off" \par }
+{\bf back "csv",$ <$filename$> $ \par }
+{\bf         ,skip:$ <$nskip$> $, \par }
+{\bf         colx:$ <$icolx$> $, coly:$ <$icoly$> $, coldx:$ <$icoldx$> $, coldy:$ <$icoldy$> $, \par }
+{\bf         separator:$ <$name$> $ \par }
+{\bf         scale:$ <$factor$> $ \par }
+\par
+\vspace{3pt}
+Defines the name and type of a background file. 
+The y-values will be subtracted from the corresponding 
+y-values of the files read with 'load'. 
+If the command is used with the parameter "off", no 
+background file will be read. 
+\par
+Optionally a scale factor for the background can be 
+defined with 
+scale:$ <$factor$> $ 
+\par
+The remaining optional parameters are identical to those 
+of the == 'load csv' command at the main menu. 
+\subsection*{load}
+{\bf load "csv","filename\_format", LOOP \par }
+{\bf         ,skip:$ <$nskip$> $, \par }
+{\bf         colx:$ <$icolx$> $, coly:$ <$icoly$> $, coldx:$ <$icoldx$> $, coldy:$ <$icoldy$> $, \par }
+{\bf         separator:$ <$name$> $ \par }
+\par
+\vspace{3pt}
+Defines the name and type of the 2D input files. 
+The filename must be specified within double quotation marks 
+and contain a format descriptor that will be replaced by the 
+formal "LOOP" loop index. The loop index must be called "LOOP". 
+\par
+A second, outer loop can be defined as well, which must use 
+the counter variable "SLOW". 
+\par
+The remaining optional parameters are identical to those 
+of the == 'load csv' command at the main menu. 
+\subsection*{loop}
+{\bf loop "counter:"$ \{$"LOOP"$| $"SLOW"$\} $, \par }
+{\bf      "start:"$ <$start\_number$> $, "end:"$ <$end\_number$> $ \par }
+{\bf      ,"step:"$ <$step\_number$> $ \par }
+{\bf      ,"miss:"$ \{$"error"$| $"ignore"$| $"blank"$\} $ \par }
+\par
+\vspace{3pt}
+Defines the range of input file numbers that will be used 
+for the "LOOP"  or "SLOW" value on the ==$> $ 'load' command. 
+\par
+The optional parameters "start:", "end:" and "step:" 
+default to a value of 1. 
+Allowed values for the numerical values are valid expressions. 
+\par
+The optional parameter "miss:" with default "error" 
+sets the rules for missing or corrupt input files. 
+With the default value "error", any missing or corrupt 
+input file will interrupt the ==$> $ 'run' command and 
+no map will be produced. 
+With "ignore" the erroneous file will simply be ignored 
+and the map will be shorter by one (ore more) lines. 
+With "blank" the corresponding line in the map will be 
+set to a value of zero. 
+The status of "miss" is a single status. If both loop 
+counters "LOOP" and "SLOW" are used, use a common and 
+identical status to describe the handling of missing 
+files. 
+\subsection*{xrange}
+{\bf xrange "xmin:"$ \{$"xmin"$| $$ <$x\_min$> $$\} $ , "xmax:"$ \{$"xmax"$| $$ <$x\_max$> $$\} $ \par }
+\par
+\vspace{3pt}
+Defines the x-range of the input files that is to be 
+written into the 3D map. 
+Both parameters default to "xmin" respectively "xmax" 
+the actual minimum and maximum values of the input files. 
+\subsection*{yfunction}
+{\bf yfunction loop:LOOP \par }
+{\bf yfunction loop:inc \par }
+{\bf yfunction loop:$ <$expression$> $ \par }
+\par
+\vspace{3pt}
+Defines the function that will be used to calculate the 
+y-axis values of the map. 
+\par
+Default is "loop:LOOP". The y-axis will be the loop numbers 
+in the range as defined on the ==$> $ 'loop' command. 
+\par
+As these numbers may be unnecessarily large, the option 
+"loop:inc" will increment the y-axis values from 1 in steps 
+of 1. 
+\par
+Finally you might want to calculate the y-values from 
+a user defined function, or use values in a previous 
+data set: 
+loop:1+LOOP-start\_number 
+   If start\_number is a variable that corresponds to the 
+   start value on the ==$> $ 'loop' command, this function 
+   would be identical to the "inc" option. 
+loop:y[1,LOOP] 
+   Would take the y-value of data set 1 point LOOP as 
+   y-value for the map. This might be appropriate if 
+   y[1,*] contains temperature or pressure or time or ... 
+   values for the 2D data sets. 
+\subsection*{example}
+\par
+Loop with a single counter 
+\begin{MacVerbatim}
+reset
+back off
+back csv, empty_measurement.xy, scale:1.0, skip:0
+load csv, "DATA/my_data.%4D", LOOP, colx:1, coly:1, skip:0
+loop counter:LOOP, start:1, end:201, step:2, miss:blank
+yfunc loop:LOOP
+xrange xmin:xmin, xmax:5.00
+run
+\end{MacVerbatim}
+Loop with a two counters, SLOW and LOOP 
+\begin{MacVerbatim}
+reset
+back off
+back csv, empty_measurement.xy, scale:1.0, skip:0
+load csv, "DATA/my_data_%5D.%4D", SLOW, LOOP, colx:1, coly:1, skip:0
+loop counter:SLOW, start:100, end:101, step:1, miss:ignore
+loop counter:LOOP, start:1, end:201, step:2, miss:ignore
+yfunc loop:LOOP
+xrange xmin:xmin, xmax:5.00
+run
+\end{MacVerbatim}
 \section{achx/y/z}
 {\bf achx $ \{$$ <$string$> $ $| $"OFF"$\} $ [, $ \{$"lin" $| $ "log"$\} $] \par }
 {\bf achy $ \{$$ <$string$> $ $| $"OFF"$\} $ [, $ \{$"lin" $| $ "log"$\} $] \par }
@@ -874,7 +1036,7 @@ valid values for $ <$w$> $ are:
   "one"  : w(y) = 1.0              "sqa"  : w(y) = y**2
   "sqrt" : w(y) = SQRT(y)          "inv"  : w(y) = 1/y
   "log"  : w(y) = LOG(y)           "isq"  : w(y) = 1/SQRT(y)
-  "lin"  : w(y) = y                "dat"  : w(y) = 1/DY (error data set)
+  "lin"  : w(y) = y                "dat"  : w(y) = 1/DY**2 (error data set)
   "bck"  : w(y) = exp(-K*(y-ycalc))
 \end{MacVerbatim}
 The second parameter is only needed for the weighting scheme "bck". 
@@ -1425,8 +1587,21 @@ The first form with a single parameter name or number will plot the
 development of this parameter versus the refinement generations. 
 The parameter name may include "Rvalue" or 0 to plot the development 
 of the R-value. 
+The plot displays the upper and lower most parameter value in red, 
+the average parameter in blue with error bars and the best parameter 
+in black. 
 \par
-The second form serves to plot the distribution of two parameters 
+Examples 
+kpara Rvalue    ! Show the R-value versus generations 
+kpara P\_one     ! Same for a parameter named "P\_one" 
+\section{kpar\_par}
+{\bf kpar\_par $ \{$ $ \{$"last"$| $ "-1"$\} $ $| $ $ <$generation\_no$> $ $\} $ , \par }
+{\bf       $ \{$$ <$par\_name$> $ $| $ $ <$par\_number$> $$\} $ , $ \{$$ <$par\_name$> $ $| $ $ <$par\_number$> $$\} $ \par }
+\vspace{3pt}
+This command serves to create a standardized plot of the parameters 
+refined via DIFFEV. 
+\par
+The command serves to plot the distribution of two parameters 
 in a given generation. If the first command parameter is either 
 "last" or "-1" the last generation is used. This can be helpful to 
 repeatedly plot the parameters during a refinement. 
@@ -1437,11 +1612,9 @@ Either of the two parameter names/numbers may be "Rvalue" or "0"
 to show the correlation between parameter value and the R-value. 
 \par
 Examples 
-kpara Rvalue    ! Show the R-value versus generations 
-kpara P\_one     ! Same for a parameter named "P\_one" 
-kpara last, P\_one, Rvalue  ! Show R-values versus Parameter value 
+kpar\_par last, P\_one, Rvalue  ! Show R-values versus Parameter value 
                            ! in the last generation 
-kpara last, P\_one, P\_two   ! Dislay (possible) correlation 
+kpar\_par last, P\_one, P\_two   ! Dislay (possible) correlation 
                            ! between these two parameters 
 \section{lart}
 {\bf lart $ <$ik$> $,$ <$p$> $ \par }
@@ -1518,8 +1691,8 @@ to the size set with -$> $ 'msiz'. The first atom is plotted with the
 full size set with 'msiz' whereas the second atom is only 75\% of 
 that size. 
 \subsection*{csv}
-load xy,$ <$file$> $ 
-load xy,$ <$file$> $, skip:$ <$nskip$> $, 
+load csv,$ <$file$> $ 
+load csv,$ <$file$> $, skip:$ <$nskip$> $, 
         colx:$ <$icolx$> $, coly:$ <$icoly$> $, coldx:$ <$icoldx$> $, coldy:$ <$icoldy$> $, 
         separator:$ <$name$> $ 
 \par
@@ -1538,6 +1711,7 @@ separator: Character that separates the columns, possible values are:
            ":" or "colon" 
            "comma" 
            "tab" 
+           "space" Will take as separator a string of blank(s) 
 If the error columns are omitted or set to zero no error data are read 
 \subsection*{de}
 {\bf load de,$ <$file$> $,$ <$gridx$> $,$ <$gridy$> $ \par }
@@ -1878,9 +2052,13 @@ is given, the values are simply added, otherwise they are
 normalized by the number of contributing data points. The new 
 data set is assigned the next free data set number. 
 \par
-The extend of the new data set is defined by the maximum x-values 
-of the data sets to be merged. The grid size is taken as the 
-difference of the first two points of the first specified data set. 
+For 1D data sets, the extend of the new data set is defined by 
+the maximum x-values of the data sets to be merged. The grid 
+size is taken as the (xmax-xmin)/(np-1), i.e. the average step 
+size of the first specified data set. 
+\par
+For 2D dat sets the grid is equivalently determined by the 
+average grid size of the first data set. 
 \section{mouse}
 {\bf mouse \par }
 {\bf mouse $ \{$"point" $| $ "line" $| $ "rect" $| $ "xrange" $| $ "yrange" $\} $ \par }
@@ -2126,13 +2304,14 @@ annotations.
 {\bf save $ <$dev$> $, [$ <$filename$> $] \par }
 \par
 \vspace{3pt}
-$ <$dev$> $ : "ps", "png", "pic", "pdf" 
+$ <$dev$> $ : "ps", "png", "pic", "pdf", "la" 
 This command allows to save the current view graph. The output 
 device type $ <$dev$> $ can be given as first parameter. The 
 choices for $ <$dev$> $ are: 
 "ps" for POSTSCRIPT 
 "pic" or "png" for a PNG 
 "pdf" for a PDF file format 
+"latex" Latex picture environment 
 \par
 If "pdf" is chosen, a postscript file and a pdf file will be generated. 
 \par

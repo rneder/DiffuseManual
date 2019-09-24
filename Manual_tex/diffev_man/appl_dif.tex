@@ -1,5 +1,31 @@
 \chapter{DIFFEV commands}
 \section{News}
+\subsection*{2019\_Jan}
+\par
+Improved the writing of the diffev\_best.mac macro. 
+The state of "compute:" is evaluated and multiple "run\_mpi" lines 
+are taken into account. 
+\subsection*{2018\_Nov}
+\par
+Added a new command 'restart $ <$user\_generation$> $' This command compares 
+the user value to the current value in GENERATION. If the user 
+value is smaller, the Logfiles, Summary and Last files are 
+shortened and the GENERATION file is adapted. This lets you step 
+back to an earlier refinement status. Keep in mind that the later 
+cycles are irrevocably lost. If in doubt make a backup first. 
+\par
+reinstated the ==$> $ 'read' command 
+\par
+Added further options to the ==$> $ 'release' command 
+\subsection*{2018\_Oct}
+\par
+Added a ==$> $ 'release' command that is intended to act 
+complementary to a previopus ==$> $ 'fix' command. 
+\subsection*{2018\_July}
+\par
+A small modification to the "diffev\_best" macro. 
+The value of REF\_NINDIV is written and at the end a 
+"set error, continue' instruction has been added. 
 \subsection*{2018\_June}
 \par
 Revised the reaction to a CTRL-C 
@@ -175,6 +201,7 @@ logfile     ! Defines the file name for the parameters for each generation
 newparam    ! Defines Ra new parameter or new values for a parameter
 pop_name    ! Defines names for the individual parameters
 refine      ! Defines which parameters are refined/fixed
+release     ! Initialize a parameter that had been fixed
 restrial    ! Defines the file name for the current R-values
 run_mpi     ! Run the cost function program in parallel through MPI
 selection   ! Defines how children/parents survive into next generation
@@ -764,6 +791,9 @@ $ <$value$> $ for all members of the population. The ==$> $ refine
 flag is turned of for this parameter. 
 If the second parameter is "best", the parameter is set to the 
 corresponding value of the current member with the best R-value. 
+\par
+As a side effect, the values of pop\_xmin, pop\_xmax, 
+pop\_smin, pop\_smax are fixed to this new value as well. 
 \section{functions}
 \par
 The following DISCUS specific functions exist. For a listing 
@@ -906,6 +936,25 @@ The command summarizes the individual commands
 \par
 \vspace{3pt}
 This command has been removed. 
+Activated again in version 5.29.0 
+\par
+The read command instructs DIFFEV to read the GENERATION file 
+and to determine the population from the Parameter files. 
+\par
+This command is only needed if you want to add a new parameter 
+to a refinement that you want to continue and the ==$> $ 'newparam' 
+command is the first command in DIFFEV after starting the 
+program prior to the ==$> $ 'run\_mpi'command. 
+\par
+Example: 
+read 
+newpara  P\_new, 0.0, 10.0,  10.0, 9.0 
+run\_mpi discus, dis.diffev.mac, repeat:5, compute:parallel 
+compare 
+\par
+The 'read' command is not necessary if now new parameters 
+are defined. In this case, the 'run\_mpi' command will 
+automatically determine the refinement state from 'GENERATION' 
 \section{refine}
 {\bf refine $ \{$"all"$| $"none"$| $$ <$number$> $ [,$ <$number$> $...]$\} $ \par }
 {\bf refine $ \{$"all"$| $"none"$| $$ <$par\_name$> $ [,$ <$par\_name$> $...]$\} $ \par }
@@ -918,6 +967,63 @@ parameter is not refined.
 Currently you can only specify up to 20 variable numbers on 
 one "refine" command line. If you need to specify the behaviour 
 for more than 20 variables, please use several "refine" commands. 
+\section{release}
+{\bf release $ \{$$ <$par\_name$> $$| $ $ <$number$> $$\} $ , range:$ <$sigma$> $ \par }
+{\bf   [value:$ <$setpoint$> $] \par }
+{\bf   [min:$ <$pop\_xmin$> $] \par }
+{\bf   [max:$ <$pop\_xmax$> $] \par }
+{\bf   [dismiss:$ <$number$> $] \par }
+{\bf   [dismiss:"all"] \par }
+{\bf   [dismiss:"best"] \par }
+{\bf   [dismiss:"none"] \par }
+\par
+\vspace{3pt}
+This command will initialize a parameter named $ <$par\_name$> $ 
+to a range around the current best value. Its intent is 
+to act complementary to a ==$> $ 'fix' command. It works 
+in a similar fashion as the ==$> $ 'init' command, but the user 
+does not have to ensure that the ranges of 
+pop\_xmin to pop\_xmax and pop\_smin to pop\_smax are non-zero. 
+\par
+The parameter will be refined, i.e. the 'release' command 
+implies a ==$> $ refine $ <$par\_name$> $ command. 
+\par
+If the optional parameter 'value:$ <$setpoint$> $' is present, 
+it defines the setpoint around which the parameter values 
+will be initialized. If the optional parameter is omitted, 
+the setpoint defaults to the value of the current best 
+population member. 
+The initalization range is set to the setpoint +- range. 
+\par
+The absolute limits, ==$> $ 'pop\_xmin', 'pop\_xmax' are set 
+to a range of +- 3* $ <$range$> $ around the $ <$setpoint$> $. 
+The original user provided values of 
+pop\_min or pop\_max are repleced by the new values. 
+\par
+If you need different ranges for pop\_xmin and pop\_xmax, 
+or if the new limits might be 
+outside a physical limit you need to set the proper 
+limits explicitely with the optional parameters 
+"min" and "max": 
+   min:pop\_xmin 
+   max:pop\_xmax 
+\par
+If all the children will produce R-values that are worse 
+than the parents, DIFFEV will discard these children and 
+create the next generation based on all parents. As all 
+parents reflect the state prior to the release, they all 
+correspond to identical values of the parameter that you 
+wanted to release. In effect, the release is lost. 
+To prevent this, the 'dismiss:' option will set the R-value 
+of a user specified number of parents to a very large 
+value. This ensures that the corresponding children will 
+certainly survive into the next generation. 
+The values that the 'dismiss:' parameter may take are: 
+$ <$number$> $  : A number from 0 to the population size pop\_n[1] 
+            The $ <$number$> $ worst parents are dismissed. 
+"all"     : All members are dismissed. 
+"best"    : All but the best member are dismissed. 
+"none"    : No member is dismissed. Same as $ <$number$> $=0. 
 \section{reset}
 {\bf reset \par }
 \par
@@ -931,6 +1037,17 @@ Use this command if you want to combine several refinements
 for different experimental data to be executed one after the other. 
 Without the reset, the old parameters would persist and may 
 interfere with your new parameters. 
+\section{restart}
+\begin{MacVerbatim}
+restart <user_generation>
+\end{MacVerbatim}
+If you set $ <$user\_generation$> $ to a value that is less than 
+the current value in GENERATION, 
+the Logfiles, Summary and Last files are 
+shortened and the GENERATION file is adapted. 
+This lets you step back to an earlier refinement status. 
+Keep in mind that the later cycles are irrevocably lost. 
+If in doubt make a backup first. 
 \section{summary}
 {\bf summary $ <$filename$> $ \par }
 \par

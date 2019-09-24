@@ -613,10 +613,22 @@ nanoparticle decoration:
       the the surface as well.
 \item {\tt bridge} The molecule is placed with two bonds onto the
       surface, midway between the two surface atoms. Both bonds 
-      have the same length and an equilateral triangle results. 
+      may have different lengths and a triangle results. The 
+      two atoms within the surface and one atom within the ligand
+      molecule form this triangle.
       The plane of this triangle is placed parallel to the local 
       surface normal.
       The remainder of the molecule is 
+      aligned as in the {\tt normal} mode.
+\item {\tt chelate} This is essentially the {\tt bridge} mode in reverse.
+      The molecule is placed with two bonds onto the surface. 
+      The two bonds connet a single surface atom to two different 
+      ligand atoms. Both bonds may have different lengths and a
+      triangle results. The two atoms within the ligand and the
+      single surface atom form this triangle.
+      The plane of this triangle is placed parallel to the local
+      surface normal.
+      The remainder of the molecule is
       aligned as in the {\tt normal} mode.
 \item {\tt double} The molecule is placed with two bonds onto the
       surface. In contrast to the {\tt bridge} mode, two separate

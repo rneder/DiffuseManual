@@ -1,0 +1,49 @@
+#@ HEADER
+#@ NAME         refine_best.mac
+#@ 
+#@ KEYWORD      refine, best fit
+#@ 
+#@ DESCRIPTION  This macro contains the parameters for the current best
+#@ DESCRIPTION  fit status.
+#@ DESCRIPTION  
+#@
+#@ PARAMETER    $0, 0
+#@
+#@ USAGE        @refine_best.mac
+#@
+#@ END
+#
+kuplot
+rese
+load xy, DATA/quadratic.noise
+exit
+#
+refine
+#
+variable real, Rvalue
+variable integer, F_DATA
+variable real, F_XMIN
+variable real, F_XMAX
+variable real, F_YMIN
+variable real, F_YMAX
+variable real, F_XSTP
+variable real, F_YSTP
+variable real, P_const         
+variable real, P_lin           
+variable real, P_quad          
+variable real, P_trip          
+Rvalue           =      0.25015014     
+F_DATA           =               1
+F_XMAX           =       4.0000000     
+F_YMIN           =       1.0000000     
+F_YMAX           =       1.0000000     
+F_XSTP           =      0.99999998E-002
+F_YSTP           =       0.0000000     
+P_const          =      -3.9262285     
+P_lin            =       2.1623571     
+P_quad           =      0.51280856     
+P_trip           =      -1.1168548     
+#
+@triple.mac
+#
+exit

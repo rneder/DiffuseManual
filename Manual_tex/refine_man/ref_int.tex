@@ -1,0 +1,136 @@
+%------------------------------------------------------------------------
+% Chapter:  Introduction
+%------------------------------------------------------------------------
+
+\chapter{Introduction \label{intro}}
+\section{What is REFINE ?}
+
+\Refine is the direct Least Squares Refinement section of the
+\Suite program. Its internal engine is a Levenberg-Marquardt
+type least squares fit that can be applied to 1D or 2D data.
+
+See the \Diffev section on a more general 
+generic evolutionary refinement program that implements the
+differential evolutionary algorithm \cite{prstla2005}. Evolutionary or
+genetic refinement algorithms allow the refinement of models, functions,
+or more generally speaking the parameters of a cost function to obtain
+a good solution. 
+
+A least squares based refinement of a function 
+$y = F(p_{0}, p_{1}, ..., p_{n})$ requires the calculation of all
+partial derivatives $\partial y/ \partial p_{i}$, either from an 
+analytical or a numeric solution. 
+The refinement that is described in this section is intended to
+work with disordered crystal structures as build by \Discus. 
+To achieve this \Refine uses a macro that is provided by the user
+to build a crystal and to calculate a diffraction pattern or a
+PDF.  As the details of a calculation are hidden within the 
+source code of the \Discus and \Kuplot section, \Refine
+generally relies on a numerical calculation of the derivative. 
+
+Since this macro could calculate any cost function, 
+\Refine is not limited to the refinement of a particular physical
+problem. 
+
+%------------------------------------------------------------------------
+
+\section{Getting started \label{intro-get}}
+
+After the program {\it DISCUS\_SUITE} is installed properly and the
+environment variables are set, the program can be started by typing
+'discus\_suite' at the operating systems prompt.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Symbol} & {\bf Description} \\
+  \hline\hline
+  "text"     &  Text given in double quotes is to be understood as typed. \\
+  \hline
+  $<$text$>$ &  Text given in angled brackets is to be replaced by an
+                appropriate value, if the corresponding line is used
+                in \diffev. It could, for example be the actual name
+                of a file, or a numerical value. \\
+  \hline
+  {\tt text} &  Text in single quotes exclusively refers to \Refine
+                commands. \\
+  \hline
+  $[$text$]$ &  Text in square brackets describes an optional parameter or
+                command. If omitted, a default value is used, else
+                the complete text given in the square brackets is to
+                be typed. \\
+  \hline
+  \{text $|$ text\} &  Text given in curly brackets is a list of alternative
+                parameters. A vertical line separates two alternative,
+                mutually exclusive parameters. \\
+  \hline
+\end{tabularx}
+\caption{\label{sym-tab}Used symbols}
+\end{table}
+
+The section uses the identical command language to interact with the 
+user as is used throughout the \Suite. The
+command {\tt exit} terminates the section and returns control to the
+top level of the \Suite.All commands of \Refine consist of a command verb,
+optionally followed by one or more parameters.  All parameters must
+be separated from one another by a comma ",".  There is no
+predefined need for any specific sequence of commands.  \Refine     
+is case sensitive, all commands and alphabetic parameters MUST be
+typed in lower case letters.  If \Refine has been compiled
+using the {\tt -DREADLINE} option (see installation files) basic
+line editing and recall of commands is possible.  For more
+information refer to the reference manual or check the online help
+using ({\tt help command input}).  Names of input or output files
+are to be typed as they will be expected by the shell.  If necessary
+include a path to the file.  All commands may be abbreviated to the
+shortest unique possibility. At least a single space is needed
+between the command verb and the first parameter.  No comma is to
+precede the first parameter. A line can be marked as comment by
+inserting a "{\tt \#}" as first character in the line.\par
+
+The symbols used throughout this manual to describe commands,
+command parameters, or explicit text used by the program \Refine     
+are listed in Table \ref{sym-tab}. There are several sources
+of information, first \Refine  has a build in online help, which
+can be accessed by entering the command {\tt help} or if help for a
+particular command $<$cmd$>$ is wanted by {\tt help $<$cmd$>$}. This
+manual describes background and principle functions of \Refine
+and should give some insight in the ways to use this program. \par
+
+\Refine is distributed as part of the diffuse scattering
+simulation software \discus.  However, \Refine can be used
+as general refinement program separate from the main purpose of 
+the \Discus program package. 
+
+%------------------------------------------------------------------------
+
+\section{Command language}
+
+%--\begin{table}[!tb]
+%--\centering
+%--\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+%--  \hline
+%--  {\bf Variable} & {\bf Description} \\
+%--  \hline \hline
+%--  pop\_gen[1]    &  Current population number \\
+%--  \hline 
+%--  diff\_cr[1]     &  Cross over probability\\
+%--  \hline \hline
+%--  pop\_xmin[i]   &  Minimum allowed value for parameter no. i  \\
+%--  \hline
+%--\end{tabularx}
+%--\caption[\Diffev structural variables]
+%--        {\label{v1-tab}\Diffev variables. Variables marked
+%--         with $^{*}$ are read-only and cannot be altered.}
+%--\end{table}
+
+The program includes a FORTRAN style interpreter that allows the
+user to program complex modifications. A detailed discussion about the 
+command language, which is common to all \Discus package programs can be 
+found in the separate \Discus package reference guide which is included with 
+the package. Currently there are no \Refine specific variables.
+
+%--Table \ref{v1-tab} shows a summary of \Refine specific 
+%--variables. Some of these variables cannot be modified, others like can be 
+%--altered, thus allowing to modify the refinement strategy.

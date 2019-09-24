@@ -279,5 +279,32 @@ related functions which are listed in Tab. \ref{func-cryst} and
 \caption{\label{func-cryst2}Crystallographic functions continued}
 \end{table}
 
+\section{Technical notes \label{tec}}
+
+Most of the time you don not have to worry about the interior 
+technical design of \discus. Most of the time the program will 
+allocate its required memory and will not need user intervention.
+As the command language is designe for utmost flexibility, the 
+program will not know if you still need a piece of the allocated
+memory or not. Again, most of the time this is not an issue, as 
+few section of the program may require huge amount of memory. 
+These sections are the Fourier menus (fourier and powder) and
+particularly the pdf menu. THe latter can be very memory hungry 
+if you deal with meny different atom types and many different 
+molecule types. It has been design to 
+release temporary memory requirements. As such it should not really
+need help with the memory issues. 
+
+The Fourier menus might take up quite a bit of memory, if large
+(3-dimensional) sections of reciprocal space are calculated. 
+\Discus cannot know if you are done with the final Fourier 
+map, After all, you might want to save it in the output menu 
+in different formats. This prevents \Discus from a fully 
+automatic release of the allocated memory. 
+
+To free all memory, you can use the {\tt reset} command within
+any menu or at the \Discus top level. This command will 
+free all allocated arrays and furthermore set all menu 
+settign back to the default values at program start. 
 
 %------------------------------------------------------------------------

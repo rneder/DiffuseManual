@@ -195,7 +195,7 @@ used. \Discus checks the given space group symbol for
 contradictions with the lattice constants and in case of an error
 the unit cell is not read.  A complete list of valid space group
 symbols is part of the online help and can be accessed via 'help
-space' from the \Discus command line.  The next line in the
+space\_group' from the \Discus command line.  The next line in the
 example above gives the lattice constants of $a=b=c=5.14$\AA \ and
 $\alpha=\beta=\gamma=90$ degrees.  Note that \Discus requires
 all six values to be given.  The keyword 'atoms' in the example file
@@ -572,6 +572,72 @@ performance computer cluster.
 
 \section{Exporting structures \label{struc-expo}}
 
+\Discus can export the current crystal structure for two purposes.
+The first purpose serves to use the structure with a different
+program, the second serves to display the crystal structure.
+
+\subsection{Exporting to other programs \label{struc-other}}
+
+Currently \Discus can export the structure for the programs 
+listed in Table  \ref{struc-exp-tab1}. 
+
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Format } & {\bf Description} \\
+  \hline\hline
+  CIF & A minimum content CIF file\\
+      & export cif, <filename>.cif \\
+      & \Discus writes a minimal CIF file. All atoms are transformed
+        into a single unit cell. Along each of the axes the new unit
+        cell dimensions are an integer multiple of the original unit
+        cell. The factors are chosen to the samllest possible integer
+        value. The space group is set to P1\\
+      & Information on molecules is lost.\\
+  \hline
+  RMCPROFILE  & Crystal structure storage format as used by RMCProfile\\
+              & export rmcprofile, <filename>\{.rmc6f\}, version:6\\
+              & export rmcprofile, <filename>\{.rmc6f\}, version:7\\
+              & \Discus writes a RMC6F file. the extension ".rmc6f" is
+                optional and will be appended to the filename automatically
+                if absent. \\
+              & The optional version: parameter allows to switch between 
+                version 6 and 7. For version 7, a Deuterium atom is 
+                writen as "2H". Furthermore, for version 7 the optional
+                string [type\_number] is appended to the atom type. 
+                This type number allows to distinguish atoms of identical
+                chemical nature that are on different sites in the asymmetric unit.\\
+              & The unit cell parameters are multiplied by the smallest
+                integer number to include the whole crystal in one unit 
+                cell.\\
+              & The origin of the \Discus structure is shifted such that all 
+                atom coordinates are positive.\\
+              & Information on molecules is lost.\\
+  \hline
+  SHELX & Write an ins file as used by SHELX programs \\
+        & export shelx, <filename>.ins\\
+        & A regular SHELX instruction file is written. \\
+        & Identical atom types on different sites are written as
+          "O", "O\_\_A", , "O\_\_B", etc. \\
+        & Information on molecules is retained.\\
+  \hline
+  VASP  & Writes a POSCAR file as used by VASP \\
+        & export vasp, <filename>\\
+        & export poscar, <filename>\\
+        & The filename is optional and defaults to "POSCAR".\\
+        & Atoms are written as fractional coordinates of the
+          crystal structure. \\
+        & The origin of the \Discus structure is shifted such that all 
+          atom coordinates are positive.\\
+  \hline
+\end{tabularx}
+\caption{\label{struc-exp-tab1} List of supported export file formats}
+\end{table}
+
+\subsection{Exporting to visualization programs \label{struc-visu}}
+
 The structure, or parts thereof can be exported to file in formats
 suitable for display by corresponding programs.  Currently supported
 programs are \Kuplot which is part of the \Discus package
@@ -624,6 +690,21 @@ option:
     run
   exit
 \end{MacVerbatim}
+
+Several of the CIF file viewer programs will automatically 
+create a copy of an atom whose factional coordinate along 
+any axis is zero. This atom will then be displayed with
+coordinates "one" along the axis. To prevent this behavior,
+\Discus shifts the structure such that the origin is a 
+little "left" of all fractional coordinates. 
+
+As a CIF file contains atoms within a single unit cell
+only,  \Discus transforms the original unit cell to a
+supercell to enclose the full crystal in a single cell.
+To avoid issues with atoms whose fraction coorindates
+are "zero" or "one", the origin is shifted. The new 
+unit cell is set to the smallest integer multiple of
+the original cell plus a margin of one extra unit cells.
 
 %------------------------------------------------------------------------
 

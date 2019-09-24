@@ -14,6 +14,7 @@ connect    ! Enter CONNECTIVITY level
 copy       ! Copy atom or molecule within the crystal
 export     ! Exports the structure in a different format
 decorate   ! Enter  DECORATE level
+demolec    ! Enter demolecularization level
 d2r        ! Transform vector from real to reciprocal space
 define     ! Define DISCUS specific settings
 diff-four  ! Enter DIFFERENCE FOURIER transform level
@@ -37,6 +38,7 @@ r2d        ! Transform vector from reciprocal to real space
 read       ! Read structure or unit cell from file
 remove     ! Remove atom or molecule from crystal
 replace    ! Replace atom(s) or molecule(s) with other type
+reset      ! Reset DISCUS to initial program start conditions
 rmc        ! Enter REVERSE-MONTE-CARLO level
 save       ! Enter SAVE level to save the structure
 seed       ! Set seed for random number generator
@@ -44,6 +46,7 @@ shear      ! Enter the SHEAR level
 show       ! Show various information
 spacegroup ! Sets the space group for the current structure
 stack      ! Enter STACKING FAULT level
+storage    ! Enter STORAGE level
 switch     ! Swap two atoms or molecules within crystal
 symm       ! Enter SYMMETRY transformation level
 transform  ! Enter unit cell TRANSFORMATION  level
@@ -55,13 +58,153 @@ wyckoff    ! Shows symmetry operations of the space group
 \section{News}
 \par
 Here you find a list of recent changes, additions, bug corrections 
-\section{2018\_July}
+\subsection*{2019\_Apr}
+\par
+Added an export option to write the structure in the format for 
+Scatty. 
+\par
+powder 
+   Improved scaling of intensities to be independent of a 
+   profile function. 
+\subsection*{2019\_Feb}
+\par
+Implemented all alternative settings for the orthorhombic space 
+groups. See the entry ==$> $ "Unit\_cell" for details on how to 
+define alternative settings and the entry ==$> $ "space\_groups" for 
+a complete listing of all non-standard settings in the 
+orthorhombic system. 
+\par
+Added a command 'displacement' that returns the displacement 
+vector of an atom from its average position. 
+\par
+Added the surface vector to the 'show atom' command 
+\subsection*{2019\_Jan}
+\par
+Added a demolcularize menu to delete a molecule entry while 
+keeping the atoms 
+\par
+surface 
+   Added a thickness: optional parameter that allows to define 
+   individual thicknesses to hkl planes. 
+\subsection*{2018\_Dec}
+\par
+mmc 
+   The displacement correlation did not really work, fixed. 
+\par
+CIF interpreter 
+   Further improvements to interpret CIF files. For unknown 
+   space groups DISCUS attempts to use the symmetry operations. 
+\subsection*{2018\_Nov}
+\par
+m[$ <$number$> $] 
+   If an atom is removed, its scattering curve is set to zero and 
+   the property 'normal' was cleared. 
+   If you manually change the scattering curve back to a non-zero 
+   value, the properies were not set back to 'normal' Fixed. 
+\par
+save 
+   enforced that "scat", "adp" and "occ" and either all written 
+   or all omitted. 
+\par
+powder 
+   For neutron diffraction, the output of the $ <$f$> $$**$2 contained an 
+   error. The negative scattering length were added as $| $b$| $. 
+   Corrected. 
+\par
+mmc 
+   Added a 'set valid, $ <$invalid\_moves$> $' command, that gives you more 
+   control over a termination criterion. 
+\par
+CIF interpreter 
+   Added more flexibility to recognize non standard monoclinic space 
+   groups that are not listed as full Hermann-Mauguin symbol 
+\subsection*{2018\_Oct}
+\par
+In ==$> $ 2017\_July the following "correction" was done, which proved 
+to be false. 
+The ==$> $ 'therm' command erroneously used too large a displacement. 
+The average $ <$u$**$2$> $ were actually 3 times too large. 
+\par
+As of version 5.27.2 this has been corrected yet again to the 
+original, correct state. A calculation of a powder /single crystal 
+pattern either with "temp use" or a combination "therm and temp ignore" 
+will now produce icdentical results again. 
+\par
+Added a 'show res' to the 'fourier' and 'connectivity' menu. 
+\par
+Improved the memory handling in pdf, makes the program use much 
+less memory. 
+Connected to this, all menus reduce memory usage through the 
+local 'reset' command. The 'reset' command sets all default 
+values within a menu back to program start and initializes all 
+internal arrays to the smallest default size. Most of the time 
+this will not bee needed. The main effect will be within the 
+Fourier menues (fourier, powder, output). The 'pdf' menu is 
+reduced as much as possible automatically. 
+\par
+\subsection*{2018\_Sep}
+\par
+Added new export options: 
+to CIF 
+export cif, $ <$filename$> $ 
+\par
+to RMCprofile version 6 and 7 
+export rmcprofile, $ <$filename$> $ [,version:7] 
+\par
+to VASP, POSCAR file 
+export vasp, POSCAR 
+export poscar, POSCAR 
+\par
+If atom types exist, for which there is no more actual atom in 
+the crystal, the form factors are set to zero. This alloes you 
+to define pseudo atoms for the domain without the need to 
+use the 'fourier/scat' command to set dummy scattering 
+functions. 
+\par
+purge, stack, domain, deco 
+   Turned on stricter behavior for the handling of 
+   periodic boundary conditions and the "chem" quick mode 
+   off. It can be turned back on with after explicit 
+   'set crystal' comand in the chemistry menu. 
+\par
+added a 'reset to the 'chem' menu 
+added a 'reset to the 'domain' menu 
+added a 'reset to the 'fourier', 'inverse', difffour', patterson' menu 
+added a 'reset to the 'insert' menu 
+added a 'reset to the 'pdf' menu 
+added a 'reset to the 'shear' menu 
+added a 'reset to the 'save' menu 
+added a 'reset to the 'stack' menu 
+added a 'reset to the 'symmmetry' menu 
+added a 'reset to the 'transform' menu 
+added a 'reset to the 'waves' menu 
+added to the global 'reset: 
+    most arrays, chem, deco, domain, fourier routines, insert, mmc, 
+    pdf, property, rmc, save, shear, symmetry, transform, waves 
+\par
+\subsection*{2018\_Aug}
+\par
+Added a 'reset' command to DISCUS. (Work in progress) 
+Added a ==$> $ 'storage' menu. 
+   This menu allos to display and manage the internally stored 
+   crystal structure files. 
+\subsection*{2018\_July}
 \par
 Added the possibility to define property like features 
 that are based on the connectivities ==$> $ property 
 \par
 Fixed a bug that did not allow a read free for origin choice 2 
 Added an 'exit' command to the read menu. 
+\par
+Added a 'reset' command to 'plot' 
+\par
+connectivity 
+   Modified the behavior for central atoms given by name 
+   instead of type number. Connectivity will perform the 
+   requested action for all atom types of this name. 
+   add Si, O, 1.2, 2.0, silicon 
+   Creates a connectivity for all Silicon atom types. 
+\par
 \subsection*{2018\_June}
 \par
 Added the possibility for interactive plots. 
@@ -560,9 +703,48 @@ Previously, the parameter "file" interpreted the atom type only
 \subsubsection{boundary}
 \par
 A cylindrical boundary has been added. 
+\section{Menues}
+\par
+The DISCUS section is structured into several menues that 
+are designed to modify the structure, to calculate the 
+diffraction pattern etc. 
+These menues are: 
+\par
+Read/save a structure 
+read       ! Read structure or unit cell from file or internal storage 
+save       ! Save the structure to file or internal storage 
+plot       ! Write the structure in a format for plotting 
+\par
+Modify a structure 
+decorate   ! Decorate the surface with ligands 
+demolec    ! De-molecularize a molecule 
+domain     ! Place domains into host structure 
+insert     ! Insert objects into the crystal 
+mmc        ! MONTE-CARLO simulations 
+rmc        ! REVERSE-MONTE-CARLO simulations 
+stack      ! Build a crystal with stacking faults 
+symm       ! Perform a generalized symmetry operation 
+shear      ! Perform a general shear/affine operation 
+waves      ! Apply modulation wave modifications 
+transform  ! Decribe the structure with a different unit cell 
+\par
+Information 
+chem       ! Analyze a structure 
+connect    ! Build a connectivity table 
+property   ! Set / clear reaction to properties 
+storage    ! List / manipulate internally stored structures 
+\par
+Fourier calculations 
+powder     ! Perform powder diffraction calculations 
+fourier    ! Perform single crystal diffraction calculations 
+rmc        ! REVERSE-MONTE-CARLO simulations 
+inverse    ! perform an inverse Fourier transformation 
+diff-four  ! Calculate a difference Fourier map 
+patterson  ! Calculate the Patterson function 
+output     ! Write Fourier results to disk 
+\par
+pdf        ! Calculate a Pair distribution function 
 \section{Unit\_cell}
-{\bf !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \par }
-{\bf !!          NEW FORMAT OF DATA FILE, STARTING IN DISCUS-3.10          !! \par }
 {\bf !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! \par }
 \par
 \vspace{3pt}
@@ -605,6 +787,8 @@ The title can be any character string up to 80 characters long
 \begin{MacVerbatim}
 spcgr {<symbol> | no. } [, "2"]
 \end{MacVerbatim}
+[, setting:$ \{$'abc'$| $ 'bac' $| $ 'cab' $| $ 'cba' $| $ 'bca' $| $ 'acb'$\} $ 
+\par
 The space group symbol is used to generate all atoms within the unit 
 cell. The symbols used should be the Hermann-Mauguin symbols used in 
 Int. Tables Vol.A. A center of inversion should be given as "-" sign 
@@ -612,7 +796,7 @@ immediately preceding the axis. Lattice types need to be given as
 capital characters, mirror planes as small characters. 
 \par
 Monoclinic cell choices 2,3 or unique c-axis will be assumed if the 
-corresponding non standard Hermann-Mauguin symbol is used. 
+corresponding non standard full Hermann-Mauguin symbol is used. 
 \par
 Origin choice 2 is indicated by setting the optional second parameter 
 to "2". 
@@ -622,6 +806,23 @@ and hexagonal settings.
 \par
 The space group symbol is checked for contradictions with the lattice 
 constants. In case of error, the unit cell is not read. 
+\par
+The optional "setting:" parameter can be used in conjunction with an 
+orthorhombic space group to describe a different setting. As an example 
+you can use the space group \# 28 Pma2 in the setting bac to get the 
+non-standard space group Pbm2 with: 
+spcgr Pma2, setting:bac 
+Equivalently, all non-standard orthorhombic settings can be used 
+with the corresponding non-standard space group name. In this case 
+omit the "setting:" parameter: 
+spcgr Pbm2 
+\par
+In both cases, the atom coordinates x,y,z must be provided in the 
+sequence for the non-standard setting. 
+\par
+See the DISCUS manual and the International Tables for 
+Crystallography Volume A for a complete listing of all 
+orthorhombic settings. 
 \subsection*{cell}
 \begin{MacVerbatim}
 cell  <a>,  <b>,  <c>, <alpha>,  <beta>,  <gamma>
@@ -1442,8 +1643,11 @@ for possible further analysis or plotting.
 Displays information about elements in the model crystal like 
 relative abundances of the elements. 'void' stands for a vacancy. 
 The results (range 0..1 rather than \%) are stored in the variable 
-res[$ <$i$> $], with $ <$i$> $ the number of the atomtyp. The optional parameter 
-"on" or "off" controls if screen output is produced. 
+res[$ <$i$> $+1], with $ <$i$> $ the number of the atomtyp. 
+Entry res[0] give the number of atom types. 
+Entry res[1] gives the relative number of VOIDS. 
+The optional parameter "on" or "off" controls if screen 
+output is produced. 
 \subsection*{env}
 {\bf env "atom",$ <$ia$> $,$ <$radius$> $ \par }
 {\bf env "site",$ <$nx$> $,$ <$ny$> $,$ <$nz$> $,$ <$site$> $,$ <$radius$> $ \par }
@@ -1735,11 +1939,20 @@ Switches to the connectivity menu.
 At this menu all parameters related to interatomic distances 
 and the connectivity list are defined. 
 \par
+Modification Note: As of version 5.24 DISCUS will perform the 
+   requested action (add, set, remove) for all central atom 
+   types with this name if the central atom is specified by 
+   name instead of type number. 
+   add Si, O, 1.2, 2.0, silicon 
+   Creates a connectivity for all Silicon atom types. 
+   add  3, O, 1.2, 2.0, silicon 
+   Creates a connectivity for atom type 3 only. 
+\par
 \subsection*{Commands}
 \begin{MacVerbatim}
 add     ! Adds a new definition
 create  ! Creates the actual connectivity list for each atom
-delete  ! Deletes the connectivity list
+delete  ! Deletes the connectivity list around atoms
 recreate  ! Recreates the actual connectivity list for each atom
 remove  ! Removes an individual connectivity definition
 reset   ! Resets to program start, removes all def.s and the
@@ -1800,7 +2013,9 @@ atom types! Use the atom type number instead of the atom name
 for a clear distinction. 
 Alternatively read the structure with the "lcell" command 
 \subsection*{create}
+{\bf create $ \{$$ <$central\_atom\_type$> $, $ \{$$ <$def.no.$> $$| $ $ <$def\_name$> $$\} $$\} $ \par }
 \par
+\vspace{3pt}
 Creates the actual connectivity list. 
 The program performs a loop over all atoms and searches for neighbors 
 that are valid under any of the connectivity definitions. The valid 
@@ -1810,9 +2025,28 @@ Warning, keep in mind that ==$> $ 'property' settings will affect the
 search for neighbors as well. 
 \par
 Any old connectivity list is replaced by a new 'create' command. 
-\subsection*{delete}
 \par
-Deletes the current connectivity list. 
+If the second command form with parameters is chosen, only the 
+connectivity for the specified atom will be created. 
+This is helpful if: 
+  you create (several) connectivities first, 
+  then perform a modifiucation of the crystal that may affect the 
+  original connectivities 
+  Finally need to create a new connectivity but do not want to 
+  change the original connectivities. 
+This command for  is identical to a 
+  recreate $ <$central\_atom\_type$> $, $ \{$$ <$def.no.$> $$| $ $ <$def\_name$> $$\} $ 
+\subsection*{delete}
+{\bf delete \par }
+{\bf delete $ <$central\_atom\_type$> $, $ <$def\_name$> $ \par }
+\par
+\vspace{3pt}
+Deletes the current connectivity list for all atom types. 
+\par
+The second form deletes the named connectivity list for the 
+specified atom types. The remaining connectivities persist 
+for the atom type. All connectivities for all other 
+atom types remain as well. 
 \subsection*{recreate}
 {\bf recreate $ <$central\_atom\_type$> $, $ \{$$ <$def.no.$> $$| $ $ <$def\_name$> $$\} $ \par }
 \par
@@ -1821,6 +2055,9 @@ Recreates the connectivity list for the specified atom type and
 connectivity definition. 
 All neighbors to a central atom of this type are redetermined. 
 The previous entry in the connectivity list is completely lost. 
+\par
+If the connectivity does not create, it is created without 
+any error message. 
 \par
 All other connectivities are not affected by this command. 
 \subsection*{remove}
@@ -1893,10 +2130,33 @@ absolute positions $ <$x$> $,$ <$y$> $,$ <$z$> $ in crystal space, if $ <$s$> $ 
 relative motion copies the atom number $ <$n$> $ to the sum of present 
 position and vector $ <$x$> $,$ <$y$> $,$ <$z$> $. 
 \section{export}
+{\bf export "cif",$ <$file$ \{$".cif"]$> $ \par }
 {\bf export "shelx",$ <$file$ \{$".ins"]$> $ \par }
+{\bf export "rmcprofile",$ <$file$ \{$".rmc6f"]$> $  [version:$ \{$"6"$| $"7"$\} $] \par }
+{\bf export "vasp",$ <$file]$> $ \par }
+{\bf export "poscar",$ <$file]$> $ \par }
+{\bf export "scatty",$ <$file]$> $ \par }
 \par
 \vspace{3pt}
+cif 
+Exports the atoms of the current structure as a minimal CIF 
+file. 
+\par
+shelx 
 Exports the atoms of the current structure as a SHELXL instruction file 
+\par
+rmcprofile 
+Exports the atoms of the current structure as a RMCprofile 
+version 6 or 7 input file 
+\par
+vasp 
+poscar 
+Exports the atoms of the current structure as a VASP "POSCAR" file. 
+\par
+scatty 
+Exports the atoms of the current structure as a SCATTY file 
+Only the "*\_atoms\_01.txt" file is written. The user has to edit his 
+"scatty\_config.txt" file individually. 
 \section{d2r}
 {\bf d2r $ <$u$> $,$ <$v$> $,$ <$w$> $ \par }
 \par
@@ -1930,6 +2190,11 @@ to being used. As the ligand molecules need to be rotated anyway to fit the
 local surface, the orientational relationship between the ligand metric and 
 the host metric is not relevant. 
 \par
+If deco successfully placed molecules onto the surface, the crystal 
+is no longer periodic. Thus periodic boundary conditions and 
+the "chem" quick mode are off. They can be turned back on after 
+explicit 'set crystal' comand in the chemistry menu. 
+\par
 \subsection*{Commands}
 \begin{MacVerbatim}
 add     ! Add a new definition
@@ -1948,27 +2213,37 @@ Valid types are:
            A single ligand atom is bonded to the surface atoms. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly one 'set bond...' command is required. 
 "chelate"  The ligand molecule is placed on top of a single surface atom. 
            A pair of ligand atoms is bonded to the identical surface atom. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly two 'set bond...' commands are required. 
 "bridge"   The ligand molecule is placed bridging between two different 
            surface atoms. 
            A single ligand atom is bonded to two (neighboring) surface atoms. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly two 'set bond...' commands are required. 
 "double"   The ligand molecule is bonded with individual bonds to two surface 
            atoms. Each bond connects a single surface atom to a single 
            ligand atom. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly two 'set bond...' commands are required. 
 "multi"    The ligand molecule is bonded with several bonds to a group of 
            surface atoms. 
-           A first bond connects a ligand atom to a single surface atom. 
-           A second bond connects (another) ligand atom to 
+           A first bond connects (another) ligand atom to 
            a (group of) surface atom(s). 
+           A second bond connects a ligand atom to a single surface atom. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly two 'set bond...' commands are required. 
 "acceptor" Place a ligand molecule with a hydrogen bond type. 
            The surface atom acts as acceptor atom. The surface atom should 
            be a reasonable acceptor atom like O, N... and the ligand atom 
@@ -1979,6 +2254,8 @@ Valid types are:
            angle. 
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
+\par
+           Exactly one 'set bond...' command is required. 
 "donor"    Place a ligand molecule with a hydrogen bond type. 
            The surface atom acts as donor atom. The surface atom should 
            be a reasonable donor atom like H. and the ligand atom 
@@ -1990,10 +2267,14 @@ Valid types are:
            The orientation of the molecule is defined by its axis which is 
            placed normal to the local surface. 
 \par
+           Exactly one 'set bond...' command is required. 
+\par
 \subsection*{reset}
 {\bf reset \par }
+\par
 \vspace{3pt}
-Reset and clear all definitions. 
+Reset all decoration definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \vspace{3pt}
@@ -2003,7 +2284,16 @@ Starts the decoration.
 {\bf set $ <$name$> $, "ligand", $ <$file$> $, $ <$density$> $ \par }
 {\bf set $ <$name$> $, "bond", $ <$atom\_type$> $ [, $ <$atom\_type$> $,...], $ <$ligand atom no$> $, \par }
 {\bf                                                      $ <$distance$> $ \par }
+{\bf                                  [, "angle:"$ <$b\_angle$> $] \par }
+{\bf                                  [, "anchor:"$ <$n\_anchors$> $] \par }
 {\bf set $ <$name$> $, "axis", $ <$ligand atom no 1 $> $, $ <$ligand atom no 2$> $ \par }
+{\bf  \par }
+{\bf set $ <$name$> $, "tilt", "angle", $ <$value$> $ \par }
+{\bf set $ <$name$> $, "tilt", "plane", "auto" \par }
+{\bf set $ <$name$> $, "tilt", "plane", $ <$h$> $, $ <$k$> $, $ <$l$> $ \par }
+{\bf set $ <$name$> $, "tilt", "atoms", "auto" \par }
+{\bf set $ <$name$> $, "tilt", "atoms", $ <$n1$> $, $ <$n2$> $, $ <$n3$> $, $ <$n4$> $ \par }
+{\bf  \par }
 {\bf set $ <$name$> $, $ \{$"hkl"$| $ "form"$\} $, $ \{$$ <$h$> $, $ <$k$> $, $ <$l$> $$| $ "none"$\} $ \par }
 {\bf set $ <$name$> $, "surface", $ <$ligand atom no$> $ [, $ <$ligand atom no$> $...] \par }
 \par
@@ -2019,18 +2309,22 @@ set $ <$name$> $, "ligand", $ <$file$> $, $ <$density$> $
     11.0 A$**$2 is assigned to each surface atom. 
 \par
 set $ <$name$> $, "bond", $ <$atom\_type$> $ [, $ <$atom\_type$> $,...], $ <$ligand atom no$> $, 
-{\bf                     $ <$distance$> $, [, "angle:"$ <$b\_angle$> $] \par }
-\vspace{3pt}
+                    $ <$distance$> $, [, "angle:"$ <$b\_angle$> $] 
+                                [, "anchor:"$ <$n\_anchors$> $] 
     Defines the bonds of length $ <$distance$> $ between surface atoms of type 
     $ <$atom\_type$> $ and atom number $ <$ligand atom no$> $ of the ligand. 
-    The number of surface atom types depends on the type of decoration that 
-    is defined by the "add" command. 
-    For the "normal", "double", "acceptor" and "donor" type exactly 
-        one surface type parameter must be given. 
-    For the "bridge" type exactly two surface type 
-        parameters must be given. 
+\par
+    The number of surface atom types can be flexible, the number 
+    of 'set bond ' commands depend on the 
+    decoration that is defined by the "add" command. 
+    For the "normal", "acceptor" and "donor" type exactly 
+        one 'set bond' command is required. 
+    For the "bridge", "chelate", "double", and "multi" type exactly 
+        two 'set bond' commands are required. 
     For the "multi" type exactly three surface type 
         parameters must be given. 
+        Two 'set bond' commands are required. 
+        The first 'set bond' command requires three surface types. 
 \par
     The surface types can be given as type number or as type name. 
     If the type number is given, this atom type will act as anchor. 
@@ -2039,8 +2333,32 @@ set $ <$name$> $, "bond", $ <$atom\_type$> $ [, $ <$atom\_type$> $,...], $ <$lig
 \par
     The optional parameter "angle:" is relevant to "acceptor" and 
     "donor" bond schemes only. For these schemes the angle is 
-    interpreted as teh hydrogen bond angle in the Hydrogen atom and 
+    interpreted as the hydrogen bond angle in the Hydrogen atom and 
     should be close to 170°. 
+\par
+set $ <$name$> $, "tilt", "angle", $ <$value$> $ 
+set $ <$name$> $, "tilt", "plane", "auto" 
+set $ <$name$> $, "tilt", "plane", $ <$h$> $, $ <$k$> $, $ <$l$> $ 
+set $ <$name$> $, "tilt", "atoms", "auto" 
+set $ <$name$> $, "tilt", "atoms", $ <$n1$> $, $ <$n2$> $, $ <$n3$> $, $ <$n4$> $ 
+    Defines a tilt of the molecules relative to the local surface normal. 
+    If the molecule is reasonably flat, one can expect that the molecules 
+    will be tilted around an axis taht is parallel to both, the 
+    local surface and the molecule plane. 
+    With "tilt, plane, auto" or "tilt, atoms, auto" DISCUS will 
+    calculate a least squares plane through the ligand molecule and 
+    tilt the molecule around the axis described above. 
+    Alternatively you can describe a normal to the molecule with the 
+    "tilt", "plane", $ <$h$> $, $ <$k$> $, $ <$l$> $ values. The axis $ <$hkl$> $ should refer to 
+    the metric of the molecule file that you define with the 
+    "set $ <$name$> $, ligand" command. 
+    Alternatively, DISCUS can construct the normal to the molecule 
+    if you provide the four atom numbers $ <$n1$> $, $ <$n2$> $, $ <$n3$> $, $ <$n4$> $. 
+    The normal will be calculated via the vector product of the 
+    two difference vectors between the pairs: n2-n1  and n4-n3. Make sure 
+    that these two vectors are not parallel. One of the atoms may 
+    be present in both vectors. The value of $ <$n1$> $ could for example be 
+    identicla to either $ <$n3$> $ or $ <$n4$> $. 
 \par
 set $ <$name$> $, "axis", "auto" 
 set $ <$name$> $, "axis", $ <$ligand atom no 1 $> $, $ <$ligand atom no 2$> $ 
@@ -2121,6 +2439,123 @@ define generator,center
 turns on the sequence in which centering generators are applied first 
 \par
 The "symmetry" mode now the default value. 
+\section{demolecularize}
+{\bf demolecularize \par }
+\par
+\vspace{3pt}
+Enters the menue to de-molecularize a molecule. 
+The molecule entry is removed from internal list, and the 
+molecule properties of the atoms that were in the selected 
+molecul(s) are cleared. 
+\par
+\subsection*{deselect}
+{\bf deselect moletype:$ \{$"all"$| $"none"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+{\bf deselect atomtype:$ \{$"all"$| $"none"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...$\} $ \par }
+\par
+\vspace{3pt}
+The optional parameter "moletype" deselects which molecule 
+types are to be demolecularized. 
+The parameter defaults to "all", which means that no 
+molecule type will be demolecularized. 
+\par
+The optional parameter "atomtype:" defines which atom 
+types must be present in the selected molecule types. 
+The parameter defaults to "all", which means that no 
+atom type needs to be present. A molecule may contain 
+any atom type to be demolecularized. 
+\subsection*{exit}
+{\bf exit \par }
+\par
+\vspace{3pt}
+Leave the demolecularize menu, go back to the main 
+DISCUS menu. 
+\subsection*{include}
+{\bf include molerange:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...)$\} $ \par }
+{\bf include atomrange:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...)$\} $ \par }
+\par
+\vspace{3pt}
+The optional parameter "molerange" selects which molecule 
+range are to be demolecularized. 
+The parameter defaults to "none", which means that no 
+molecule range will be demolecularized. 
+\par
+The optional parameter "atomrange:" defines whether atoms 
+must be within the specified range if the selected 
+molecules are to be demolecularized. 
+The parameter defaults to "none", which means that no 
+specific atom range needs to be present. A molecule may 
+contain any atom range to be demolecularized. 
+\subsection*{prop}
+{\bf prop $ \{$"ignore"$| $"present"$| $"absent"$\} $ , $ <$property$> $ [, $ <$property$> $ ...] \par }
+\par
+\vspace{3pt}
+Defines which properties all atoms in the molecule must have 
+for the molecule to be demolecularized. 
+\par
+"ignore" 
+The properties listed will be ignored. The listed properties do 
+not have an affect on the choice to demolecularize the molecule 
+or not. 
+"present" 
+All atoms in the molecule must have the properties listed, 
+for the molecule to be demolecularized. 
+"absent" 
+All atoms in the molecule are not allowed to have the 
+properties listed. 
+\par
+The properties can be one of: 
+"all" 
+Apply the rule to all properties. 
+"normal" 
+The rules apply if an atom is a normal atom (not a void) 
+"molecule" 
+The rules apply if an atom is part of a molecule 
+"domain" 
+The rules apply if an atom is part of a domain 
+"outside" 
+The rules apply if an atom is outside of the crystal. This status 
+is set if the atom has been cut off by a ==$> $ 'boundary' command. 
+"external" 
+The rules apply if an atom is close to an external surface, either 
+on the inside or on the outside. 
+The flag is set by the ==$> $ 'boundary' command. Individual distances 
+to the boundary can be set within the ==$> $ 'surface' menu through 
+the ==$> $ 'surface/fuzzy' command. 
+"internal" 
+The rules apply if an atom is close to an internal surface, either 
+within the host or within the guest structure. 
+The flag is set by placing a guest structure into the crystal through 
+the ==$> $ 'domain' menu. Individual distances 
+to the boundary can be set within the ==$> $ 'domain' menu through 
+the ==$> $ 'domain/fuzzy' command. 
+\subsection*{select}
+{\bf select moletype:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...)$\} $ \par }
+{\bf select atomtype:$ \{$"none"$| $"all"$| $ $ <$number$> $ $| $ ($ <$n1$> $, $ <$n2$> $...)$\} $ \par }
+\par
+\vspace{3pt}
+The optional parameter "moletype" selects which molecule 
+types are to be demolecularized. 
+The parameter defaults to "none", which means that no 
+molecule type will be demolecularized. 
+\par
+The optional parameter "atomtype:" defines which atom 
+types must be present in the selected molecule types. 
+The parameter defaults to "none", which means that no 
+atom type needs to be present. A molecule may contain 
+any atom type to be demolecularized. 
+\subsection*{show}
+\par
+Show the current settings 
+\subsection*{reset}
+\par
+Reset to system start, which means that: 
+no molecule types are selected 
+the molecule range is set to zero 
+any atom may be present 
+no specific atom range needs to be present 
+\subsection*{run}
+\par
+perform the actual calculation 
 \section{diff-four}
 {\bf diff \par }
 \par
@@ -2132,6 +2567,41 @@ All input parameters are identical to "inverse" see the help to
 The difference Fourier can only be calculated from a "shelxl" type 
 file. The program calculates (Fobs-Fcalc) and then calculates the 
 corresponding inverse Fourier. 
+\section{displacement}
+{\bf displacement $ <$iatom$> $ [,out:$ \{$"no"$| $"yes"$\} $] [,aver:$ \{$"no"$| $"yes"$| $"off"$\} $] \par }
+\vspace{3pt}
+                     [,indi:$ \{$"no"$| $"yes"$\} $] 
+\par
+This command calculates the displacement vector of atom number 
+$ <$iatom$> $ from its average position. The result is stored in 
+the result variables res[1] to res[3]. 
+\par
+The optional parameters do: 
+out:$ \{$"no"$| $"yes"$\} $  A short output will be written to screen 
+    Default is "no" 
+aver:$ \{$"no"$| $"yes"$| $"off"$\} $  The average positions are calculated. 
+    Default is "no", it is much faster to do this once 
+    in the chem menu prior to an analysis of the 
+    displacement vector for several atoms. 
+    The first time that the 'displacement' command is used, 
+    DISCUS will automatically calculate the average structure, 
+    unless you explicitly turn this off with "aver:off". 
+\par
+    The automatic calculation of the average structure is 
+    turned back on only with a DISCUS ==$> $ 'reset' or the 
+    'chem' 'reset' commands. If you modify the structure or 
+    read a new cell/structure the automatic calculation will 
+    NOT be turned on again. As this might give very wrong 
+    displacement vectors, it is highly recommended to 
+    calculate the average position with the "chem" 
+    command "aver" prior to the displacement commands. 
+indi:$ \{$"no"$| $"yes"$\} $  The displacement vector is by default 
+    taken relative to the average of all atom species 
+    that may be on a given site. In analogy to the 
+    ==$> $ 'aver indi' command in the ==$> $ 'chem' menu 
+    the displacement vector of an atom may also be 
+    calculated relative to the average position of all 
+    atoms of the same chemical species. 
 \section{domain}
 \par
 This command branches to the domain menu level. 
@@ -2149,6 +2619,11 @@ can be set by the user via the 'assign' commands at the domain level.
 \par
 The domain lists encode the size, character, and orientation within 
 the file itself. 
+\par
+If domain successfully placed guests into the crystal, the crystal 
+is no longer periodic. Thus periodic boundary conditions and 
+the "chem" quick mode are off. They can be turned back on after 
+explicit 'set crystal' comand in the chemistry menu. 
 \par
 Valid commands at this sub level are: 
 \subsection*{commands}
@@ -2364,8 +2839,8 @@ similarly to the molecule and object descriptors:
 {\bf reset \par }
 \par
 \vspace{3pt}
-Reset all definition back to the default values at system start. 
-All current assignments are removed. 
+Reset all Fourier definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -2533,6 +3008,7 @@ neut    ! switches to neutron diffraction
 nord    ! defines the number of points along the ordinate
 ntop    ! defines the number of points along the top axis
 ord     ! defines the coordinate of the ordinate
+reset   ! Reset and clear all definitions
 run     ! starts the calculation
 scat    ! defines the scattering factor for an element
 set     ! sets Fourier mode
@@ -2694,6 +3170,12 @@ top axis.
 \vspace{3pt}
 Defines which the component of the vector parallel to the ordinate 
 is written to the output file. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all Fourier definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -3010,6 +3492,7 @@ density    ! Defines the scattering density of the object
 file       ! Defines the file name with the actual domain content
 fuzzy      ! Defines the distance between domain atoms and host atoms
 origin     ! Places the origin of the object/domain in real space coordinates
+reset   ! Reset and clear all definitions
 run        ! Does the actual insertion
 show       ! Show the current parameters
 type       ! Defines the object type number
@@ -3068,6 +3551,12 @@ versus bubbles of empty space.
 The center of the object is placed at the vector $ <$x$> $,$ <$y$> $,$ <$z$> $. 
 DISCUS describes this position by the coordinates of the first 
 of the atoms. It's name represents the 'character' of the object 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all insert definitions back to the default values at 
+system start. 
 \subsection*{run}
 \par
 Performs the actual insertion. 
@@ -3169,6 +3658,8 @@ lr      ! defines the lower right corner in reciprocal space
 na      ! defines the number of points along the abscissa
 no      ! defines the number of points along the ordinate
 ord     ! defines the coordinate of the ordinate
+reset   ! Reset all Fourier definitions
+reset   ! Reset all Fourier definitions
 rhoabs  ! defines the coordinate of the real space abscissa
 rholayer! defines the layer in real space to be calculated
 rholl   ! defines the lower left corner in real space
@@ -3177,6 +3668,7 @@ rhona   ! defines the number of points along the real space abscissa
 rhono   ! defines the number of points along the real space ordinate
 rhoord  ! defines the coordinate of the real space ordinate
 rhoul   ! defines the upper left corner in real space
+reset   ! Reset and clear all definitions
 run     ! starts the calculation
 scale   ! defines an overall scale factor
 set     ! sets various parameters
@@ -3329,6 +3821,12 @@ real space ordinate is written to the output file.
 \par
 \vspace{3pt}
 Sets the upper left corner of the real space plane to be calculated. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all Fourier definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -3514,6 +4012,7 @@ echo    ! Echos a string, just for interactive check
 eval    ! Evaluates an expression (see main help)
 exit    ! Terminates the MC sub level, returns to the main DISCUS level.
 help    ! Gives on-line help for 'mc' (see main help)
+reset   ! Reset and clear all definitions
 run     ! Starts MC simulation
 save    ! Saves structure (see main help -> save)
 set     ! Sets most MC parameters
@@ -3774,6 +4273,12 @@ original "set vec, ..." and the generated ones into this file.
 \vspace{3pt}
 Resets the value of all internal variables, counters, etc to the 
 startup default values. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all mmc definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -3805,6 +4310,7 @@ neig    : Setting of the neighbor definitions
 range   : Setting of the neighboring ranges
 target  : Setting of correlations values to be achieved
 temp    : Setting of MMC simulation temperature
+valid   ! Sets maximum number of non_valid cycles
 vec     : Definition of interaction vectors
 \end{MacVerbatim}
 \subsubsection{allowed}
@@ -4015,16 +4521,18 @@ the defined interaction neighborhoods $ <$ic$> $ (-$> $ set neigh).
 \par
 Depending on the neighborhood type you must specify exactly one 
 or several target energy types for each $ <$ic$> $. The neighborhoods 
-"vector", $ <$cor$> $, and "angle" require one energy type, while the 
+"vector", "cor", and "angle" require one energy type, while the 
 neighborhood "environment" may take several different energies. 
 For each interaction $ <$ic$> $ you may specify several targets for different 
 atom combinations. 
 \par
-set "target",$ <$ic$> $,"corr",     $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
-                              $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
-                              $ <$correlation$> $, $ <$energy$> $, $ \{$"CORR" $| $ "ENER"$\} $ 
-set "target",$ <$ic$> $,"corr",    ($ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $[, $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $...]), 
-                             ($ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $[, $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $...]), 
+set "target",$ <$ic$> $,"corr", $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
+                          $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
+                          $ <$correlation$> $, $ <$energy$> $, $ \{$"CORR" $| $ "ENER"$\} $ 
+set "target",$ <$ic$> $,"corr", ($ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $ 
+                           [, $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $...]), 
+                          ($ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $ 
+                           [, $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $...]), 
 \par
 A chemical short range order correlation is defined 
 between the two atom types. 
@@ -4037,10 +4545,10 @@ value of $ <$energy$> $. For negative $ <$energy$> $ values like atoms
 will tend to be neighbors, while a positive $ <$energy$> $ favors 
 opposite atoms next to each other. 
 If you use several targets at the same time, it is necessary to 
-use the "Ener" keyword. Otherwise, the feedback mechanism will 
+use the "ENER" keyword. Otherwise, the feedback mechanism will 
 increase the absolute value of the Ising energy at each feedback 
 until the target $ <$correlation$> $ is achieved. This target will 
-therefor overrule the other targets that all have fixed energy 
+therefore overrule the other targets that all have fixed energy 
 values. 
 If you specify a positive correlation, like tom types will tend to 
 cluster together, while for a negative correlation you will get 
@@ -4054,6 +4562,18 @@ neighbor to another atom of the first group and likewise at a
 different place in the crystal for the second group. A negative 
 correlation will give you a crystal in which an atom of the first 
 group has an atom of the second group as neighbor. 
+\par
+set "target",$ <$ic$> $,"cd",   $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
+                          $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
+                          $ <$correlation$> $, $ <$energy$> $, $ \{$"CORR" $| $ "ENER"$\} $ 
+\par
+The intended correlation is a correlation between the displacements 
+of the atoms in the neighborhood. A positive correlation means 
+that the displacements from the average position shall be in the 
+same direction, while a negative correlation means a preference 
+for opposing displacements. 
+Equal displacements are characterized by a positive value of the 
+scalar product of the two displacement vectors. 
 \par
 \par
 set "target",$ <$ic$> $,"lennard",  $ \{$$ <$number$> $ $| $ $ <$name$> $ $| $ "all"$\} $, 
@@ -4105,6 +4625,19 @@ In order to be able to use the feedback procedure to determine the
 interaction energies the value of $ <$kt$> $ should be set to 1.0 (default). 
 As a result the interaction energies will be in units of kT. If no 
 feedback is used, $ <$kT$> $ can be set to the desired simulation temperature. 
+\subsubsection{valid}
+{\bf valid $ <$invalid\_moves$> $ \par }
+\par
+\vspace{3pt}
+MMC will pick an atom or an atom pair at random. If a pair of atoms 
+has the same chemistry, a "switch chemistry" move will not change 
+anything. Such a pair is considered an invalid trial. As the structure 
+converges into a highly ordered state, the probability of picking 
+an invalid pair increases. In order to prevent an infinite loop, 
+DISCUS terminates mmc once the number of invalid tried configurations 
+exceeds the number of c factor $ <$invalid\_moves$> $. Default for 
+$ <$invalid\_moves$> $ is 1000. For large structures it might be helpful to 
+increase this number. 
 \subsubsection{vec}
 {\bf set "vec",$ <$iv$> $,$ <$is1$> $,$ <$is2$> $,$ <$dx$> $,$ <$dy$> $,$ <$dz$> $ \par }
 \par
@@ -4164,6 +4697,7 @@ form    ! Defines the output format to be used
 help    ! Gives help for the output level (see main help)
 input   ! Reads an old data file
 outfile ! Sets name of output file
+reset   ! Reset and clear all definitions
 run     ! Starts writing of output
 show    ! Shows the current settings
 thre    ! Sets the thresholds used for bitmap output
@@ -4300,6 +4834,12 @@ Sets the name of the output file, to which the intensities are written.
 Within the DISCUS\_SUITE the output files can be written directly into 
 KUPLOT. Simply start the file name with the fixed string 'kuplot'. 
 The data set number in kuplot will be incremented automatically. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all output definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -4410,6 +4950,7 @@ lr      ! defines the lower right corner in reciprocal space
 na      ! defines the number of points along the abscissa
 no      ! defines the number of points along the ordinate
 ord     ! defines the coordinate of the ordinate
+reset   ! Reset all Fourier definitions
 rhoabs  ! defines the coordinate of the real space abscissa
 rholayer! defines the layer in real space to be calculated
 rholl   ! defines the lower left corner in real space
@@ -4596,6 +5137,12 @@ real space ordinate is written to the output file.
 \par
 \vspace{3pt}
 Sets the upper left corner of the real space plane to be calculated. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all Fourier definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -5239,6 +5786,7 @@ outfile ! Name of output file to which the structure is written
 poly    ! Selects the polyhedron plotting style
 prog    ! Selects the plotting program
 prop    ! Selects the atom properties, which will be checked
+reset   ! Reset and clear all definitions
 run     ! Starts writing of the structure
 sel     ! Selects which atoms are to be included in the plot
 set     ! Sets type, color and size of atom in plot file
@@ -5433,7 +5981,7 @@ poly "off"
 \vspace{3pt}
 ets the definitions for plotting polyhedra in an interactive plot. 
 urrently only an interactive plot with JMOL is supported. 
-he command ==$> $ 'run inter:yes' gives the details how to start an 
+he command ==$> $ 'run plot:inter' gives the details how to start an 
 nteractve plot session. 
 \par
 \begin{MacVerbatim}
@@ -5591,6 +6139,12 @@ The flag is set by placing a guest structure into the crystal through
 the ==$> $ 'domain' menu. Individual distances 
 to the boundary can be set within the ==$> $ 'domain' menu through 
 the ==$> $ 'domain/fuzzy' command. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all plot definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run  ["plot:inter"] [, "kill:"["yes"$| $"no"$\} $] \par }
 \par
@@ -5600,12 +6154,15 @@ or no atoms been selected, an error message is given.
 \par
 If the plot progam was selected as "jmol", you can start an 
 interactive plot session with the optional parameter "plot:inter". 
+It may take a while for JMOL to open, you might want to add a 
+==$> $ 'wait return' command after the 'run' command. 
 \par
 If previous instances of "JMOL" are to be terminated prior to the 
 new plat provide the optional parameter "kill:yes". 
 On a Linux type operating system processes "jmol" are killed, 
 on Windows processes "java" will be killed. Be carefull if other 
-java programs are active!. 
+java programs are active! The intention is to kill only processes 
+started by DISCUS. 
 \subsection*{sel}
 {\bf sel $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $ [ , $ \{$ $ <$name$> $ $| $ $ <$number$> $ $\} $ ...] \par }
 \par
@@ -5757,6 +6314,7 @@ exit    ! Terminates the plot sub level, returns to the main DISCUS level.
 help    ! Gives on-line help for 'plot' (see main help)
 electron! switches to electron calculation
 neut    ! switches to neutron calculation
+reset   ! Reset and clear all definitions
 run     ! Starts writing of the structure
 set     ! Sets Theta limits, grid in reciprocal space, ...
 show    ! Shows settings for the plotting parameters
@@ -5775,6 +6333,12 @@ switches to electron calculation
 \par
 \vspace{3pt}
 Switches to neutron diffraction. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all powder definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -6204,18 +6768,34 @@ The properties can be one of:
 \par
 The second form with the optional arguments allows to define 
 property like behaviour based on the connectivities that must 
-have been defined for the atom of type $ <$type$> $. 
+have been defined for the atom(s) of type $ <$type$> $. 
 nmin and nmax are minimum and maximum coordination numbers that the 
      atom must have for the property to be true. 
 emin and emax define an interval of excluded coordination numbers. 
 \par
+If you specify several properties of the second kind, the following 
+rules apply: 
+Any property applies only to atom types specified by "atom:" 
+If an atom is not of any of the kinds specified by teh "atom:" 
+parameters the atom is never selected. 
+If several properties are specified for a given atom type, they 
+work with a logical AND. All conditions must be met for an atom 
+to be selected. 
+Keep in mind that the parameter "atom:O" will apply to all 
+Oxygen atom types. 
+\par
 Example: 
 prop present, atom:si,conn:1, nmin:0, nmax:3 
-This is true only if the selected atom is of type silicaon with 
-zero to 3 neighbors in its current onnectivity number 1. 
+This is true only if the selected atom is of type silicon with 
+zero to 3 neighbors in its current connectivity number 1. 
 \par
 Keep in mind that you may have to update the connectivity 
-list for this atom type. 
+list for this atom type / these atom types. 
+\par
+If you specify the atom by its name, the property will 
+apply to all atom types with this atom name. Alternatively 
+specify the atom type number instead of the atom name as in: 
+prop present, atom:7,conn:1, nmin:0, nmax:3 !Apply to atom type 7 
 \subsection*{set/clear}
 {\bf set   $ <$flag$> $, "types",  $ \{$"all" $| $ $ <$iscat$> $ [, $ <$iscat...]$\} $ \par }
 {\bf set   $ <$flag$> $, "atoms"$\} $, $ \{$"all" $| $ $ <$start$> $,$ <$end$> $$\} $ \par }
@@ -6231,9 +6811,17 @@ The flag can be any of "domain", "outside", "external", "internal"
 {\bf purge \par }
 \par
 \vspace{3pt}
-deletes all vacancies in the structure array, thus speeds up Fourier 
+Deletes all vacancies in the structure array, thus speeds up Fourier 
 calculation. 
 Due to internal calls, the result variables are changed! 
+\par
+If the 'purge' command does actually remove atoms or molecules 
+from the structure array, the crystal will usually no longer be 
+periodic or sorted in a fashion of contiguos unit cells that all 
+have the same amount of atoms. DISCUS therefore needs to turn off 
+the periodic boundary conditions and the "chem" mode "quick". 
+These can be turned back on with an explicit 
+==$> $ 'set crystal' command in the ==$> $ 'chemistry' menu. 
 \section{r2d}
 {\bf r2d $ <$h$> $,$ <$k$> $,$ <$l$> $ \par }
 \par
@@ -6526,7 +7114,7 @@ command.
 This command deselects all or individual molecule types used in 
 the RMC refinement. 
 \subsection*{rese}
-{\bf rese \par }
+{\bf rese $ \{$ "all" $\} $ \par }
 \par
 \vspace{3pt}
 This command resets the RMC parameters. In this version only the 
@@ -6872,6 +7460,14 @@ subcommands are:
 "rval" : show R-values for current refinement
 "sym"  : show information about using symmetry information of read planes
 \end{MacVerbatim}
+\section{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Places DISCUS into the state at program start. 
+\par
+Version info:v.5.24.0 
+     resets: crystal, connectivity, plot and internal storage 
 \section{save}
 {\bf save \par }
 {\bf save $ <$name$> $ \par }
@@ -6912,6 +7508,7 @@ help    ! Gives on line help for saving the structure (see main help)
 omit    ! Defines which information to omit from the file
 outf    ! Defines the name of the output file
 prop    ! Selects the atom properties, which will be checked
+reset   ! Reset and clear all definitions
 run     ! Starts the saving of the structure
 sel     ! Selects atoms to be included in the structure file
 show    ! Shows the current parameters
@@ -7092,6 +7689,9 @@ All other keywords are optional.
 Defines the output file name. 
 If the filename starts with the string 'internal', the file is not 
 written to disk but stored internally. 
+\subsection*{reset}
+\par
+Resets the save menu to program start conditions. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -7217,6 +7817,7 @@ oincl   ! Include a range of objects
 origin  ! Define the origin for the deformation
 osel    ! Select the object types
 odes    ! Deselect the object types
+reset   ! Reset and clear all definitions
 run     ! Perform the actual deformation
 sel     ! Select the atom types
 show    ! Show the current settings
@@ -7443,6 +8044,12 @@ More than one object may be selected at once.
 The selection of objects by 'osel','msel' and atoms by 'sel' are mutually 
 exclusive. The symmetry operation uses either atoms or molecules, 
 or objects. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all shear definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -7762,6 +8369,12 @@ average translation vector, which results in a zig-zag shaped crystal.
 The menu includes a new approach to calculate the Fourier transform that 
 saves considerable computational time. 
 \par
+If stack successfully placed atoms into the crystal with the 
+'run' command, the crystal is no longer periodic. Thus periodic 
+boundary conditions and the "chem" quick mode are off. They can 
+be turned back on after explicit 'set crystal' comand in the 
+chemistry menu. 
+\par
 Further help topics are 
 \par
 \subsection*{commands}
@@ -7791,6 +8404,7 @@ number  ! Reads the number of layers to be created
 random  ! Sets values for random stacking faults
 rese    ! Resets the number of layers to zero
 rotate  ! Set values for rotational disorder of the layers
+reset   ! Reset and clear all definitions
 run     ! Decorates the list of origins with atoms to create the crystal
 set     ! Sets parameters
 show    ! Shows the current settings
@@ -8066,6 +8680,12 @@ A sigma of zero fixes the rotations around the respective axis to zero.
 \par
 \vspace{3pt}
 The rotational disorder is only effective if its status is switched "on". 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all stack definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -8135,6 +8755,53 @@ zero is added to the corresponding vector component.
 Reads the components of the translation vector between layers $ <$i$> $ and $ <$j$> $. 
 The current origin of any layer is calculated by adding the translation 
 vector between layer types $ <$i$> $ and $ <$j$> $ to the previous origin. 
+\section{storage}
+\par
+Menu to display and manage internally stored crystal structures 
+\par
+Further help is available on: 
+\subsection*{commands}
+\begin{MacVerbatim}
+show       ! Show list of stored structures
+reset      ! Clear list of stored structures
+remove     ! Clear list of stored structures
+exit       ! Leaves the storage menu
+\end{MacVerbatim}
+\subsection*{show}
+\begin{MacVerbatim}
+show
+show "all"
+show <name>
+   display:{"short" | "crystal" | "connect" | "full"}
+\end{MacVerbatim}
+Displays the complete list (no parameters or "all") 
+or an individual structure. 
+\par
+The optional parameter "display:" determines the amount of 
+information that is displayed: 
+"short" (default)  Show the file names only 
+"crystal"          Additionally show number of atoms, 
+                   atom types and molecule info 
+                   This is stored into the result variable 
+                   at entries 1 to 4. 
+"connect"          Additionally show the internal connection 
+                   in the binary storage tree. This is really 
+                   just for debug purposes 
+"full"             Combines "crystal" and "connect" 
+\subsection*{reset}
+\begin{MacVerbatim}
+reset {<name>}
+\end{MacVerbatim}
+Clears the complete internal list or the single structure 
+named $ <$name$> $ 
+Commands 'reset' and 'remove' are synonymous 
+\subsection*{remove}
+\begin{MacVerbatim}
+remove {<name>}
+\end{MacVerbatim}
+Clears the complete internal list or the single structure 
+named $ <$name$> $ 
+Commands 'reset' and 'remove' are synonymous 
 \section{surface}
 \par
 Menu to define crystal surfaces and related settings 
@@ -8157,6 +8824,12 @@ show       ! Show the current surface related settings
          "centx:"$ <$center\_x$> $   The central location for the 
          "centy:"$ <$center\_y$> $   boundary is at this point 
          "centz:"$ <$center\_z$> $   Defaults to (0, 0, 0) 
+                              The units are fractional coordinates 
+         "thick:"$ <$thickness$> $  Defaults to value set by 
+                              set distance, external for atom type 1 
+                              Atoms within a distance of $ <$thickness$> $ 
+                              to the surface are flagged as surface 
+                              atoms. Units are Angstroem 
 \par
          "keep:"$ \{$"inside"$\} $$| $$ \{$"outside"$\} $  Keep atoms on the inside or 
                                         outside of boundary 
@@ -8174,7 +8847,8 @@ show       ! Show the current surface related settings
                                  See description below 
 \par
 This commands removes all atoms that are outside a boundary surrounding 
-the crystal. 
+the crystal. The distance of the surface from the point 0,0,0 is measured 
+in Angstroem. 
 "hkl"  The surface is defined as a plane through the Miller indices 
        $ <$h$> $,$ <$k$> $,$ <$l$> $. The optional $ <$distance$> $ determines the distance 
        between 0,0,0 and the boundary surface. Without this parameter, 
@@ -8235,7 +8909,7 @@ only. Their main purpose is to create interior closed surfaces
 in combination with the "keep:outside" parameter. 
 In low symmetry crystal systems, a closed hollow space has to be 
 created by a combination of several symmetrically non-equivalent 
-faces or forms.. Use the combination: 
+faces or forms. Use the combination: 
 "accum:init, exec:hold" For the first face/form 
 "accum:add, exec:hold"  For further faces and forms 
 "accum:add, exec:run"   For the last face. 
@@ -8244,6 +8918,14 @@ accumulated. With the "exec:run" the actual removal of atoms
 is started. 
 After a "exec:run" parameter, the list of faces is automatically 
 reset. 
+An accumulated set of planes will refer to a common origin, either 
+the default 0,0,0 or the value set by "centx:", "centy:", "centz". 
+Also the keep status is the same for all hkls in the accumulted set. 
+Thus only the last occurence of these optional parameters will 
+actually be effective. It is threfore best to use the optional 
+parameters for accumulated surfaces only once at the last hkl for 
+which the optional parameter "exec:run" is used. A warning message 
+will be flagged otherwise. 
 \subsection*{character}
 {\bf char $ <$atom\_no$> $ [,$ \{$"equal"$\} $$| $$ \{$any$\} $] [, "show"] \par }
 \par
@@ -8381,6 +9063,7 @@ oincl   ! Sets the range of objects to be included in the symmetry operation
 origin  ! Sets the origin for the symmetry operation
 osel    ! Selects objects to be included in the symmetry operations
 power   ! Sets the power of the symmetry operation
+reset   ! Sets the status back to program start conditions
 run     ! Starts the calculation of the symmetry operations
 sel     ! Selects atoms to be included in the symmetry operations
 show    ! Shows the current parameters
@@ -8439,8 +9122,13 @@ include more types of atoms than are actually present in the crystal.
 {\bf des $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $ [ , $ \{$ $ <$name$> $ $| $ $ <$number$> $ $\} $ ...] \par }
 \par
 \vspace{3pt}
-Deselects choices made by ==$> $ 'sel' . Possible values 
-for the parameter are mutually exclusively: 
+Deselects choices made by ==$> $ 'sel' . 
+Be sure to combine the 'des', 'sel' and 'incl' commands and 
+make sure that no 'msel', mdes' or 'mincl' command follows 
+prior to the 'run' command. 
+\par
+Possible values for the first mandatory parameter are 
+mutually exclusively: 
 \par
 \begin{MacVerbatim}
 "all"     all atoms of the crystal are deselected.
@@ -8463,6 +9151,16 @@ Alternatively you may specify the direction in direct space by the
 {\bf incl $ \{$$ <$start$> $,$ <$end$> $ $| $ "all" $| $ "envi" $\} $ \par }
 \par
 \vspace{3pt}
+This command serves to choose wich actual atoms 
+will be modified by the symmetry operation. 
+\par
+Chose which atom types will be included with the 
+==$> $ 'incl' command. 
+\par
+Be sure to combine the 'sel' 'des' and 'incl' commands and 
+make sure that no 'msel', mdes' or 'mincl' command follows 
+prior to the 'run' command. 
+\par
 The symmetry operation includes all atoms numbered $ <$start$> $ to $ <$end$> $ 
 inclusively. All other atoms are ignored. 
 If, instead of explicit numbers, the parameter "all" is given, the 
@@ -8480,8 +9178,13 @@ symmetry operation with the ==$> $'sele' and 'dese' commands.
 {\bf mdes $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $ [ , $ \{$ $ <$name$> $ $| $ $ <$number$> $ $\} $ ...] \par }
 \par
 \vspace{3pt}
-Deselects choices made by ==$> $ 'msel' . Possible values 
-for the parameter are mutually exclusively: 
+Deselects choices made by ==$> $ 'msel'. 
+\par
+Be sure to combine the 'mdes', 'msel' and 'mincl' commands and 
+make sure that no 'sel', des' or 'incl' command follows 
+prior to the 'run' command. 
+\par
+Possible values for the parameter are mutually exclusively: 
 \par
 \begin{MacVerbatim}
 "all"     all molecules of the crystal are deselected.
@@ -8493,6 +9196,16 @@ More than one molecule type may be deselected at once.
 {\bf mincl $ \{$$ <$start$> $,$ <$end$> $ $| $ "all" $\} $ [ , "group", $ <$first$> $ [, $ <$excl1$> $...]] \par }
 \par
 \vspace{3pt}
+This command serves to select those actual molecule numbers 
+that will be modified by the symmetry operation. 
+\par
+Chose wich molecule types will be included with the 
+==$> $ 'mincl' command. 
+\par
+Be sure to combine the 'msel', 'mdes' and 'mincl' commands and 
+make sure that no 'sel', des' or 'incl' command follows 
+prior to the 'run' command. 
+\par
 The symmetry operation includes all molecules numbered $ <$start$> $ to $ <$end$> $ 
 inclusively. All other molecules are ignored. 
 If, instead of explicit numbers, the parameter "all" is given, the 
@@ -8552,11 +9265,18 @@ previous atoms.
 {\bf msel $ \{$ "all" $| $ $ <$number$> $ $\} $ [ , $ <$number$> $ ...] \par }
 \par
 \vspace{3pt}
-This command executes serves to select 
-those molecules that will be modified by the symmetry operation. 
+This command serves to select those molecule types 
+that will be modified by the symmetry operation. 
 \par
-Defines which molecules are included in symmetry operation. Possible values 
-for the first mandatory parameter are mutually exclusively: 
+Chose wich actual molecules will be included with the 
+==$> $ 'mincl' command. 
+\par
+Be sure to combine the 'msel', 'mdes' and 'mincl' commands and 
+make sure that no 'sel', des' or 'incl' command follows 
+prior to the 'run' command. 
+\par
+Possible values for the first mandatory parameter are mutually 
+exclusively: 
 \par
 \begin{MacVerbatim}
 "all"     all molecules of the crystal are included.
@@ -8565,10 +9285,13 @@ for the first mandatory parameter are mutually exclusively:
 <number>  all molecules of the crystal that are of type <number>
           are included.
 \end{MacVerbatim}
-More than one atom may be selected at once. 
+More than one molecule type may be selected at once. 
 \par
 The selection of molecules by 'msel' and atoms by 'sel' are mutually 
 exclusive. The symmetry operation uses either atoms or molecules. 
+Be careful with unintended side effects. Currently DISCUS uses the 
+same internal variable to store which atoms/molecules are selected. 
+Be carefule when switching between msel/sel mdes/des. 
 \subsection*{odes}
 {\bf odes $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $ [ , $ \{$ $ <$name$> $ $| $ $ <$number$> $ $\} $ ...] \par }
 \par
@@ -8663,6 +9386,12 @@ If the ==$> $ 'mode' of the symmetry operation is "copy", $ <$n$> $ new atoms
 are created. The position of the first atom results from a single 
 application of the symmetry operation, the position of the second from 
 a twofold application etc. 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all symmetry definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -8672,11 +9401,16 @@ Starts the symmetry operation.
 {\bf sel $ \{$ "all" $| $ $ <$name$> $ $| $ $ <$number$> $ $\} $ [ , $ \{$ $ <$name$> $ $| $ $ <$number$> $ $\} $ ...] \par }
 \par
 \vspace{3pt}
-This command serves to select 
-those atoms that will be modified by the symmetry operation. 
+This command serves to select those atom types 
+that will be modified by the symmetry operation. 
+Chose wich actual atoms will be included with the 
+==$> $ 'incl' command. 
+Be sure to combine the 'sel' and 'incl' commands and 
+make sure that no 'msel', mdes' or 'mincl' command follows 
+prior to the 'run' command. 
 \par
-Defines which atoms are included in symmetry operation. Possible values 
-for the first mandatory parameter are mutually exclusively: 
+Possible values for the first mandatory parameter are 
+mutually exclusively: 
 \par
 \begin{MacVerbatim}
 "all"     all atoms of the crystal are included.
@@ -8813,6 +9547,7 @@ h2old   ! Transforms a list of reflections to the old base system
 incl    ! Sets the range of atoms to be included in the transformation
 onew    ! Sets the new origin in terms of the old base
 oold    ! Sets the old origin in terms of the new base
+reset   ! Reset and clear all definitions
 run     ! Starts the transformation for the selected atoms
 sel     ! Selects atoms to be included in the transformation
 set     ! Sets parameters
@@ -9030,6 +9765,12 @@ of the old base vectors. The default at program startup is 0.0, 0.0, 0.0
 \vspace{3pt}
 Defines the position of the old origin in terms of multiples $ <$a$> $,$ <$b$> $,$ <$c$> $ 
 of the new base vectors. The default at program startup is 0.0, 0.0, 0.0 
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all transformation definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -9312,6 +10053,7 @@ phigh   ! Sets the high probability for density waves
 plow    ! Sets the low probability for density waves
 repl    ! Selects atoms to be replaced by a density wave
 rot     ! Sets type to rotational wave (molecules only)
+reset   ! Reset and clear all definitions
 run     ! Starts the calculation of the wave
 sel     ! Selects atoms to be included in the wave
 shift   ! Allows a constant shift to be added to the displacement
@@ -9549,6 +10291,12 @@ atoms of the second type are not changed.
 Keep in mind that you should select only those atoms that you 
 want to exchange, and do not use the ==$> $ sel all construction. 
 \par
+\subsection*{reset}
+{\bf reset \par }
+\par
+\vspace{3pt}
+Reset all wave definitions back to the default values at 
+system start. 
 \subsection*{run}
 {\bf run \par }
 \par
@@ -10661,7 +11409,8 @@ Linux users: Make sure you have JMOL and JAVA
 installed. 
 Windows users, make sure you have the Java Runtime 
 Environment JRE installed. 
-\subsubsection{Error -153 Angle between Normal and Ordinate is 0: }
+\subsubsection{Error -153: Angle between Normal and Ordinate is 0}
+\par
 A plot was attempted with this angle 
 at zero degrees. Check the setting for the 
 normal, given by the ==$> $ 'plot' 'uvw' or 
@@ -11187,6 +11936,81 @@ b) non standard settings of space groups
 # 307 : Pbnm:       #  62: Pnma non-standard orientation
 # 308 : Pmnn:       #  58: Pnnm non-standard orientation
 \end{MacVerbatim}
+Non-standard settings of all orthorhombic space groups are recognized 
+either via the spcgr line in the form: 
+spcgr Pnma, setting:cab 
+or by using the explicit non-standard space group name: 
+\par
+\begin{MacVerbatim}
+        abc      bac      cab      cba      bca      acb
+#  16   P222     P222     P222     P222     P222     P222
+#  17   P2221    P2221    P2122    P2122    P2212    P2212
+#  18   P21212   P21212   P22121   P22121   P21221   P21221
+#  19   P212121  P212121  P212121  P212121  P212121  P212121
+#  20   C2221    C2221    A2122    A2122    B2212    B2212
+#  21   C222     C222     A222     A222     B222     B222
+#  22   F222     F222     F222     F222     F222     F222
+#  23   I222     I222     I222     I222     I222     I222
+#  24   I212121  I212121  I212121  I212121  I212121  I212121
+\end{MacVerbatim}
+        abc      bac      cab      cba      bca      acb 
+\begin{MacVerbatim}
+#  25   Pmm2     Pmm2     P2mm     P2mm     Pm2m     Pm2m
+#  26   Pmc21    Pcm21    P21ma    P21am    Pb21m    Pm21b
+#  27   Pcc2     Pcc2     P2aa     P2aa     Pb2b     Pb2b
+#  28   Pma2     Pbm2     P2mb     P2cm     Pc2m     Pm2a
+#  29   Pca21    Pbc21    P21ab    P21ca    Pc21b    Pb21a
+#  30   Pnc2     Pcn2     P2na     P2an     Pb2n     Pn2b
+#  31   Pmn21    Pnm21    P21mn    P21nm    Pn21m    Pm21n
+#  32   Pba2     Pba2     P2cb     P2cb     Pc2a     Pc2a
+#  33   Pna21    Pbn21    P21nb    P21cn    Pc21n    Pn21a
+#  34   Pnn2     Pnn2     P2nn     P2nn     Pn2n     Pn2n
+#  35   Cmm2     Cmm2     A2mm     A2mm     Bm2m     Bm2m
+#  36   Cmc21    Ccm21    A21ma    A21am    Bb21m    Bm21b
+#  37   Ccc2     Ccc2     A2aa     A2aa     Bb2b     Bb2b
+#  38   Amm2     Bmm2     B2mm     C2mm     Cm2m     Am2m
+#  39   Aem2     Bme2     B2em     C2me     Cm2e     Ae2m
+#  40   Ama2     Bbm2     B2mb     C2cm     Cc2m     Am2a
+#  41   Aea2     Bbe2     B2eb     C2ce     Cc2e     Ae2a
+#  42   Fmm2     Fmm2     F2mm     F2mm     Fm2m     Fm2m
+#  43   Fdd2     Fdd2     F2dd     F2dd     Fd2d     Fd2d
+#  44   Imm2     Imm2     I2mm     I2mm     Im2m     Im2m
+#  45   Iba2     Iba2     I2cb     I2cb     Ic2a     Ic2a
+#  46   Ima2     Ibm2     I2mb     I2cm     Ic2m     Im2a
+        abc      bac      cab      cba      bca      acb
+#  47   Pmmm     Pmmm     Pmmm     Pmmm     Pmmm     Pmmm
+#  48   Pnnn     Pnnn     Pnnn     Pnnn     Pnnn     Pnnn
+#  49   Pccm     Pccm     Pmaa     Pmaa     Pbmb     Pbmb
+#  50   Pban     Pban     Pncb     Pncb     Pcna     Pcna
+#  51   Pmma     Pmmb     Pbmm     Pcmm     Pmcm     Pmam
+#  52   Pnna     Pnnb     Pbnn     Pcnn     Pncn     Pnan
+#  53   Pmna     Pnmb     Pbmn     Pcnm     Pncm     Pman
+#  54   Pcca     Pccb     Pbaa     Pcaa     Pbcb     Pbab
+#  55   Pbam     Pbam     Pmcb     Pmcb     Pcma     Pcma
+#  56   Pccn     Pccn     Pnaa     Pnaa     Pbnb     Pbnb
+#  57   Pbcm     Pcam     Pmca     Pmab     Pbma     Pcmb
+#  58   Pnnm     Pnnm     Pmnn     Pmnn     Pnmn     Pnmn
+#  59   Pmmn     Pmmn     Pnmm     Pnmm     Pmnm     Pmnm
+#  60   Pbcn     Pcan     Pnca     Pnab     Pbna     Pcnb
+#  61   Pbca     Pcab     Pbca     Pcab     Pbca     Pcab
+#  62   Pnma     Pmnb     Pbnm     Pcmn     Pmcn     Pnam
+#  63   Cmcm     Ccmm     Amma     Amam     Bbmm     Bmmb
+#  64   Cmce     Ccme     Aema     Aeam     Bbem     Bmeb
+#  65   Cmmm     Cmmm     Ammm     Ammm     Bmmm     Bmmm
+#  66   Cccm     Cccm     Amaa     Amaa     Bbmb     Bbmb
+#  67   Cmme    *Cmmb     Aemm    *Acmm     Bmem    *Bmam
+#  68   Ccce    *Cccb     Aeaa    *Acaa     Bbeb    *Bbab
+#  69   Fmmm     Fmmm     Fmmm     Fmmm     Fmmm     Fmmm
+#  70   Fddd     Fddd     Fddd     Fddd     Fddd     Fddd
+#  71   Immm     Immm     Immm     Immm     Immm     Immm
+#  72   Ibam     Ibam     Imcb     Imcb     Icma     Icma
+#  73   Ibca     Icab     Ibca     Icab     Ibca     Icab
+#  74   Imma     Immb     Ibmm     Icmm     Imcm     Imam
+\end{MacVerbatim}
+Note: for space groups 67 Cmme and 68 Ccce, the settings 
+bac, cba and acb are given in the traditional name 
+instead of using the 'e' glide plane name. This choice 
+allowsyou to distinguish these settings. 
 \section{wavelength}
 {\bf List of allowed wavelength symbols \par }
 \par

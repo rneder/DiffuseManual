@@ -9,6 +9,7 @@ gfortran -o hlp2tex hlp2tex.f
 ./hlp2tex appl_dif DIFFEV
 ./hlp2tex appl_dis DISCUS
 ./hlp2tex appl_kup KUPLOT
+./hlp2tex appl_ref REFINE
 ./hlp2tex appl_mix MIXSCAT
 ./hlp2tex appl_suite SUITE
 #./hlp2tex appl_pdf PDFFIT
@@ -17,6 +18,7 @@ gfortran -o hlp2tex hlp2tex.f
 mv ./appl_dis.tex ../discus_man/
 mv ./appl_dif.tex ../diffev_man/
 mv ./appl_kup.tex ../kuplot_man/
+mv ./appl_ref.tex ../refine_man/
 mv ./appl_mix.tex ../mixscat_man/
 mv ./appl_suite.tex ../suite_man/
 #mv ./appl_pdf.tex ../pdffit_man/
