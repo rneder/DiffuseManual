@@ -6,10 +6,11 @@
 \section{What is REFINE ?}
 
 \Refine is the direct Least Squares Refinement section of the
-\Suite program. Its internal engine is a Levenberg-Marquardt
+\href{./suite\_man.pdf}\Suite program. Its internal engine is a 
+Levenberg-Marquardt
 type least squares fit that can be applied to 1D or 2D data.
 
-See the \Diffev section on a more general 
+See the \href{./diffev\_man.pdf}\Diffev section on a more general 
 generic evolutionary refinement program that implements the
 differential evolutionary algorithm \cite{prstla2005}. Evolutionary or
 genetic refinement algorithms allow the refinement of models, functions,
@@ -70,9 +71,9 @@ environment variables are set, the program can be started by typing
 \end{table}
 
 The section uses the identical command language to interact with the 
-user as is used throughout the \Suite. The
+user as is used throughout the \suite. The
 command {\tt exit} terminates the section and returns control to the
-top level of the \Suite.All commands of \Refine consist of a command verb,
+top level of the \suite. All commands of \Refine consist of a command verb,
 optionally followed by one or more parameters.  All parameters must
 be separated from one another by a comma ",".  There is no
 predefined need for any specific sequence of commands.  \Refine     
@@ -107,30 +108,42 @@ the \Discus program package.
 
 \section{Command language}
 
-%--\begin{table}[!tb]
-%--\centering
-%--\begin{tabularx}{\textwidth}{|p{30mm}|X|}
-%--  \hline
-%--  {\bf Variable} & {\bf Description} \\
-%--  \hline \hline
-%--  pop\_gen[1]    &  Current population number \\
-%--  \hline 
-%--  diff\_cr[1]     &  Cross over probability\\
-%--  \hline \hline
-%--  pop\_xmin[i]   &  Minimum allowed value for parameter no. i  \\
-%--  \hline
-%--\end{tabularx}
-%--\caption[\Diffev structural variables]
-%--        {\label{v1-tab}\Diffev variables. Variables marked
-%--         with $^{*}$ are read-only and cannot be altered.}
-%--\end{table}
+\begin{table}[!tb]
+\centering
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Variable} & {\bf Description} \\
+  \hline \hline
+   F\_DATA       &  Kuplot data set that holds the experimental data.\\
+  \hline 
+   F\_SIGMA      &  Kuplot data set that holds the experimental uncertainties.\\
+  \hline 
+  F\_XMIN        &  Minimum 'x'-value of the experimental data set. \\
+  \hline 
+  F\_XMAX        &  Maximum 'x'-value of the experimental data set. \\
+  \hline 
+  F\_XSTP        &  Interval size along the 'x-axis of the experimental data set. \\
+  \hline 
+  F\_YMIN        &  Minimum 'y'-value of the experimental data set.
+                    xyz data only \\
+  \hline 
+  F\_YMAX        &  Maximum 'y'-value of the experimental data set.
+                    xyz data only \\
+  \hline 
+  F\_YSTP        &  Interval size along the 'y-axis of the experimental data set. 
+                    xyz data only\\
+  \hline
+\end{tabularx}
+\caption[\Refine variables]
+        {\label{v1-tab}\Refine variables. Variables marked
+         with $^{*}$ are read-only and cannot be altered.}
+\end{table}
 
 The program includes a FORTRAN style interpreter that allows the
 user to program complex modifications. A detailed discussion about the 
 command language, which is common to all \Discus package programs can be 
 found in the separate \Discus package reference guide which is included with 
-the package. Currently there are no \Refine specific variables.
+the package. 
 
-%--Table \ref{v1-tab} shows a summary of \Refine specific 
-%--variables. Some of these variables cannot be modified, others like can be 
-%--altered, thus allowing to modify the refinement strategy.
+Table \ref{v1-tab} shows a summary of \Refine specific 
+variables. All variables are read/write.

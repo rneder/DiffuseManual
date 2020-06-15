@@ -47,6 +47,8 @@ as well as experimental parameters, such as the background.
 Under the assumption that we have a periodic crystal, the 
 partial derivatives of the intensity with respect to lattice
 parameters, atom positions etc., can all be derived analytically.
+This is the concept you will find within any single crystal structure
+refinement program or a Rietveld program.
 
 For disordered structures, the situation becomes more complicated.
 Except for a few special cases like stacking faults or short-range
@@ -60,4 +62,105 @@ is no longer available. A numeric calculation of the derivatives
 involves the repeated simulation of a new model for each parameter
 and is fairly time consuming.
 
+\section{Algorithm in the \Refine section \label{lsq-refine}}
+
+The \Refine section uses a Least-Squares algorithm based on the software 
+in the Numerical Recipes \cite{prflteve1989}. This software is based on the 
+Levenberg-Marquart
+algorithm. In any least-squares algorithm the derivatives are used to determine
+a new estimate for each parameter. While the refinement is far from the final 
+solution, each parameter can be modified by a large step in order to quickly 
+approach the global minimum. Close to the minimum the steps need to be smaller
+not to miss the minimum. Essentially the step size is roughly propertional to 
+the derivative. The Levenberg-Marquardt algorithm, optimizes the steps to be
+taken.
+
+Within the \Refine section of the \Suite the derivatives are calculated
+numerically. The program runs the simulation several times for each parameter:
+at the current parameter value and at slightly larger and slightly smaller 
+parameter values. The resulting R-values at each parameter value are analyzed
+to calculate the derivative for this parameter. The \Refine section calculates
+the R-value for a given parameter at:
+
+\begin{tabular}{l|l}
+  P & R-value(P) \\
+  P+h & R-value(P+h) \\
+  P-h & R-value(P-h) \\
+  P+2h & R-value(P+2h) \\
+  P-2h & R-value(P-2h) \\
+\end{tabular}
+
+The \Refine section calculates a polynomial of order two through these three 
+points and uses this polynomial to derive the value of the derivative a the
+current value of the Parameter {\tt P}. 
+
+In any numerical determination of the derivative it is not straightforward 
+to know what is the best value of the deviation {\tt h} from the current 
+parameter value {\tt P}. If the function whose derivative we need to obtain
+is a smooth function, a very small value of {\tt h} is best, as this is 
+likely to yield a good approximation to the analytical derivative. The 
+value {\tt h} must, however, be large enough to produce a R-value that 
+differs significantly from the original R-value and whose calculation 
+is not affected by rounding errors that are unavoidable for very small 
+numerical values. Within the \Refine section the value of the absolute 
+shift {\tt h} of the parameter {\tt P} is calculated as
+{\tt P * shift}, where the value of {\tt shift} defaults to 0.002. 
+
+As \Refine does not know the significance behind a user supplied parameter
+the {\bf newparam} command comes with the optional parameter {\bf shift:}
+that lets you set the relative parameter shift for each individual parameter.
+
+A special difficulty is encountered for refined parameters that cause a
+stepwise change in the simulated structure. The diameter of a (small) 
+nanoparticle falls into this category. The number of atoms inside a
+small nanoparticle is a discrete integer number. Increasing the 
+formally real valued diameter results in no structural change until the 
+diameter is big enough to add one or more atoms. If such a parameter
+is modified by a small fraction or by a small absolute amount, no 
+change in the structure might be encountered and the numerical derivative 
+would appear to be zero. Only for a larger shift of the parameter will 
+a significant structureal modification occur, which will in turn affect 
+the R-value. A good value for diameters seems to be around 0.05, i.e.
+the current diameter is modified by {\tt h= P*0.05}.
+
+A second aspect to consider while using a Least-Squares algorithm that 
+is based on the numerical calculation of the derivatives is the presence
+of local minima.
+
+A refinement within \Refine typically consists of two user supplied macro. In 
+the main macro the refinement parameters, the input data and convergence 
+criteria are defined. The actual calculation of the model function, respectively
+the model structure and its diffraction pattern, are carried out by the second
+macro.
+
+The \Refine section uses four parameters to determine is the refinement has 
+reached convergence. These are based on the absolute value of $\chi^2$, and
+on the change of $\chi^2$, the relative parameter change and a confidence level.
+
+Convergence is considered to have been reached if either the absolute value
+of $\chi^2$ falls below a user defined leve, or if all three other criteria
+are met. These three criteria are:
+\begin{itemize}
+  \item The value of $\chi^2$ changes less than a user defined value between 
+        two cycles
+  \item The largest relative parameter shift is less than a user defined value.
+        The relative parameter shift is defined as the abolute value of the
+        parameter change between two cycles divided by the parameter uncertainty.
+  \item The confidence level reaches a user defined level.
+\end{itemize}
+
+The correct values of $\chi^2$, of the parameter uncertainties and the 
+confidence value depend on the correct values of the data uncertainties. Often
+the raw data do not provide an accurate estimate of the data uncertainties. In
+this case the best strategy to start with is to assign unit wheights to all data 
+points. As this implies that the optimum $\chi^2$ and the confidence level will
+be unknown, \Refine also requires the user to set a maximum number of refinement 
+cycles. 
+
+The \Refine section defines the parameters that shall be refined as \Suite 
+variable names. These variable names and their current values are passed on to
+the user macro that is used to simulate the model structure. To tune the 
+refinement, an initial value, a valid parameter range, and a status flag that 
+indicates if this parameter is to be refined or to be kept fixed can be provided.
+ 
 %------------------------------------------------------------------------

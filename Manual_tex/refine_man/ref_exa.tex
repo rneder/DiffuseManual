@@ -23,7 +23,7 @@ If y was close to zero, the minimum sigma was set to 0.001.
    \label{fexa-poly-exp}
 \end{figure}
 
-As y depends linearly from each of the parameters P\_{i}, we can expect
+As y depends linearly on each of the parameters $P_{i}$, we can expect
 that this refinement will run smoothly. Essentially arbitrary starting values
 could be used to perform the refinement.
 
@@ -34,20 +34,131 @@ was used for this simple introductory example is:
 \begin{MacVerbatim}
  1: refine
  2: data xy, DATA/triple.noise
- 3: newparam, P_const, value:-8.01 !1.1
- 4: newparam, P_lin  , value:1.01  !-1.2
- 5: newparam, P_quad , value:1.49  !1.3
- 6: newparam, P_trip , value:0.31 !0.3
+ 3: newparam, P_const, value:-8.01
+ 4: newparam, P_lin  , value:1.01
+ 5: newparam, P_quad , value:1.49
+ 6: newparam, P_trip , value:0.31
  7: set  cycle,   5
- 8: set conv, dchi:0.50, pshift:0.005, conf:0.10, chi2:0.5
- 9: run triple.mac
-10: exit   ! back to SUITE
+ 8: set conv, dchi:0.50, pshift:0.005, conf:0.10, chisq:0.5
+ 9: set relax, start:0.02, success:0.5, fail:16.0
+10: run triple.mac, plot:k_inter.mac
+11: exit   ! back to SUITE
 \end{MacVerbatim}
 
 In line 1 we switch from the main \Suite level to the \Refine section. 
 The data are loaded in line 2 as a simple "xy" file. All formats that
-are supported by the \Kuplot {\tt load} command are available. 
-  
+are supported by the \href{./kuplot\_man.pdf}\Kuplot {\tt load} command are 
+available. \Refine stores the data set within its on memory. Thus no harm
+is done if \Kuplot resets the data sets during its calculations. During 
+a refinement in which you need to calculate and average multiple powder or 
+PDF data sets such a reset migh be the norm rather than the exception.
+
+Lines 3 to 6 define the four parameters we wish to refine. For 
+each parameter a suitable name needs to be defined. This name has to be 
+a variable name that is valid within the \suite. If the variable name does
+not yet exist, it will be created. The command offers three optional 
+parameters, only the "value" parameter is used in this example. it initiates
+the parameter to the user supplied value, which can be a numerical expression.
+As further optional parameter you can limit the range over which a parameter is
+valid by the parameter "range:[<lower>,<upper>]. This will be helpful if you need
+to exclude negative numbers or if the physical range of a parameter is limited. 
+The last optional parameter allows to change the status of a parameter with
+"status:fix" or "status:fixed" the parameter will be fixed. If a "value:" 
+parameter is given, the parameter will be fixed to this value, otherwise it
+takes its current value. If the optional parameter "status:" is omitted or if
+its value is set to "refine" or "free", its value will be refined. 
+
+Line 7 defines the maximum number of refinement cycles that the \Refine section
+will perform. If the convergence criteria are met in an earlier cycle, the 
+refinement will stop at that point. Several criteria are used to determine if 
+the refinement has reached convergence. In this example they are all specified 
+on line 8. The four criteria are:
+\begin{itemize}
+  \item chisq:<value>  Convergence has been reached if the value of chi square 
+        drops below the user specified value.
+  \item conf:<value>  If the confidence level is larger than this value
+        and
+  \item pshift:<value> the largest parameter shift defined as the absolute 
+        value of the pareameter shift divided by the abolute value of the 
+        parameter uncertainty
+        and
+  \item dchi:<value> the change in chi2 is less than this value then 
+        convergence is assumed.
+\end{itemize}
+If either the {\tt chisq} or all three other criteria {\tt conf}, 
+{\tt  pshift} and {\tt dchi} are met, onvergence is reached and the 
+refinement stops. Keep in mind that the value of chisq and the parameter 
+uncertainty wil  depend on the uncertainties of the input data values.
+
+The Levenberg-Marquardt algorithm uses a parameter lamda to adjust the 
+change of a parameter from one refinement cycle to the next. A small 
+value results in a large parameter change and vice versa. \Refine will
+dynamically adjust this parameter during the refinement. Starting with 
+a value of {\tt 0.02} the value of lambda is decreased by multiplication with 
+{\tt success:0.5} if the refinement succeeded i.e. chi2 decreased. The
+underlying assumption is that as long as the algorithm decreases chi2, 
+we can take larger parameter steps. Once the algorithm does not find a
+better solution, its time to take smaller parameter steps in order to
+find the minimum, and lambda is increased with {\tt fail:16.0}. The 
+values in the xample are the default values. The main parameter you may have 
+to play with is the start parameter. A larger value up to 2 seems to help
+difficult refinements.
+ 
+The "run" command on line 10 will start the refinement using the macro 
+"triple.mac" to calculate the theory data set. The optional parameter
+{\tt plot:} allows to specify a user supplied macro that will display
+any data at each successful refinement step.
+
+\begin{MacVerbatim}
+ 1: branch kuplot
+ 2: #
+ 3: if(F_DATA==0) then
+ 4:    reset
+ 5:    func (P_const)+(P_lin)*r[0]+(P_quad)*r[0]**2+(P_trip)*r[0]**3, F_XMIN, F_XMAX, F_XSTP
+ 6: else
+ 7:    func (P_const)+(P_lin)*r[0]+(P_quad)*r[0]**2+(P_trip)*r[0]**3, F_DATA
+ 8: endif
+ 9: exit
+10: finished
+\end{MacVerbatim}
+
+The refinement begins within the \Refine section of the \suite. Since we want to 
+calculate a simple x-y data set, the \Kuplot section is the best choice. With the
+{\tt branch kuplot} command in line 1 \Refine switches to \kuplot.  In line 3 the 
+macro tests if \Refine loaded the data into a \Kuplot data set with data set number
+{\tt F\_DATA}. The \Refine build in variable {\tt F\_DATA} defines the data set number 
+within \Kuplot into which \Refine was able to load the data set with the {\tt data} 
+command, line 2 in the main fit macro. The actual limits and the step width 
+that \Refine detects are
+stored in the \Refine variables {\tt F\_XMIN}, {\tt F\_XMAX} and {\tt F\_XSTP}. 
+Thes variables are all Read/Write but change their values with caution.
+
+In \Kuplot the {\tt func} command will calculate a user supplied function over a
+user defined range. The first parameter here the string 
+"(P\_const)+(P\_lin)*r[0]+(P\_quad)*r[0]**2+(P\_trip)*r[0]**3" defines the 
+function to be calculated. If three parameter follow, they define x-min, xmax
+and the x-step for the function. The \Suite variable r[0] takes the role of the
+functions x-coordinate. If only one parameter is supplied, it defines the data
+set number whose range and step width are to be used for the function calculation. 
+In the current example macro lines 5 and 7 will thus calculate the theory function 
+over the identical range. 
+
+A reason to deveate from the limits of the data set occures when you reifne 
+against a powder diffraction data set. In order to take the effect of Bragg 
+reflections slightly above the upper 2Theta limit into account, it is necessary
+to calculate the powder pattern to a larger 2Theta value. This will ensure that 
+the low 2Theta tail of these Bragg reflections will b e present within the 
+calculated powder patttern, even if the peak position of the Bragg reflections
+is not.
+
+The user macro needs to ensure that the last data set loaded into \Kuplot is 
+the final theory curve. 
+
+At line 9 the user macro returns to \Refine. Finally in line 10, the 
+\Refine command {\tt finished} tells \Refine that the user macro is finished.
+
+For the current macro the output produced during the refinement will be the
+following lines:
 
 \begin{MacVerbatim}
 Cyc Chi^2/(N-P)   MAX(dP/sig)   Conf          Lambda       wRvalue      Rexp
@@ -72,4 +183,305 @@ Convergence reached
    P_trip           :   -1.11685      +-    0.134130E-01
 \end{MacVerbatim}
 
+The optional plot macro needs to start within the \Kuplot section and return
+with a final exit to \refine. For the current example you could use:
+
+\begin{MacVerbatim}
+ 1: load xy, DATA/triple.noise
+ 2: kccal sub, 2,1
+ 3: r[0] = min(ymin[1],ymin[2]) - ymax[3]
+ 4: ccal add, wy, 3, r[0]
+ 5: skal
+ 6: mark
+ 7: rval 2,1, dat
+ 8: reset
+ 9: exit
+\end{MacVerbatim}
+
+
+\section{Nanoparticle PDF \label{exa-nano}}
+
+In this section we will introduce the refinement of a nanoparticle PDF. This
+initial example is fairly straightforward. The data set is the calculated PDF
+of a spherical ZnO 45 \AA diameter nanoparticle without any defects, Fig.
+\ref{fexa-nano-exp}. Thus we can, of course expect a rather perfect fit result.
+
+\begin{figure}
+   \includegraphics[angle=270,scale=0.45]{nano_data.epsi}
+   \caption{Experimental nanoparticle PDF. The nanoparticle has the perfect
+   ZnO structure with a diameter of 45 \AA. The insert shows enlarged the
+   longer distances.}
+   \label{fexa-nano-exp}
+\end{figure}
+
+The main parts of the main refinement macro are identical to the example
+in section \ref{exa-simple}. 
+
+\begin{MacVerbatim}
+ 1: refine
+ 2: #
+ 3: data xy, DATA/zno.grobs
+ 4: newparam  P_lata   , value:3.220, range:[2.90,3.50], shift:0.0020 , points:5
+ 5: newparam  P_latc   , value:5.050, range:[4.70,5.30], shift:0.0020 , points:5
+ 6: newparam  P_z_zn   , value:0.360, range:[0.30,0.42], shift:0.0020 , points:5
+ 7: newparam  P_biso   , value:0.400, range:[0.00,]    , shift:0.0001 , points:5
+ 8: newparam  P_ab_dia , value:45.00, range:[20.0,80.0], shift:0.0100 , points:5
+ 9: #
+10: newparam  P_eta    , value:0.600, range:[0.00,1.00], shift:0.0020 , points:5
+11: newparam  P_eta_l  , value:0.000, status:fixed
+12: newparam  P_u      , value:0.000, status:fixed
+13: newparam  P_v      , value:0.000, status:fixed
+14: newparam  P_w      , value:0.001, range:[0.00,0.10], shift:0.0020 , points:5
+15: newparam  P_qmax   , value:24.00, status:fixed
+16: newparam  P_scale  , value:1.000, range:[0.10,10.0], shift:0.0020 , points:5
+17: set cycle,  25
+18: set relax, start,2.00
+19: set conver, dchi:0.5, pshift:0.005, conf:0.90, chisq:1.1
+20: #
+21: run discus_main.mac, plot:k_inter.mac
+22: #
+23: exit
+\end{MacVerbatim}
+
+As before, the data set is loaded as a simple x-y ASCII data set in line 3.
+The parameters are defined in lines 4 to 16. The main difference is the use 
+of the additional optional parameters {\tt range}, {\tt shift} and {\tt points}.
+
+With {\tt range} a range of allowed parameter limits can be defined. You can 
+use this to restrict the refinement range to a sensible range, limited by 
+intuition or by physical constraints. The optional parameter takes two 
+values, the lower and upper boundary. One of these two values may be omitted,
+as in the case of {\tt P\_biso}. The lower limit is defined as 0.00, as a 
+atomic displacement parameter cannot assume negative values. The upper limit
+is absent, allowing arbitrarily large values. 
+
+The next optional parameter {\tt shift} allows to specify a multiplicative 
+term that is used to calculate parameter points at {\tt p-2*delta}, 
+{\tt p-1*delta}, {\tt p-2*delta}, {\tt p-2*delta}. These additional points are 
+needed to calculate a numerical derivative of the function value with respect
+to the parameter at hand. An accurate derivative will be calculated at the 
+current parameter value if the shifts {\tt delta} are small. In a crystal 
+structure simulation there are, however, a number of parameter types that need
+a rather large shift {\tt delta}. The most prominent example of this class are
+nanoparticle diameters. If these are increased by a small amount, no atom might 
+be added to the structure at all, as the boundary surface might cut in between 
+the positions of all atoms. In the example a value of {\tt shift:0.01} works 
+well.
+
+The last optional parameter {\tt points} specifies how many points are  used to 
+calculated the derivative. Possible values are 3 or 5, which include the 
+parameter value itself. The larger number of points will provide a more
+accurate derivative, but will of course require more computing time.
+
+Another issue to be considered is the determination and transfer of fixed 
+parameters from the main fit macro to the slave macro. Two different styles 
+might be adopted. You can create variables and set their values within a 
+separate macro, which you use at all appropriate macros. The other option,
+chosen in this example, is to use the {\tt newparam} command but to fix the 
+parameter value. It is mostly a matter of personal choice which style you 
+prefer. As an argument in favor of the {\tt newparam} style, consider the
+profile parameters {\tt P\_u}, {\tt P\_v}. It will often be necessary to 
+refine all three profile shape parameters. It makes sense though to start
+with the simplest model, a profile function of constant width, determined
+by parameter {\tt P\_w}. If, later on, you decide that a full profile 
+function is needed, all you have to do is to free parameters {\tt P\_u} and
+{\tt P\_v}. For the style of a separate macro, you would have to remove 
+the parameters from the variable defining macro, remove all initilization
+lines in any macro and add new parameters to the main fit routine. This is
+likely more error prone.
+
+The main \Discus macro {\discus\_main.mac} has to build a spherical 
+nanoparticle based on the current refinement parameters, calculate the
+necessary diffraction data and provide these as final data set within the 
+\Kuplot section.
+
+\begin{MacVerbatim}
+ 1: branch discus
+ 2: variable integer, ncellx
+ 3: variable integer, ncellz
+ 4: #
+ 5: read
+ 6:   stru CELL/zno.cell
+ 7: lat[1] = P_lata
+ 8: lat[2] = P_lata
+ 9: lat[3] = P_latc
+10: z[1]   = P_z_zn
+11: b[1]   = P_biso
+12: b[2]   = P_biso
+13: ncellx = 2.00*int(P_ab_dia/lat[1]) + 2
+14: ncellz = 2.00*int(P_ab_dia/lat[3]) + 2
+15: save
+16:   outf internal.zno.cell
+17:   omit all
+18:   run
+19: exit
+20: read
+21:   cell internal.zno.cell     , ncellx, ncellx, ncellz
+22: surface
+23:   boundary sphere, P_ab_dia/2.
+24: exit
+25: purge
+26: @powder.mac
+27: @output.mac TEMP/zno.grcalc
+28: branch kuplot
+29: rese
+30: load xy, TEMP/zno.grcalc
+31: skal
+32: ccal mul, wy, 1 , P_scale
+33: ksav 1
+34:   form xy
+35:   outf   TEMP/zno.grcalc
+36:   run
+37: exit
+38: exit
+39: finished
+\end{MacVerbatim}
+
+In lines 5 to 12 a template asymmetric unit is read, its lattice parameters
+atom position and ADP values are adapted. The known lattice parameters
+are used to calculate the number of unit cells required to fit a spherical 
+object into a block of unit cells in lines 13 and 14. The modified 
+asymmetric unit is saved to an internal file (lines 15 to 19) and a block of
+unit cells is build using the current information, lines 20 and 21. Within the
+{\tt surface} menu (lines 22 to 24) a sphere is cut with radius {\tt P\_dia/2} 
+and all voids are removed from the structure, line 25. The PDF is determined
+by calculating the powder diffraction pattern through the Debye Scattering 
+Equation, macro {\tt powder.mac} line 26. This PDF is saved with the 
+{\tt output} menu in line 27. In the remainder of the macro the PDF is scaled
+and its final form saved to the hard disk. The {\tt exit} in line 37 returns to
+the \Discus section and the {\tt exit} in line 38 returns to the \Refine 
+section. The slave macro is terminated by the special \Refine command
+{\tt finished}.
+
+\begin{MacVerbatim}
+ 1: powder
+ 2: xray
+ 3: set axis,q
+ 4: set calc,debye
+ 5: set disp,off
+ 6: set delta,0.00
+ 7: set qmin, 0.5000
+ 8: set qmax, P_qmax
+ 9: set dq,   0.0001
+10: set profile, pseudo
+11: set profile, eta, P_eta, P_eta_l
+12: set profile, uvw, P_u, P_v, P_w
+13: set profile,  width, 11
+14: set temp,use
+15: set wvle,0.20000
+16: set four,four
+17: set lpcor,bragg,0.500
+18: set scale, 1.000  
+19: run
+20: exit
+\end{MacVerbatim}
+
+The powder menu uses the Debye Scattering Equation (line 4) to calculate
+the powder pattern for the finite sized spherical nanoparticle. While
+the lower limit ${Q_{min}}$ is fixed in this example to 0.5, the upper limit
+is determined by the (fixed) parameter {\tt P\_qmax}. A Pseudo Voigt profile
+function is set up in lines 11 to 13.
+
+\begin{MacVerbatim}
+ 1: output
+ 2: value PDF
+ 3: outf \$1
+ 4: form powder, r, 0.01,  50, 0.01
+ 5: run
+ 6: exit
+\end{MacVerbatim}
+ 
+In order to generate the PDF, the output menu is instructed to write the
+data with value {\tt PDF}, line 2. Correspondingly, the format is set to
+{\tt r} with user supplied limits in line 4. In this example, the limits
+are fixed number, if necessary this can be changed to use variable names.
+
+This refinement proceeds with the following initial output:
+
+\begin{MacVerbatim}
+Cyc Chi^2/(N-P)   MAX(dP/sig) Par   Conf          Lambda       wRvalue      Rexp
+  0   2273.9      0.31748E-02   5   0.0000      0.10000E-01   1.0180      0.21348E-01
+  1   1476.8      0.15617       5   0.0000      0.50000E-02  0.82039      0.21348E-01
+  2   1194.3      0.56799E-01   5   0.0000      0.25000E-02  0.73777      0.21348E-01
+  3   862.37      0.59080E-02   6   0.0000      0.12500E-02  0.62690      0.21348E-01
+  4   557.78      0.13358E-01   5   0.0000      0.62500E-03  0.50418      0.21348E-01
+  5   329.67      0.14493E-01   5   0.0000      0.31250E-03  0.38761      0.21348E-01
+  6   171.28      0.10872E-01   5   0.0000      0.15625E-03  0.27939      0.21348E-01
+  7   138.25      0.17644E-01   6   0.0000      0.78125E-04  0.25101      0.21348E-01
+  8   51.188      0.99726E-02   5   0.0000      0.39062E-04  0.15274      0.21348E-01
+  9   26.416      0.29501E-01   6   0.0000      0.19531E-04  0.10972      0.21348E-01
+ 10   8.3212      0.51764E-01   6   0.0000      0.97656E-05  0.61581E-01  0.21348E-01
+ 11   6.7917      0.62021E-02   5   0.0000      0.48828E-05  0.55635E-01  0.21348E-01
+ 12   6.7917       0.0000       1   0.0000      0.78125E-04  0.55635E-01  0.21348E-01
+ 13   6.7917       0.0000       1   0.0000      0.12500E-02  0.55635E-01  0.21348E-01
+ 14   6.7917       0.0000       1   0.0000      0.20000E-01  0.55635E-01  0.21348E-01
+ 15   6.7917       0.0000       1   0.0000      0.32000      0.55635E-01  0.21348E-01
+ 16   5.8721      0.16346E-02   5   0.0000      0.16000      0.51731E-01  0.21348E-01
+ 17   4.7877      0.26307E-02   5   0.0000      0.80000E-01  0.46711E-01  0.21348E-01
+ 18   3.7652      0.35205E-02   5   0.0000      0.40000E-01  0.41424E-01  0.21348E-01
+ 19   2.8465      0.19826E-02   5   0.0000      0.20000E-01  0.36017E-01  0.21348E-01
+ 20   1.6043      0.16427E-02   5   0.0000      0.10000E-01  0.27039E-01  0.21348E-01
+ 21   1.2085      0.17484E-03   5  0.12624E-21  0.50000E-02  0.23468E-01  0.21348E-01
+Convergence reached
+\end{MacVerbatim}
+
+As you can see the inital agreement is not very well, nevertheless the algorithm 
+manages to find and refine into the perfect solution in cycle 21. Note that in 
+cycles 12 to 15 the algorithm does not find a better solution and increases 
+{\tt lambda}. At cycle 21 the shift in chi squared is less than the user defined 
+threshold and the refinement terminates.
+
+The final output lists the convergence criteria, the final agreement values
+and the refined parameters.
+
+\begin{MacVerbatim}
+ Data loaded as     : xy, DATA/zno.grobs
+ Sigma not defined  
+ Refinement macro   : discus_main.mac
+   Convergence 1    : dP/sigma < AND conf >     AND dChi^2 <
+                      0.500E-002     0.900          0.500     
+   Convergence 2    : dChi^2 <   AND dP/sigma > 0.0          
+                      0.500     
+   Convergence 3    : Chi^2 <                                
+                       1.10     
+
+ Information about the fit : 
+   Chi^2      :  6032.82          Chi^2/N :  1.20656    
+   Conf. level: 0.126237E-21  Chi^2/(N-P) :  1.20850    
+   No.Data    :         5000     No.Params:            8
+   MRQ final  : 0.500000E-02
+   wR value   : 0.234680E-01      R exp   : 0.213478E-01
+
+ Correlations larger than 0.8 :
+   P_w              - P_eta            : -0.953
+  
+ Refined parameters
+   P_lata           :    3.24883      +-    0.126421E-04    [   2.90000     ,   3.50000     ]
+   P_latc           :    5.20379      +-    0.296431E-04    [   4.70000     ,   5.30000     ]
+   P_z_zn           :   0.367053      +-    0.108764E-04    [  0.300000     ,  0.420000     ]
+   P_biso           :   0.462104      +-    0.327584E-03    [   0.00000     ,               ]
+   P_ab_dia         :    39.7863      +-    0.129176E-01    [   20.0000     ,   80.0000     ]
+   P_eta            :   0.867988      +-    0.174564E-01    [   0.00000     ,   1.00000     ]
+   P_w              :   0.520064E-003 +-    0.197551E-04    [   0.00000     ,  0.100000     ]
+   P_scale          :   0.986814      +-    0.837900E-03    [  0.100000     ,   10.0000     ]
+ Fixed   parameters
+   P_eta_l          :    0.00000     
+   P_u              :    0.00000     
+   P_v              :    0.00000     
+   P_qmax           :    24.0000     
+\end{MacVerbatim}
+
+\begin{figure}
+   \includegraphics[angle=270,scale=0.45]{nano_final.epsi}
+   \caption{Experimental nanoparticle PDF overlayed with the final result.
+   The difference curve in green is shifted down for clarity.
+   }
+   \label{fexa-nano-fin}
+\end{figure}
+
+Fig \ref{fexa-nano-fin} shows the excellent agreement between {\it observed} and 
+calculated datai, even at very large distances near the nanoparticle 
+diameter. 
+
+%------------------------------------------------------------------------
 %------------------------------------------------------------------------
