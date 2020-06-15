@@ -9,4 +9,4 @@ rm -f *.lot
 rm -f *.bak
 rm -f *.toc
 rm -f *.pdf
-rm -f *.ps
+rm appl_dis.tex
