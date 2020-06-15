@@ -8,6 +8,7 @@
 The purpose of the \Suite is to run a combination of 
 \href{./diffev\_man.pdf}\diffev, 
 \href{./discus\_man.pdf}\discus,
+\href{./refine\_man.pdf}\refine, 
 and 
 \href{./kuplot\_man.pdf}\Kuplot within a single program. The \Suite 
 should for all practical reasons be the main program you start.
@@ -20,17 +21,15 @@ cycle \Discus has to read all macros, and other relevant information over and
 over again. This causes a lot of unnecessary I/O, which puts a considerable
 burden onto the central disk system.
 
-As \Suite includes \diffev, \discus, and \Kuplot within one single program,
+As \Suite includes \diffev, \discus, \refine and \Kuplot within one single program,
 all relevant input can be read once at the beginning of the refinement cycle.
 It will from there on be kept in internal memory, thus eliminating the need of
 further input. This includes the trial parameters as well as the result values.
-In the stand alone program \diffev, these values are passed from \Diffev to
-and forth between \Discus and \Kuplot via (small) files on the disk. Within
-\suite, the need to write these files onto the disk no longer exists and 
+Within \suite, the need to write these files onto the disk no longer exists and 
 \Suite instructs \Diffev to store these values only internally.  
 
 As the main tasks are still performed within the sections \diffev, \discus,
-and \kuplot, the actual set of commands within \Suite is very limited. 
+\refine and \kuplot, the actual set of commands within \Suite is very limited. 
 Besides the general command of the common command language the commands are
 just the names of the three sections, Table \ref{cmd-tab}.
 
@@ -46,6 +45,8 @@ just the names of the three sections, Table \ref{cmd-tab}.
   \hline
   discus & Switch to the {\tt discus} section.\\
   \hline
+  refine & Switch to the {\tt refine} section.\\
+  \hline
   kuplot & Switch to the {\tt kuplot} section.\\
   \hline
   parallel & Run a parallel refinement. \\
@@ -55,7 +56,7 @@ just the names of the three sections, Table \ref{cmd-tab}.
         {\label{cmd-tab}\Suite command verbs.}
 \end{table}
 
-Within the three sections, a few details are slightly different compared to 
+Within the four sections, a few details are slightly different compared to 
 their stand alone versions. The main command syntax and typical command 
 sequences are, however, identical. As \Suite is a single program, the 
 global variables {\tt i[], r[], res[]} are identical throughout all 
@@ -65,7 +66,7 @@ see this new value. Be careful when you combine old \Discus and \Kuplot
 macros. Their local variables my interfere with each other. 
 
 Besides the three variables {\tt i[], r[], res[]} and the user defined
-variables, each of the three section includes specific variables that are
+variables, each of the four section includes specific variables that are
 valid and meaningful within this section only. These variables 
 specific to any of the sections are visible within that section only.
 
@@ -78,7 +79,7 @@ mostly concern disk I/O related parts.
 
 \subsection{\diffev}
 
-The stand alone \Diffev communicates with \Discus and \Kuplot via (small) 
+The stand alone \Diffev used to communicate with \Discus and \Kuplot via (small) 
 files that contain the trial parameters and the cost function results.
 To avoid writing these to disk use:
 \begin{MacVerbatim}
