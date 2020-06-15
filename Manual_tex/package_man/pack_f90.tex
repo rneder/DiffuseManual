@@ -132,6 +132,7 @@ The general predefined variables are explained in the following list:
   \item DISCUS = 1   Possible value for PROGRAM, if you are within discus.
   \item DIFFEV = 2   Possible value for PROGRAM, if you are within diffev.
   \item KUPLOT = 3   Possible value for PROGRAM, if you are within kuplot.
+  \item REFINE = 4   Possible value for PROGRAM, if you are within refine.
   \item MPI\_OFF = 0 Possible value for MPI, if the program was not started
                      with mpi.
   \item MPI\_ON  = 1 Possible value for MPI, if the program was started
@@ -145,6 +146,9 @@ The general predefined variables are explained in the following list:
                      slave program if the slave was invoked as the first
                      'run\_mpi' command within the current refinement generation.
   \item MPI          Receives a value of MPI\_OFF or MPI\_ON. 
+  \item NUM\_NODES   Number of nodes available to the program. 
+  \item SLOW         A generic loop variable.
+  \item LOOP         A generic loop variable.
   \item PI           Pi = 3.1415... 
 \end{itemize}  
 

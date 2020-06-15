@@ -10,3 +10,4 @@ rm -f *.bak
 rm -f *.toc
 rm -f *.pdf
 rm -f *.ps
+rm -f lib_f90.tex
