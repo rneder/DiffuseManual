@@ -134,11 +134,20 @@ structure file is given in Table \ref{struc-new-tab1}.
                 the atoms section of the structure file (see section
                 \ref{mol}).\\
   \hline
-  ncells      & Parameters $nx,ny,nz$ and $nc$ define the size of the
-                crystal in unit cells and the number of atoms within a
-                unit cell.  This information is needed if a complete
+  ncells      & Values are {\tt ncellx, ncelly, ncellz, nc, natoms, ntypes
+                nummole, nummoletype numnoleatom}. Parameters {\tt ncellx,
+                ncelly, ncellz} are the number of unit cells of the crystal, 
+                along the three dimensions, 
+                {\tt nc} are the number of atoms within a
+                unit cell. {\tt natoms} is the total number of atoms in the 
+                crystal, {\tt nscat} the number of atom types. The last three 
+                value describe the number of molecules, the number of 
+                molecule types and the total number of atoms within all molecules.
+                This information is needed if a complete
                 structure is read in order to allow \Discus to
-                determine the crystals size.\\
+                determine the crystals size. Upon input of an asymmetric unit 
+                this information is replaced by the contant of the 
+                actual cell file.\\
   \hline
   occ         & A list of atom occupancy values\\
   \hline
@@ -174,15 +183,15 @@ A full information input file as of version 5.18.0 has the form:
 
 \begin{MacVerbatim}
     title Structure of cubic ZrO2
-    spcgr Fm-3m
+    spcgr Fm-3m, setting:abc
     cell  5.14, 5.14, 5.14, 90., 90., 90.
-    atoms x,    y,    z,     Biso, Property, MoleNo, MoleAt, Occ
-    ZR    0.00, 0.00, 0.00,  0.5,  1,        0,      0,      1.0
-    O     0.25, 0.25, 1./4., 1.0,  1,        0,      0,      1.0
+    atoms x,    y,    z,     Biso, Property, MoleNo, MoleAt, Occ, St,  Sh,  Sk,  Sl
+    ZR    0.00, 0.00, 0.00,  0.5,  1,        0,      0,      1.0,  _,   0,   0,   0
+    O     0.25, 0.25, 1./4., 1.0,  1,        0,      0,      1.0,  _,   0,   0,   0
 \end{MacVerbatim}
 
 
-The first line is the required {\tt title} line describing the
+The first line is the required {\tt title} line that describes the
 structure. The next line specifies the space group
 $Fm\overline{3}m$.  The symbols used should be the Hermann-Mauguin
 symbols used in International Tables for Crystallography Vol.  A
@@ -191,11 +200,21 @@ given as {\tt -} sign immediately preceding the axis. Lattice types need
 to be given as capital characters, mirror planes as small
 characters.  Monoclinic cell choices 2,3 or unique c-axis will be
 assumed if the corresponding non standard Hermann-Mauguin symbol is
-used. \Discus checks the given space group symbol for
-contradictions with the lattice constants and in case of an error
+used. The optional parameter {\tt setting:} allows to use a 
+non standard setting, especially for the orthorhombic space groups. 
+You can specify either the standard space group name and an 
+alternative setting or the non standard space group name.
+Another optional parameter {\tt 1} or {\tt 2} is used to differentiate
+origin settings one and two. 
+
+\Discus checks the given space group symbol for
+contradictions between the space group symbal and the lattice 
+constants and in case of an error
 the unit cell is not read.  A complete list of valid space group
 symbols is part of the online help and can be accessed via 'help
-space\_group' from the \Discus command line.  The next line in the
+space\_group' from the \Discus command line.  
+
+The next line in the
 example above gives the lattice constants of $a=b=c=5.14$\AA \ and
 $\alpha=\beta=\gamma=90$ degrees.  Note that \Discus requires
 all six values to be given.  The keyword 'atoms' in the example file
@@ -701,10 +720,17 @@ little "left" of all fractional coordinates.
 As a CIF file contains atoms within a single unit cell
 only,  \Discus transforms the original unit cell to a
 supercell to enclose the full crystal in a single cell.
-To avoid issues with atoms whose fraction coorindates
+To avoid issues with atoms whose fraction coordinates
 are "zero" or "one", the origin is shifted. The new 
 unit cell is set to the smallest integer multiple of
 the original cell plus a margin of one extra unit cells.
+
+If the program is set to "{\tt jmol}", \Discus will still 
+write a CIF file to disk. In addition you can use the 
+optional parameter {\tt plot:inter} on the {\tt run} 
+command to start the Jmol program with an interactive
+plot of the structure, see section \ref{struc-plot} for
+fulöl details.
 
 %------------------------------------------------------------------------
 
@@ -868,7 +894,7 @@ The properties are listed in table \ref{struc-prp-tab}:
 \end{table}
 
 In addition you can define further property like behaviour. 
-This behaviour is based on connectivities\ref{struc-connect} that have 
+This behaviour is based on connectivities \ref{struc-connect} that have 
 been defined for an atom. These property like featureas allow to 
 restrict the selection of atoms to specific types that have 
 coordination numbers within a user defined range or whose 

@@ -66,10 +66,8 @@ in section \ref{get}.
 
 \section{Getting started \label{get}}
 
-After the program \Discus is installed properly and the environment
-variables are set, the program can be started by typing 'discus' at the
-operating systems prompt. Information about the installation of \Discus
-is given in the \Discus package manual.
+The \Discus section is reached from the main \Suite by typing the command
+{\tt discus} at the the  prompt of the \suite.
 
 The program uses a command language to interact with the user.  The
 command {\tt exit} terminates the program and returns control to the
@@ -78,17 +76,19 @@ optionally followed by one or more parameters.  All parameters must
 be separated from one another by a comma ",".  There is no
 predefined need for any specific sequence of commands.  \Discus
 is case sensitive, all commands and alphabetic parameters MUST be
-typed in lower case letters.  If \Discus has been compiled
-using the {\tt -DREADLINE} option (see installation files) basic
+typed in lower case letters.   Basic 
 line editing and recall of commands is possible.  For more
 information refer to the reference manual or check the online help
 using ('help command input').  Names of input or output files are to
-be typed as they will be expected by the shell.  If necessary
+be typed as they will be expected by the local operating system.  
+If necessary
 include a path to the file.  All commands may be abbreviated to the
 shortest unique possibility. At least a single space is needed
 between the command verb and the first parameter.  No comma is to
-precede the first parameter. A line can be marked as comment by
-inserting a "{\tt \#}" as first character in the line.\par
+precede the first parameter. iAll text to the right of a 
+hash tag "{\tt \#}" or exclamation mark "{\tt !}" is considered a
+comment. iThis does not include these signs within a character string
+that is enclosed by single or double quotation marks.  \par
 
 The symbols used throughout this manual to describe commands,
 command parameters, or explicit text used by the program \Discus 
@@ -149,7 +149,7 @@ related functions which are listed in Tab. \ref{func-cryst} and
   n[4]      & Number of molecules within the crystal \\
   n[5]      & Number of different molecule types \\
   n[6]      & Number of molecules within the unit cell \\
-  n[7]      & Number of none-void atoms in the crystal \\
+  n[7]      & Number of non-void atoms in the crystal \\
   \hline
   cdim[i,1] & Lowest coordinate of any atom (i=1,2,3 for x,y,z) \\
   cdim[i,2] & Highest coordinate of any atom (i=1,2,3 for x,y,z) \\
@@ -162,6 +162,8 @@ related functions which are listed in Tab. \ref{func-cryst} and
   vol[1]    & Unit cell volume \\
   rvol[1]   & Reciprocal unit cell volume \\
   \hline
+  sym\_n[1] & Space group number of the structure\\
+  \hline
 \end{tabularx}
 \caption{\label{v1-tab}Crystal related variables}
 \end{table}
@@ -173,11 +175,13 @@ related functions which are listed in Tab. \ref{func-cryst} and
   {\bf Variable} & {\bf Description} \\
   \hline\hline
   m[i]   & Number of scattering type (i.e. atom type) for atom i \\
-  b[i]   & isotropic thermal factor B for atom {\bf type} i \\
-  occ[i]   & occupancy parameter for atom {\bf type} i \\
+  b[j]   & isotropic thermal factor B for atom {\bf type} j \\
+  occ[j]   & occupancy parameter for atom {\bf type} j \\
   at\_name[i] & Atom name for atom i\\
+  at\_type[j] & Atom name for atom {\bf type} j\\
   in\_mole[i] & Molecule in which atom i is \\
   prop    [i] & Property of atom i \\
+  surf[i,k]   & Surface vector for atom i, components k=1,2,3\\
   \hline
   at\_type[i] & Atom name for atom type i\\
   \hline
@@ -188,6 +192,8 @@ related functions which are listed in Tab. \ref{func-cryst} and
   mol\_cont[i,j] & Index of atom j in molecule i \\
   mol\_len[i]    & Number of atoms in molecule i \\
   mol\_biso[i]   & Isotropic B-value for molecule i\\
+  mol\_clin[i]   & Linear correlation term for molecule i \\
+  mol\_cquad[i]  & Quadratic correlation term for molecule i \\
   mol\_dens[i]   & Density of object i \\
   mol\_type[i]   & Type of object / molecule / domain i \\ 
   \hline\hline
@@ -290,7 +296,7 @@ memory or not. Again, most of the time this is not an issue, as
 few section of the program may require huge amount of memory. 
 These sections are the Fourier menus (fourier and powder) and
 particularly the pdf menu. THe latter can be very memory hungry 
-if you deal with meny different atom types and many different 
+if you deal with many different atom types and many different 
 molecule types. It has been design to 
 release temporary memory requirements. As such it should not really
 need help with the memory issues. 

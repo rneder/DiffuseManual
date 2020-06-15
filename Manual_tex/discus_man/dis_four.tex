@@ -163,14 +163,23 @@ listed in the help file and the command reference.
 \section{Output file formats \label{four-out}}
 
 All results of the Fourier transforms are written at the {\tt
-output} segment of {\Discus}.  The following values can be saved:
+output} segment of {\Discus}.  The following values can be saved
+after you have calculated a singel crystal diffraction pattern:
 %
 \begin{quote}
-        {\it intensity, amplitude, real part, imaginary part and
-             phase angle (in degrees) }
+        {\it intensity, amplitude, real part, imaginary part, 
+             phase angle (in degrees) and the 3D PDF }
 \end{quote}
 %
-The Fourier transform calculates the real and imaginary part, all
+Following a powder diffraction pattern calculation, you can write:
+%
+\begin{quote}
+        {\it intensity, S(Q), F(Q), $<f^2>$, $<f>^2$ 
+             and the powder PDF}
+\end{quote}
+%
+The single crystal Fourier transform calculates the real and i
+imaginary part, all
 other values are calculated at the time of output.  If the average
 structure factor $\langle F \rangle$ was subtracted during the
 calculation of the Fourier transform, the corresponding values of
