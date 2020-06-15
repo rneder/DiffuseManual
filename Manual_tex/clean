@@ -11,3 +11,5 @@ rm -f *.toc
 rm -f *.out
 rm -f *.pdf
 rm -f *.ps
+rm -f appl_*.tex
+rm -f lib_f90.tex

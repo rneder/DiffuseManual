@@ -5,6 +5,8 @@ cd ../discus_man
 ../clean
 cd ../kuplot_man
 ../clean
+cd ../refine_man
+../clean
 cd ../mixscat_man
 ../clean
 cd ../package_man
