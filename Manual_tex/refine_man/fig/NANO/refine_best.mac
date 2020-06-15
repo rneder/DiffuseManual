@@ -1,0 +1,67 @@
+#@ HEADER
+#@ NAME         refine_best.mac
+#@ 
+#@ KEYWORD      refine, best fit
+#@ 
+#@ DESCRIPTION  This macro contains the parameters for the current best
+#@ DESCRIPTION  fit status.
+#@ DESCRIPTION  
+#@
+#@ PARAMETER    $0, 0
+#@
+#@ USAGE        @refine_best.mac
+#@
+#@ END
+#
+variable real, Rvalue
+variable integer, F_DATA
+variable real, F_XMIN
+variable real, F_XMAX
+variable real, F_YMIN
+variable real, F_YMAX
+variable real, F_XSTP
+variable real, F_YSTP
+variable real, P_eta_l         
+variable real, P_u             
+variable real, P_v             
+variable real, P_qmax          
+variable real, P_lata          
+variable real, P_latc          
+variable real, P_z_zn          
+variable real, P_biso          
+variable real, P_ab_dia        
+variable real, P_eta           
+variable real, P_w             
+variable real, P_scale         
+Rvalue           =      0.53295616E-001
+F_DATA           =               1
+F_XMIN           =      0.99999998E-002
+F_XMAX           =       50.000000     
+F_YMIN           =       1.0000000     
+F_YMAX           =       1.0000000     
+F_XSTP           =      0.10000001E-001
+F_YSTP           =       0.0000000     
+P_eta_l          =       0.0000000     
+P_u              =       0.0000000     
+P_v              =       0.0000000     
+P_qmax           =       24.000000     
+#
+kuplot
+rese
+load xy, DATA/zno.grobs
+exit
+#
+refine
+#
+P_lata           =       3.2484670      ! +-      0.47469752E-004
+P_latc           =       5.2042551      ! +-      0.98023505E-004
+P_z_zn           =      0.36591905      ! +-      0.28302906E-004
+P_biso           =      0.46358508      ! +-      0.63173904E-003
+P_ab_dia         =       37.994164      ! +-      0.25367472E-001
+P_eta            =       0.0000000      ! +-      0.32704547E-001
+P_w              =      0.11314118E-003 ! +-      0.20032114E-004
+P_scale          =      0.97829568      ! +-      0.84109406E-003
+#
+@discus_main.mac
+#
+exit

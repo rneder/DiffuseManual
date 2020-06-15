@@ -1,0 +1,11 @@
+#
+# $1 directory
+# $2 filename
+# $3 type tth r q
+#
+output
+   value PDF
+   outf $1
+   form powder, q, 0.01,  50, 0.01
+   run
+exit

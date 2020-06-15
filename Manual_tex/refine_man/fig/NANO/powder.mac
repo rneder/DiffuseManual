@@ -1,0 +1,22 @@
+powder
+  xray
+  set axis,q
+  set calc,debye 
+  set disp,off
+  set delta,0.00
+  set qmin, 0.5000
+  set qmax, P_qmax
+  set dq,   0.0001
+#
+#
+  set profile, pseudo
+  set profile, eta, P_eta, P_eta_l
+  set profile, uvw, P_u, P_v, P_w
+  set profile,  width, 11
+  set temp,use  
+  set wvle,0.20000
+  set four,four
+  set lpcor,bragg,0.500
+  set scale, P_scale
+  run
+exit

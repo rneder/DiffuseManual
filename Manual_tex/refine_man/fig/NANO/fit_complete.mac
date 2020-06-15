@@ -1,0 +1,51 @@
+#
+#
+#@variable.mac
+#
+#variable integer, ncellx
+#variable integer, ncellz
+#
+#@prep_var.mac
+!
+refine
+#
+data xy, DATA/zno.grobs
+newparam        P_lata   , value:3.220, shift:0.0020 , points:5  !3.857
+newparam        P_latc   , value:5.050, shift:0.0020 , points:5  !6.401
+newparam        P_z_zn   , value:0.360, shift:0.0020 , points:5  !0.3971
+newparam        P_biso   , value:0.400, shift:0.0001 , points:5  !0.86198
+#newparam        P_ab_dia , value:45.00, shift:0.0100 , points:5  ! 45.0
+#
+newparam        P_eta    , value:0.6000, shift:0.0020 , points:5  ! 45.0
+newparam        P_eta_l  , value:0.0000, status:fixed
+newparam        P_u      , value:0.0001, shift:0.0020 , points:5
+newparam        P_v      , value:0.0001, shift:0.0020 , points:5
+newparam        P_w      , value:0.0100, shift:0.0020 , points:5  ! 45.0
+newparam        P_qmax   , value:24.000, status:fixed
+newparam        P_scale  , value:1.0000, shift:0.0020 , points:5  ! 45.0
+set cycle,  25
+set relax, start,2.00
+#newparam        P_ab_dia , 28
+#
+run discus_compl.mac
+wait return
+#
+#fix P_lata
+#run discus_main.mac
+#wait return
+#newpara P_lata
+#set cycle,25
+#run discus_main.mac
+#wait return
+
+exit
+kuplot
+reset
+load xy, DATA/znse.grcalc
+load xy, TEMP/znse.grcalc
+skal
+mark 5
+plot
+#var show
+rval 1,2, dat
+exit

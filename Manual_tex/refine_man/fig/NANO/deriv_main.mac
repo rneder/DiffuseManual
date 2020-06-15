@@ -1,0 +1,12 @@
+@variable.mac
+@prep_var.mac
+@prepare.mac
+#
+@test_deriv P_lata  , 3.80,4.20,0.025
+@test_deriv P_latc  , 6.30,6.80,0.025
+@test_deriv P_z_zn  , 0.35,0.39,0.0025
+@test_deriv P_biso  , 0.05,1.00,0.025
+@test_deriv P_ab_dia, 20,40,0.25
+@test_deriv P_corrlinear, 0.001, 0.030, 0.001
+@test_deriv P_qdamp     , 0.0002, 0.004, 0.0002
+@test_deriv P_scale , 0.1, 2.0, 0.1

@@ -1,0 +1,50 @@
+#
+# calculate spherical data set
+#
+#
+#
+branch discus
+variable integer, ncellx
+variable integer, ncellz
+#
+read
+  stru CELL/zno.cell
+#
+lat[1] = P_lata
+lat[2] = P_lata
+lat[3] = P_latc
+z[1]   = P_z_zn
+b[1]   = P_biso
+b[2]   = P_biso
+
+ncellx = 2.00*int(P_ab_dia/lat[1]) + 2
+ncellz = 2.00*int(P_ab_dia/lat[3]) + 2
+save
+  outf internal.zno.cell
+  omit all
+  run
+exit
+#
+read
+  cell internal.zno.cell     , ncellx, ncellx, ncellz
+#
+surface
+  boundary sphere, P_ab_dia/2.
+exit
+purge
+@powder.mac
+@output.mac TEMP/zno.grcalc
+#
+branch kuplot
+#
+rese
+load xy, TEMP/zno.grcalc
+skal
+ccal mul, wy, 1 , P_scale
+ksav 1
+  form xy
+  outf   TEMP/zno.grcalc
+  run
+exit
+exit
+finished

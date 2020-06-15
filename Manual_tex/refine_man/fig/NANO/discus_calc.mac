@@ -1,0 +1,41 @@
+#
+# calculate spherical data set
+#
+#
+#
+discus
+read
+  stru CELL/znse_wurtzite.cell
+P_density = 2*n[1]/vol[1]
+lat[1] = P_lata
+lat[2] = P_lata
+lat[3] = P_latc
+z[1]   = P_z_zn
+b[1]   = P_biso
+b[2]   = P_biso
+
+ncellx = 2.00*int(P_ab_dia/lat[1]) + 2
+ncellz = 2.00*int(P_ab_dia/lat[3]) + 2
+save
+  outf internal.znse.cell
+  omit all
+  run
+exit
+#
+read
+  cell internal.znse.cell     , ncellx, ncellx, ncellz
+#
+surface
+  boundary sphere, P_ab_dia/2.
+exit
+purge
+@pdf.mac TEMP
+#
+branch kuplot
+#
+rese
+load xy, DATA/znse.grcalc
+load xy, TEMP/znse.grcalc
+rval 1, 2, dat
+exit
+exit   ! back to SUITE

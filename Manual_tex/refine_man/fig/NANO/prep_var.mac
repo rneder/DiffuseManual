@@ -1,0 +1,16 @@
+P_lata   =  3.2490
+P_latc   =  5.2038
+P_z_zn   =  0.3671
+P_biso   =  0.46198
+P_ab_dia = 40.0
+#
+P_corrlinear   = 0.000
+P_corrquad     = 0.000
+P_eta          = 0.700
+P_eta_l        = 0.000
+P_u            = 0.000
+P_v            = 0.000
+P_w            = 0.001
+P_qmax         =  24.000
+pdf_range      =  50.00
+P_scale        =   1.00

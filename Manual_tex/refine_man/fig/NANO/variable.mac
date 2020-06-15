@@ -1,0 +1,21 @@
+#
+variable integer, ncellx
+variable integer, ncellz
+#
+variable real,  P_lata
+variable real,  P_latc
+variable real,  P_z_zn
+variable real,  P_biso
+variable real,  P_ab_dia
+variable real,  P_corrlinear
+variable real,  P_corrquad
+variable real,  P_qmax
+variable real,  P_eta
+variable real,  P_eta_l
+variable real,  P_u
+variable real,  P_v
+variable real,  P_w
+variable real,  pdf_range
+variable real,  P_scale
+
+#

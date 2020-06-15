@@ -1,0 +1,54 @@
+#
+# prepare a spherical data set
+#
+@variable.mac
+@prep_var.mac
+#
+
+#
+#
+discus
+read
+  stru CELL/zno.cell
+lat[1] = P_lata
+lat[2] = P_lata
+lat[3] = P_latc
+z[1]   = P_z_zn
+b[1]   = P_biso
+b[2]   = P_biso
+ncellx = 2.00*int(P_ab_dia/lat[1]) + 2
+ncellz = 2.00*int(P_ab_dia/lat[3]) + 2
+save
+  outf internal.zno.cell
+  omit all
+  run
+exit
+#
+read
+  cell internal.zno.cell, ncellx, ncellx, ncellz
+#
+surface
+  boundary sphere, P_ab_dia/2.
+exit
+purge
+@powder.mac
+@output.mac DATA/zno.grobs
+#
+exit
+#
+kuplot
+#
+rese
+load xy, DATA/zno.grobs
+#
+ccal mul, dy, 1, 0.0
+ccal add, dy, 1, 0.05
+skal
+mark
+plot
+ksav 1
+  form xy, xmin[1],xmax[1]
+  outf DATA/zno.grobs
+  run
+#
+exit

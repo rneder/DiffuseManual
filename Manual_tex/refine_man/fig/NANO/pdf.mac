@@ -1,0 +1,27 @@
+#
+pdf
+#
+    ides all
+    jdes all
+    isel all
+    jsel all
+#
+    set bound,    crystal, exact
+    set dens,     P_density
+    set corrlin,  P_corrlinear
+    set corrquad, P_corrquad
+    set srat,     1.0000,3.5
+    set therm,    gauss    
+    set qbroad,   P_qbroad
+    set qdamp,    P_qdamp
+    set qmax,     P_qmax
+    set rad,      xray
+    set range,    pdf_range+5.0, 0.01
+#
+    set weig,     P_scale
+    set finite,   sphere, P_ab_dia
+#
+!    show
+    calc
+    save pdf,$1/znse.grcalc
+exit

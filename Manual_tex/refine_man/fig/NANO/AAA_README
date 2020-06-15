@@ -1,0 +1,2 @@
+prepare.mac   Builds a nanoparticle PDF
+fit.mac       Fits a structural model to the data and displays the result

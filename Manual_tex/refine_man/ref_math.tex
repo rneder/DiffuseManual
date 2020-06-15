@@ -1,0 +1,507 @@
+%------------------------------------------------------------------------
+% Chapter:  Mathematical Background
+%------------------------------------------------------------------------
+
+\chapter{Mathematical Background \label{math}}
+\section{Least squares algorithm \label{math-lsq}}
+
+This chapter describes the mathematical background to the least squares
+algorithm implemented in \refine. The description largely follows the 
+discussion in the Numerical recipes \cite{prstla2005}. 
+
+A least squares algorithms works on the basic assumption that the
+we are able to describe our data by a model function that depends on 
+M parameters:
+
+\begin{equation}
+  y ~=~ F(x; p_{0}, p_{1}, ..., p_{M})
+\end{equation}
+
+If the uncertainties of the data are subject to a Gaussian distribution,
+the highest probability for any model parameters is given if the 
+weighted residual. The weights are the inverse of the variance (= squared
+uncertainties) of the data points. $w_{i} = 1/\sigma_{i}^{2}$:
+
+\begin{equation}
+   wR = \sqrt{\frac{\sum_{i} w_{i} (y_{obs}(i) - y_{calc}(i))^2}
+                   {\sum_{i} w_{i} y_{obs}(i)^2}}
+  \label{math-eq-rval}
+\end{equation}
+
+is at its lowest possible value. 
+In this equation for the weighted residual the sums run over all
+observed data points {\tt i}. These data points might be the 
+individual data points in a powder pattern, in a PDF or a two or 
+three dimensional data set. The data points may likewise include
+several data sets and possible the need for special functions for
+a subsection of the data set. This latter situation occurs if we perform
+a simultaneous refinement of a structural model aginst a neutron and
+X-ray data set. Note that there is no need for the data points to be 
+arranged in any special sequence of {\tt i}.
+
+Often the weighted residual as defined in Eq. \ref{math-eq-rval} is replaced
+by the term "chi-squared", defined as:
+
+\begin{equation}
+  \chi^2 =  \sum_{i} w_{i} (y_{obs}(i) - y_{calc}(i))^2
+  = \sum_{i} \frac{(y_{obs}(i) - y_{calc}(i))^2}{\sigma_{i}^{2}}
+  \label{math-eq-chi2}
+\end{equation}
+
+A necessary condition for a minimum of the residual is that all
+derivatives of {\tt wR} with respect to any parameter is zero.
+This condition holds of course for the squared residual as well:
+
+\begin{equation}
+   wR^2 = {\frac{\sum_{i} w_{i} (y_{obs}(i) - y_{calc}(i))^2}
+                   {\sum_{i} w_{i} y_{obs}(i)^2}}
+  \label{math-eq-rsqu}
+\end{equation}
+
+Thus, for each parameter j we have the partial derivative:
+
+\begin{equation}
+  \frac{\partial wR^2}{\partial P_{j}} = 
+  \frac{2}{\sum_{i} w_{i} y_{obs}(i)^2}
+  \sum_{i} w_{i} 
+  \left ( 
+  y_{obs}(i) - y_{calc}(i)
+  \right )
+  \frac{\partial (y_{obs}(i) - y_{calc}(i))}
+                      {\partial P_{j}}
+  = 0
+  \label{math-eq-der}
+\end{equation}
+
+Since the observed values are independent of the parameters the equation 
+simplifies to:
+
+\begin{equation}
+  \frac{\partial wR^2}{\partial P_{j}} = 
+  - \sum_{i} w_{i} 
+  \left ( 
+  y_{obs}(i) - y_{calc}(i)
+  \right )
+  \frac{\partial y_{calc}(i)}
+        {\partial P_{j}}
+  = 0
+  \label{math-eq-der2}
+\end{equation}
+
+To simplify the notation we will replace $y_{obs}(i)$ by $y_{i}$ 
+and $y_{calc}(i)$ by $f_{i}$. This change in notation has our 
+equations for the partial derivatives read:
+
+\begin{equation}
+  \frac{\partial wR^2}{\partial P_{j}} = 
+  - \sum_{i} w_{i} 
+  \left ( 
+  y_{i} - f_{i}
+  \right )
+  \frac{\partial f_{i}}
+        {\partial P_{j}}
+  = 0
+  \label{math-eq-der3}
+\end{equation}
+
+A total of M such equations must be  solved for all parameters P
+from 1 to M.
+
+\subsection{Linear least squares algorithm \label{math-lin}} 
+ 
+A reasonable straightforward solution to find the optimum parameters 
+P$_{j}$ exists if 
+the function f$_{i}$ can be written as a linear combination 
+of the parameters:
+
+\begin{equation}
+  f_{i} = \sum_j P_{j} g_{ij}
+  \label{math-eq-linear}
+\end{equation}
+
+Here $g_{ij}$ can be any function of the data points {\tt i}. As an example
+of such a linear combination take any polynomial function:
+
+\begin{equation}
+  y_{i} = P_{0} + P_1*x_{i}^1 + P_2*x_{i}^2 + P_3*x_{i}^3 + ...
+\end{equation}
+
+Here the functions $g_{ij}$ are powers of x at point {\tt i}. 
+We are now ready to substitute $f_{i}$ and its derivative with respect to 
+parameter {\tt j} in Eq. \ref{math-eq-der3} by the function definition in 
+\ref{math-eq-linear} and obtain:
+
+\begin{equation}
+  0 = - \sum_{i=1}^{N}  w_{i}
+  \left ( 
+  y_{i} - \sum_{k=1}^{M} P_{k} g_{ik}
+  \right ) g_{ij}
+  \label{math-eq-lin1}
+\end{equation}
+
+This equation must hold for all parameters j=1 to M, and we can write all 
+these equations as:
+
+\begin{equation}
+  \sum_{k=1}^{M} \sum_{i=1}^{N}  w_{i} \, g_{ik} \, g_{ij} P_{k} 
+  =
+  \sum_{i=1}^{N}  w_{i} \, y_{i} \, g_{ji}
+  \quad ~ \quad ~ \mbox{j=1 to M}
+  \label{math-eq-lin2}
+\end{equation}
+
+This set of equations can be written concisely if we introduce a few 
+matrices. The first is the so called design matrix A. Its elements are the
+values of the theory functions $g_{ij}$ divided by the experimental 
+uncertainties at data point {\tt i}, with $\sigma_{i} = \sqrt{w_{i}}$:
+
+\begin{equation}
+   \mathbf{A} = \left ( {
+     \begin{array}{cccc}
+        \frac{g_{11}}{\sigma_{1}} & 
+        \frac{g_{12}}{\sigma_{1}} &
+        \dots                     &
+        \frac{g_{1M}}{\sigma_{1}} \\
+        \frac{g_{21}}{\sigma_{2}} & 
+        \frac{g_{22}}{\sigma_{2}} &
+        \dots                     &
+        \frac{g_{2M}}{\sigma_{2}} \\
+        \vdots & ~ & ~ & ~ \\
+        \frac{g_{N1}}{\sigma_{N}} & 
+        \frac{g_{N2}}{\sigma_{N}} &
+        \dots                     &
+        \frac{g_{NM}}{\sigma_{N}} \\
+     \end{array}
+   } \right )
+  \label{math-eq-des}
+\end{equation}
+
+Each row corresponds to the M functions $g_{ij}$ evaluated for data point
+{\tt i}, while each column corresponds to a specific function evaluated
+at all data points. Like wise we can group the parameters $P_{k}$ into 
+a column matrix:
+
+\begin{equation}
+   \mathbf{a} = \left ( {
+     \begin{array}{c} 
+        P_{1} \\
+        P_{2} \\
+        \vdots \\
+        P_{M} 
+     \end{array}
+   } \right )
+  \label{math-eq-par}
+\end{equation}
+
+Next we define a column matrix for the N observed data points as :
+
+\begin{equation}
+   \mathbf{b} = \left ( {
+     \begin{array}{c} 
+        \frac{y_{1}}{\sigma_{1}} \\
+        \frac{y_{2}}{\sigma_{2}} \\
+        \vdots \\
+        \frac{y_{N}}{\sigma_{N}} 
+     \end{array}
+   } \right )
+  \label{math-eq-dat}
+\end{equation}
+
+This allows to write set M set of Eqs. \ref{math-eq-lin2} as:
+\begin{equation}
+  \left ( \mathbf{A}^{T} \mathbf{A} \right ) \mathbf{P} 
+  = \mathbf{A}^{T} \mathbf{b}
+  \label{mat-eq-lin3}
+\end{equation}
+
+Since $\mathbf{A}^T \mathbf{A}$ is a square MxM matrix, we can solve the 
+equation to obtain the parameters as:
+
+\begin{equation}
+  \mathbf{P} = \left ( \mathbf{A}^{T} \mathbf{A} \right )^{-1}
+  \mathbf{A}^{T} \mathbf{b}
+  \label{mat-eq-lin4}
+\end{equation}
+
+The inverse matrix $\left ( \mathbf{A}^T \mathbf{A} \right )^{-1}$ is called the
+{\it covariance matrix} {\bf C}. Its elements allow to estimate the uncertainties of
+the parameters $P_{k}$ and any correlations between two parameters. 
+Each element of the column matrix P in equation \ref{mat-eq-lin4} is:
+
+\begin{equation}
+  P_{k} = \sum_{j=1}^{M} C_{kj} 
+  \left (
+    \sum_{i=1}^{N} \frac{y_{i}g_{ij}}{\sigma_{i}^2}
+  \right ) 
+  \label{mat-eq-lin5}
+\end{equation}
+
+The variance (= squared uncertainty) of parameter k can be calculated as:
+
+\begin{equation} 
+  \sigma^2(P_k) = \sum_{i=1}^{N} \sigma_{i}^{2} \left (
+  \frac{\partial{P_{k}}}{\partial{y_{i}}} \right )^2
+  \label{mat-eq-sigp}
+\end{equation}
+
+Note that in Eq. \ref{mat-eq-lin5} the elements $g_{ij}$ are independent of
+$y_{i}$. Furthermore in the sum over {\tt i} the derivative with respect to $y_{i}$
+is non-zero for element {\tt i} only. Thus the derivative in Eq. \ref{mat-eq-sigp} is:
+
+\begin{equation}
+  \frac{\partial{P_{k}}}{\partial{y_{i}}}
+  = \sum_{j=1}^{M} C_{kj} \frac{g_{ij}}{\sigma_{i}^2}
+  \label{mat-eq-derp}
+\end{equation}
+
+We can insert this derivative in squared form into Eq. \ref{mat-eq-sigp},
+interchange the sequence of the sums to write:
+
+\begin{equation}
+  \sigma^2(P_k) =
+  \sum_{j=1}^{M} \sum_{l=1}^{M} C_{kj} C_{jl}
+  \left (
+    \sum_{i=1}^{N} \frac{g_{ij}g_{il}}{\sigma_{i}^2}
+  \right)
+  \label{mat-eq-sigp2}
+\end{equation}
+
+The right hand term corresponds to the elements of 
+$\left ( \mathbf{A}^T \mathbf{A} \right )$, which in turn is the invariant
+matrix to $\mathbf{C}$. Thus the equation reduces to:
+
+\begin{equation}
+  \sigma^2(P_k) = C_{kk}
+  \label{mat-eq-sigpf}
+\end{equation}
+
+The diagonal element of matrix $\mathbf{C}$ are the variances of the parameters k.
+
+\subsection{Non-linear least squares algorithm \label{math-nlin}} 
+
+Most of the times, the function $f_{i}$ cannot be written as a linear combination
+of the parameters. As an example take a function like:
+
+\begin{equation}
+  f_{i} = P_{1} \cos(P_{2} \cdot x_{i})
+\end{equation}
+
+Under these circumstances, the individual parameters cannot be separated from each
+other. Iterative strategies have been developed to find the minimum. Independend 
+of the complexity of the function $f_{i}$, in close proximity to the minimum one
+can expect to approximate the value of $\chi^2$ as a quadriatic function of the 
+parameters P$_{i}$:
+
+\begin{equation}
+  \chi^2(P_{j}) = const - d_{j}P_{j}  + \frac{1}{2} P_{j}D_{jk}P_{k}
+\end{equation}
+
+Here, we can write this equation in more concise form if we use a matrix formalism.
+With matrix {\bf a} from Eq. \ref{math-eq-par}, a vector of length M 
+(= number of parameters), and an MxM matrix {\bf D}:
+
+\begin{equation}
+  \chi^2(a) = const - {\mathbf d}\, {\mathbf a}  + 
+  \frac{1}{2} {\mathbf a}^T {\mathbf D} {\mathbf a}
+  \label{math-eq-chimat}
+\end{equation}
+
+Very close to the minimum, we can hope for the approximation to be a good one 
+which allows us to find the best parameters with a single step:
+
+\begin{equation}
+  {\mathbf a}_{best} = {\mathbf a}_{current} \, + \, 
+  {\mathbf D}^{-1} \cdot \left (- \nabla \chi^2({\mathbf a}_{current}) \right )
+  \label{math-eq-best}
+\end{equation}
+
+Unfortunately, most of the time we cannnot know how good our current approximation
+will be. 
+The best one can do is to calculate the gradient of the squared residual and take
+a small step into the direction of the steepest decent. At this new point in the 
+parameter space one needs to calculate the gradient again and take further steps
+towards the minimum. At any iteration during this procedure, the new parameter set
+can be calculated as:
+
+\begin{equation}
+  {\mathbf a}_{next} = {\mathbf a}_{current} \, - \,
+  constant \times \nabla \chi^2({\mathbf a}_{current})
+  \label{math-eq-next}
+\end{equation}
+
+The tricky part is the determination of the value of {\it constant}. It must be
+small enough to take a step downhill, and not beyond the minimum. A very small
+value will, however, increase the number of iterations it takes to reach the 
+minimum. A further risk with a very small value of the {\it constant} is to step
+into a local minimum. Thus different values of the {\it constant} and a dynamic 
+adapration are needed.
+
+As for the linear model we have out function:
+
+\begin{equation}
+  y ~=~ F(x; p_{0}, p_{1}, ..., p_{M})
+\end{equation}
+
+and we need to minimize chi squared:
+
+\begin{equation}
+  \chi^2 =  \sum_{i} w_{i} (y_{obs}(i) - y_{calc}(i))^2
+  = \sum_{i} \frac{(y_{obs}(i) - y_{calc}(i))^2}{\sigma_{i}^{2}}
+  \label{math-eq-nchi2}
+\end{equation}
+
+As in the introductory part we will reduce the terminology to:
+
+\begin{equation}
+  \chi^2 =  \sum_{i} w_{i} (y_{i} - f_{i})^2
+  \label{math-eq-nchi2_a}
+\end{equation}
+
+In order to take steps towards the minimum we need to calculate the gradient of
+$\chi^2$ with respect to each parameter k:
+
+\begin{equation}
+  \frac{\partial{\chi^2}}{\partial{P_{k}}} 
+  =
+  -2 \sum_{i=1}^{N}
+  \frac{(y_{i} - f_{i})}{\sigma_{i}^{2}}
+  \frac{\partial{f_{i}}}{\partial{P_{k}}}
+\label{math-eq-grad}
+\end{equation}
+
+A further derivative with respect to another parameter give the cross terms 
+needed to a direct decent:
+
+\begin{equation}
+  \frac{\partial^2{\chi^2}}{\partial{P_{k}}\partial{P_{l}}} 
+  =
+  2 \sum_{i=1}^{N} 
+  \frac{1}{\sigma_{i}^2} \left (
+  \frac{\partial{f_{i}}}{\partial{P_{k}}}
+  \frac{\partial{f_{i}}}{\partial{P_{l}}}
+  -
+  \left (
+  y_{i}-f_{i}
+  \right )
+  \frac{\partial^2{f_{i}}}{\partial{P_{k}}\partial{P_{l}}}
+  \right )
+\label{math-eq-grad2}
+\end{equation}
+
+The individual equations \ref{math-eq-grad2} can be considered to be matrix
+elements of a matrix {\bf $\alpha$} with:
+
+\begin{equation} 
+  \alpha_{kl} \, = \, \frac{1}{2}
+  \frac{\partial^2{\chi^2}}{\partial{P_{k}}\partial{P_{l}}}
+  \label{math-eq-alpha}
+\end{equation} 
+
+and a vector $\mathbf \beta$:
+\begin{equation} 
+  \beta_{k} \, = \, -\frac{1}{2}
+  \frac{\partial^2{\chi^2}}{\partial{P_{k}}}
+  \label{math-eq-beta}
+\end{equation}
+
+Here the factors 1/2 have been introduced for convenience sake. With these definitions
+the parameter shift can be written as a vector $\mathbf \delta$ and the equation to be
+solved becomes:
+
+\begin{equation}
+  {\mathbf A} {\mathbf \delta} \,=\, {\mathbf \beta}
+  \label{math-eq-non}
+\end{equation}
+
+In the algorithm implemented in \refine, as taken from \cite{prstla2005} the 
+second derivatives in Eq. \ref{math-eq-grad2} is omitted, making the matrix
+elements $\alpha_{kl}$:
+
+\begin{equation}
+  \alpha_{kl} \,=\,
+  \sum_{i=1}^{N} 
+  \frac{1}{\sigma_{i}^2} \left (
+  \frac{\partial{f_{i}}}{\partial{P_{k}}}
+  \frac{\partial{f_{i}}}{\partial{P_{l}}} \right )
+  \label{math-eq-alphakl}
+\end{equation}
+
+The reasoning behind this omission is that the second derivatives tend to be
+much smaller, tend to destabilize the algorithm due to the noise in the 
+experimental data and the final parameter values do not depend on the 
+second derivatives, just the path towards the final parameters.
+
+In terms of the matrices introduced in Eqs. \ref{math-eq-alpha} and 
+\ref{math-eq-beta}, the steepest decent in Eq. \ref{math-eq-next}
+corresponds to 
+
+\begin{equation}
+  \delta a_{l} = constant \times {\beta}_{l}
+  \label{math-eq-steep}
+\end{equation}
+
+Far from the minimum, this decent is the optimum method, while close to the
+minimum a solution according to \ref{math-eq-non} serves best. The 
+commonly used Levenberg-Marquardt method provides an algorithm to vary 
+between these two algorithms. The algorithm is described by 
+\cite{ma1963} based on earlier suggestions by \cite{le1944}. 
+
+There are two parts to the Levenberg-Marquardt algorithm. First of all, a
+scale factor must be included into equation \ref{math-eq-steep} to 
+convert the dimensions of ${\beta} $ into those of the parameters $\alpha$. 
+This conversion factor will likely be different for each parameter $\alpha$.
+The diagonal elements of matrix {\bf A} in Eq. \ref{math-eq-alpha} do 
+provide this vonversion factor. The Levenberg-Marquadrt algorithm provides
+an additional dimensionless factor $\lambda$ to scale the parameter shift,
+turning Eq. \ref{math-eq-steep} into
+
+\begin{equation}
+  \delta a_{l} = \frac{1}{\lambda \alpha_{ii}} \times {\beta}_{l}
+  \label{math-eq-steeplm}
+\end{equation}
+
+The second part to the Levenberg-Marquardt algorithm provides a transition
+between the steepest decent and the direct solution. The matrix 
+{\bf $\alpha$} is replaced by a new matrix {\bf $\alpha '$}, where the 
+diagonal elements are replaced according to:
+
+\begin{equation}
+  \alpha_{jj}^{\prime} = \alpha_{jj} \, \left ( 1 \, + \, \lambda \right )
+  \label{math-eq-alphap}
+\end{equation}
+
+while the off diagonal elements remain the same.
+
+The steepest decent, Eq. \ref{math-eq-steep}, and the direct solution close 
+to the minimum, Eq. \ref{math-eq-non}, are combined into a single new equation:
+
+\begin{equation}
+  \bm{\alpha}^{\prime} \delta \bm{a} = \bm{\beta}
+  \label{math-eq-ml}
+\end{equation}
+
+The implementation of the Levenberg-Marquardt algorithm used in \Refine is taken 
+from the numerical recipes \cite{prflteve1989} and is initialized by the following 
+steps:
+\begin{itemize}
+  \item Provide initial guesses for all parameters {\bf a}.
+  \item Provide initial guesses for $\lambda$.
+  \item Calculate the corresponding value of $\chi^2$.
+\end{itemize}
+
+The program then carries out the iterations by:
+
+\begin{itemize}
+  \item Solving Eq. \ref{math-eq-ml} for the parameter shifts.
+  \item Calculate $\chi^2$ for the modified parameters $a + \delta a$.
+  \item If the iteration succeeds i.e. the new $\chi^2$ is less than
+        the previous one, the new parameter values are accepted and
+        $\lambda$ is decreased by a suitable factor.
+  \item If the iteration did not succedd, i.e. the new $\chi^2$ is 
+        higher than the previous one, the old parameter set is retained
+        and $\lambda$ is increased by a suitable factor.
+\end{itemize}
+
+\Refine enables the user to provide a starting value for $\lambda$ and
+individual factors for the decrease and increase. 
+%------------------------------------------------------------------------

@@ -1,0 +1,10 @@
+#
+reset
+load xy, DATA/zno.grobs
+load xy, TEMP/zno.grcalc
+skal
+mark 5
+plot
+var show
+rval 1,2, dat
+exit
