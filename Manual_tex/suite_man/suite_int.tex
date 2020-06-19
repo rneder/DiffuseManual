@@ -60,6 +60,12 @@ been copied into the clipboard with CTRL-c.
 Once you activate the window and hit the ENTER key the program will
 work in this folder.
 
+Roughly every week the program will automatically update the 
+Windows-Subsystem-Linux (Ubuntu) on which the discus-suite runs. 
+This will be performed upon the exit from the suite and should not take long.
+
+To install future updates simply type the discus\_suite command {\tt update}.
+
 \subsection{Linux}
 
 
@@ -67,12 +73,18 @@ After the program {\it DISCUS\_SUITE} has been installed properly and the
 environment variables are set, the program can be started by typing
 'discus\_suite' at the operating systems prompt.
 
+To install future updates simply type the discus\_suite command {\tt update}.
+
 \subsection{MAC}
 
 After the program {\it DISCUS\_SUITE} has been installed properly and the
 environment variables are set, the program can be started by first 
 starting a terminal window and typing
 'discus\_suite' at the operating systems prompt.
+
+To install future updates simply type the discus\_suite command {\tt update}.
+
+\subsection{General introduction}
 
 The program uses a command language to interact with the user.  The
 command {\tt exit} terminates the program and returns control to the
@@ -153,6 +165,65 @@ this macro. Note that there are no comma between the parameters.
 
 For info on further command line options the the on-line help for
 the Command language.
+
+\subsection{Major Updates in this last version}
+
+In \Suite version 6.00 several new features were introduced:
+
+A completely new refinement section \Refine allows you to run a fast
+Least-Squares refinement as an alternative to the population based 
+\Diffev section.  The same algorithm now works behind the scenes of the
+\Kuplot {\tt fit} command.
+
+Within \Discus the calculation of the powder PDF has been moved from 
+the {\tt pdf} menu to the powder diffraction  menu. In versions 5 and 
+prior, the PDF was explicitly calculated using the histogram of 
+interatomic distances. As this is an approximation in the case of 
+X-ray and electron diffraction, \Suite version 6 calculates the 
+PDF via the powder pattern. The normalized powder pattern is 
+transformed into the PDF. See \cite{neder2020} for details.
+
+The powder menu has been thoroughly revised and improved. Besides the
+new PDF output, the powder menu can now be used to calculate powder
+pattern for multiple phases. 
+
+In an analogue fashion, the 3D PDF or 3D Delta PDF is calculated 
+by a Fourier transform of the (3/2)dimensional single crystal 
+diffraction pattern.
+
+To help adapt single crystal data to experimental values, a
+convolution of the single crystal diffraction pattern with a
+resolution function has been introduced.
+
+The 3D output of a single crystal diffraction pattern can be stored as 
+an HDF5 format file. This file is compatible with Yell.
+The {\tt load} command in \Kuplot can read these files. The 
+{\tt mouse} menu in \Kuplot has been augmented to allow to view these
+files.
+
+The space groups have been expanded to include all alternative 
+setting for the orthorhomic space groups.
+
+Noteworthy new features in the command language include:
+
+On a more internal technical note, the internal accuracy of the
+interpreter language has been increased. 
+ 
+The option to use continuations of a long line across 
+several lines in a macro.
+
+Vector and matrix variables along with the usual matrix 
+manipulation tools were introduced.  
+
+The new {\tt update} command will perform an update to the latest 
+version.
+
+The Windows version of the \Suite has migrated onto the
+Windos-Subsystem-Linux platform. This presents an improvement
+in calculatio speeds by about 30\%.
+
+Automitic installer scripts for all operating systems should make
+the installation much ore straightforward.
 
 \section{Parallel execution \label{intro-par}}
 
