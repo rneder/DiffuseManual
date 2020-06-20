@@ -66,6 +66,17 @@ This will be performed upon the exit from the suite and should not take long.
 
 To install future updates simply type the discus\_suite command {\tt update}.
 
+As the \Suite runs on top of the Windows-Subsystem-Linux, a Linux distribution,
+access to the removable disks is slightly different than for a original Windows 
+program. Unfortunately, to date the Windows-Subsystem-Linux does not perform 
+an automatic mounting of removable drives such as a USB drive. The suite will
+do such a mount process if you use the command {\tt cd F:} to access a drive 
+{\tt F:}. As the \Suite cannot know if you do not need this drive any longer, 
+the drive is not automatically dismounted once you change back to the {\tt C:}
+drive or even when you exit the program. Other instances of the \Suite might still
+need the drive. Thus it is left to you to dismount a drive with the 
+{\tt umount F:} command once your are finished.
+
 \subsection{Linux}
 
 
@@ -219,10 +230,10 @@ The new {\tt update} command will perform an update to the latest
 version.
 
 The Windows version of the \Suite has migrated onto the
-Windos-Subsystem-Linux platform. This presents an improvement
-in calculatio speeds by about 30\%.
+Windows-Subsystem-Linux platform. This presents an improvement
+in calculation speeds by about 30\%.
 
-Automitic installer scripts for all operating systems should make
+Automatic installer scripts for all operating systems should make
 the installation much ore straightforward.
 
 \section{Parallel execution \label{intro-par}}
