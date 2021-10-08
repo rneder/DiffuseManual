@@ -47,6 +47,7 @@ c
 	i=0
 10	continue
 	  read (ihl,5000,end=20) zeile
+          IF(zeile(1:2) /= '!%') then
 	  i=i+1
 	  call hole_zahl (zeile(1:3),ianz,werte,i)
 	  if (ianz.ne.0) then
@@ -57,6 +58,7 @@ c
 	  else
 	    if (lstart) call write_line (irt,zeile,pre,spc)
 	  endif
+	  ENDIF
 	goto 10
 20	continue
 	if (pre) write (irt,5000) '\end{MacVerbatim}'
@@ -221,11 +223,13 @@ c
 	  endif
 	else
           read (ihl,1000) typ
+          IF(typ(1:2) /= '!%') THEN
 	  il=len_str(typ)
 	  call check_line (typ,outline,il)
      	  write (irt,1000) header(ilev)(1:ihead)//
      &	                   '{Error '//line(4:izei)//
      &	                   ': '//outline(4:il)//'}'
+	  ENDIF
 	endif
 c
 1000	format (a)
