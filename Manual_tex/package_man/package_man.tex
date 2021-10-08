@@ -15,7 +15,7 @@
 \usepackage{floatflt}
 \usepackage{tabularx}
 \usepackage[round]{natbib}
-\usepackage[hang,small,bf]{caption2}
+\usepackage[hang,small,bf]{caption}
 \usepackage{fancyvrb}
 \usepackage{scalefnt}
 \usepackage{color}
@@ -45,6 +45,8 @@
 \newcommand{\kuplot}{\textsc{Kuplot}}
 \newcommand{\Mixscat}{\textsc{Mixscat\ }}
 \newcommand{\mixscat}{\textsc{Mixscat}}
+\newcommand{\Refine}{\textsc{Refine\ }}
+\newcommand{\refine}{\textsc{Refine}}
 \newcommand{\Suite}{\textsc{Discus Suite\ }}
 \newcommand{\suite}{\textsc{Discus Suite}}
 
@@ -141,35 +143,36 @@ consists of the following programs:
 
 \begin{itemize}
   \item \textbf{\textsc{DISCUS SUITE}}: The \Suite is a common program
-  that includes \Discus \Diffev and \kuplot. It allows to switch
+  that includes the sections \Discus \Diffev \Refine and \kuplot. 
+  It allows to switch
   seamlessly between the individual sections and will eventually replace
   the individual parts. It also offers an optimization for large scale 
-  computing facilities. For all practical reasons, the 
-  \textbf{\textsc{DISCUS SUITE}} should be used and the use of the 
-  individual programs DISCUS, DIFFEV and KUPLOT is discouraged.
+  computing facilities. 
 
   \item \textbf{\textsc{DISCUS}}: This is the main diffuse scattering
-  and defect structure simulation program. This is the program that
+  and defect structure simulation section. This is the section that
   gave the package its name.
   
   \item \textbf{\textsc{DIFFEV}}: This is a more recent addition. This
-  program allows the refinement of a set of high level parameters 
+  section allows the refinement of a set of high level parameters 
   (\textit{e.g.} input parameters of a \Discus macro) based on a
   differential evolutionary algorithm.
   
-  \item \textbf{\textsc{MIXSCAT}}: This is newest addition to the 
-  \Discus package. This program allows on to extract differential
-  PDFs from neutron- and x-ray data.
+  \item \textbf{\textsc{REFINE}}: This is newest addition to the 
+  \Discus package. This section section allows a classical 
+  least squares refinement. 
   
-  \item \textbf{\textsc{KUPLOT}}: This is plotting program of the
+  \item \textbf{\textsc{KUPLOT}}: This is plotting section of the
   package. It is nearly as old as \Discus itself. 
+
+  \item \textbf{\textsc{MIXSCAT}}: This part has been retired.
   
 %  \item \textbf{\textsc{PDFFIT}}: This is a PDF refinement program.
 %  It has been retired and users are encouraged to download the new
 %  version \textsc{PDFgui} at \url{http://www/diffpy.org}.
 \end{itemize}
 
-Each of the program(sections) has its own users guide which include disclaimers 
+Each of the sections has its own users guide which include disclaimers 
 and the appropriate references to cite in case you are publishing work
 derived from using these programs.
 
@@ -181,8 +184,8 @@ are loosely related to FORTRAN77 syntax, so the older generation should
 have no trouble with it. 
 \par
 \ \par
-Please visit the \Discus homepage frequently at 
-\url{http://tproffen.github.io/DiffuseCode/} 
+Please visit the \Discus homepage frequently at  \\
+\url{http://tproffen.github.io/DiffuseCode/} \\
 and also consider subscribing 
 to the \Discus mailing lists.
 
@@ -194,7 +197,7 @@ Once the programs have been installed you should see an icon for each of
 the programs on your personal desktop. Double click the icon to start
 the program of your choice.
 
-At program start, each of the programs sets its starting folder to\\
+At program start, the \Suite sets its starting folder to\\
 \begin{MacVerbatim}
    C:\Users\your_name
 \end{MacVerbatim}
@@ -203,20 +206,14 @@ may be slightly different depending on the language settings.
 To work with data and macros that are stored in a separate folder, 
 you need to change to this folder.
 
-Within the DIFFUSE program window, type the command {\tt cd } including a
+Within the \Suite program window, type the command {\tt cd } including a
 blank space after the {\tt cd}. At this point do not hit the enter key.
 Open the desired folder with the Windows-Explorer. Left click on the 
 small folder symbol in the top line that indicates the path to your
 folder. This should highlight the full path to the folder. 
 
-For \discus, \diffev, and \Mixscat you can drag this folder symbol into the
-DIFFUSE program window. The command line should now read something like
-\begin{MacVerbatim}
-   cd C:\Users\Neder\Documents\DISCUS_examples
-\end{MacVerbatim}
-
-For \Kuplot and \suite,  select the highlighted path to the folder
-with CTRL-c. Activate the \Kuplot or \Suite window and press the 
+Select the highlighted path to the folder
+with CTRL-c. Activate the \Suite window and press the 
 middle button on the mouse. This should place the full path into the
 program window. 
 
@@ -227,8 +224,8 @@ work in this folder.
 
 Once you have installed the Diffuse program package, the binaries will
 usually reside in the directory: {\tt /usr/local/bin/}. 
-To use any of the programs, open a terminal window, switch to the
-desired directory and type the program name. 
+To use any of the programs, open a terminal window, switch to the 
+desired directory and type {\tt discus\_suite}.
 
 Several command line options are available for the Linux version.
 The most important one is to start the execution of a macro:
@@ -247,6 +244,15 @@ this macro. Note that there are no comma between the parameters.
 
 For info on further command line options the the on-line help for
 the Command language.
+
+\subsection{MacOS} \label{start-MAC}
+Once you have installed the Diffuse program package, the binaries will
+usually reside in the directory: {\tt \${HOME}/bin/}.  
+To use \Suite open the {\tt terminal} app switch to the desired
+directory snd type {\tt discus\_suite}.
+
+The command line options are identical to the \ref{start-linux} Linux version.
+
 
 \section{Command language overview} \label{over}
 
@@ -301,6 +307,17 @@ until you change the value explicitly.
 As the named optional parameters are identified by their name,
 they may be given in arbitrary order.
 
+As the most efficient alternative to the interactive input of
+commands by the user, the \Suite works best when you place all the
+commands into one or more simple text files, referred to as macros.
+All sections of the \Suite can read these and execute the commands within
+such a macro file as if they had been typed interactively at the prompt.
+
+See the section {\ref {mac}} for more details. A particular macro called
+{\tt autorun.mac} will be executed automatically at program start.
+
+Besides the {\tt autorun.mac} at Linux and MacOS you can use command
+line options {\ref {cmdopt} to start a macro at program start. 
 
 \subsection{Help} \label{over-help}
 
@@ -310,6 +327,7 @@ manuals from the \suite, type :
   manual                 ! Opens the manual for your current section
   manual section:suite   ! Opens the SUITE manual
   manual section:discus  ! Opens the DIFFEV manual
+  manual section:refine  ! Opens the REFINE manual
   manual section:diffev  ! Opens the DISCUS manual
   manual section:kuplot  ! Opens the KUPLOT manual
   manual section:package ! Opens this PACKAGE manual
@@ -317,8 +335,11 @@ manuals from the \suite, type :
 
 The \Suite will open the manual with a standard PDF viewer. Alternatively
 you can open the manual with your favorite viewer with the second 
-optional parameter {\tt viewer:viewer\_name}, where {\tt viewer\_name} 
-shall be replaced by your favorite.
+optional parameter, for example:
+\begin{MacVerbatim}
+ manual section:package, viewer:qpdfview
+\end{MacVerbatim}
+where the {\tt viewer\_name} shall be replaced by your favorite.
 
 At a Linux system the manual files are usually installed into 
 {\tt /usr/local/share}.
@@ -435,6 +456,9 @@ followed by a list of common Unix commands.
   \hline
    set prompt, <status> & The <status> may be "on", "off".\\
   \hline
+   update & Available at the main\Suite level, this command 
+            will update the \Suite to run the latest release.\\
+  \hline
 \end{tabularx}
 \caption{\label{over-cmds}Main \Suite commands}
 \end{table}
@@ -548,9 +572,42 @@ how to proceed after this interrupt. You can:
    continue command. \\
 {\tt exit} & the \Suite. \\
 \end{tabularx}
-
+%
 %------------------------------------------------------------------------
+%
 
+\section{Parallel computing } \label{parallel}
+
+The \suite uses parallel computing in two very different fashions. For a 
+long tim \diffev is run effectively in parallel, see the \diffev manual for 
+details.
+
+As of version 6.02 the \suite has also been compiled with openMP, a standard 
+for parallel processing. The parallel processing is done automatically and 
+usually does not require user input. 
+
+As of version 6.02 the parallel processing is used to accelerate the calculations
+of a powder diffraction pattern, a single crystal Fourier, and the Monte-Carlo
+simulations. More to come. 
+
+At startup \suite will check how many physical and logical cores are available 
+at the computer. Many modern CPU's provide the capability to run two processes
+in {\it parallel} on the same physical CPU, a term referred to as hyperthreading. 
+This will be advantageous, if one of the two processes is for example waiting for 
+external signals. If the \suite uses two thread in parallel on the same 
+physical core, the administrative overload will actually slow down the  computing 
+and no performance increase is obtained. At startup \suite thus limits the 
+number of parallel threads to the number of phycsical units. 
+
+Two commands relate to parallel processing via openMP. The command
+{\tt show parallel} will display the number of threads currently used as well
+as the number of physical and logical cores available. 
+
+With {\tt set parallel} you can determine how many threads to use in paralleli
+computations. See the on-line help for more details on these two command.
+%
+%------------------------------------------------------------------------
+%
 \include{pack_f90}
 \include{pack_api}
 \include{lib_f90}

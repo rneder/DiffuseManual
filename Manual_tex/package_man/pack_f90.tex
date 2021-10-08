@@ -152,7 +152,6 @@ The general predefined variables are explained in the following list:
   \item PI           Pi = 3.1415... 
 \end{itemize}  
 
-One further system variable is {\tt PI}. The capitalization is mandatory.
 
 {\bf Variables with fixed name that carry program information}
 
@@ -349,6 +348,25 @@ functions.
 \end{tabularx}
 \caption{\label{func-trig}Trigonometric and arithmetic functions}
 \end{table}
+
+Profile functions are listed in table \ref{func-profile}. Currently this is just
+a Pseudo-Voigt function, but it includes an option for a double peak.
+
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{12mm}|p{30mm}|X|}
+  \hline
+  {\bf Type} & {\bf Name} & {\bf Description} \\
+  \hline\hline
+  real & psvgt(r, eta, int, pos, fwhm) &  Returns the value of the Pseudo-Voigt function
+                     at the point r. Required parameters are the mixing parameter
+                     eta, the integral intensity, the peak position and the FWHM.
+                     See the on-line help for further optional parameters.  \\
+  \hline
+\end{tabularx}
+\caption{\label{func-profile}Profile functions}
+\end{table}
+
 
 \begin{table}[!tbh]
 \centering
@@ -769,7 +787,9 @@ would take the form:
 
 \par
 
-\subsection{Command line options}
+\section{Command line options \label{cmdopt}}
+
+\subsection{User macros}
 If the program is started with command line parameters,
 e.g. {\tt discus 1.mac 2.mac}, the program will execute the given
 macros in the specified order, in our example first {\tt 1.mac} then
@@ -784,6 +804,27 @@ directory, a system macro director is searched. This system macro
 directory is located at {\tt path\_to\_binary/sysmac/discus/}.
 Commonly used macro files might be installed in this directory.
 If a macro file is not found, an error message is displayed.
+
+\subsection{Macro autorun.mac}
+If the \Suite finds macro called {\tt autorun.mac} in the current
+directory, the instructions within this macro will be executed
+prior to any user macros and prior to the start of the interactive 
+session. You can use this macro to define standard starting 
+conditions that shall apply to any calculations specified for data
+and macros in this directory. 
+
+At the Windows operating system, the starting folder is always \\
+\begin{MacVerbatim}
+   C:\Users\your_name
+\end{MacVerbatim}
+where {\tt your\_name} will be your user name. The string {\tt Users}
+may be slightly different depending on the language settings.
+Place the {\tt autorun.mac} into this folder.
+
+If at any time you choose to ignore {\tt autorun.mac}, start the program 
+with the command line option {\tt -noautorun}. At Windows, you will have to 
+rename the macro or move it to a separate folder. 
+
 
 %------------------------------------------------------------------------
 
@@ -803,7 +844,7 @@ The following example illustrates the usage of these commands:
 \footnotesize
 \begin{MacVerbatim}
       1  fopen 1,sin.dat
-      2  fput 1,'Cool sinus function'
+      2  fput 1,'Cool sine function'
       3  #
       4  do i[1]=1,50
       5     r[1]=i[1]*0.1
@@ -829,64 +870,64 @@ entered without any parameters.
 
 %------------------------------------------------------------------------
 
-\section{Remote control\label{remote}}
-
-It is possible to remote control the programs in the \Discus package
-using so called sockets. One program acts as server and receives and 
-executes commands. In order to enable the server feature, the program
-needs to be started using the {\tt -remote} command line switch as in
-the example below:
+%\section{Remote control\label{remote}}
 %
-\begin{MacVerbatim}
-dhcp165057:prog> ./discus -remote
-
-          ***********************************************************
-          *               D I S C U S   Version 5.22.0              *
-          *                                                         *
-          *         Created : Thu Jun 28 10:00:00 JST 2018          *
-          *---------------------------------------------------------*
-          * (c) R.B. Neder  (reinhard.neder@fau.de)                 *
-          *     Th. Proffen (tproffen@lanl.gov)                     *
-          ***********************************************************
-          *                                                         *
-          * For information on current changes type: help News      *
-          *                                                         *
-          ***********************************************************
-
- Command line editing enabled ..
-
- User macros in   : /Users/thomasproffen/mac/discus/
- System macros in : /Users/thomasproffen/mac/discus/
- Start directory  : /Users/thomasproffen/Code/Diffuse/discus/prog
-
- ------ > Running in SERVER mode
- Running in local mode (127.0.0.1) ..
- Listening to port 3330 ..
- Allowing connections from 127.0.0.1 ..
-\end{MacVerbatim}
+%It is possible to remote control the programs in the \Discus package
+%using so called sockets. One program acts as server and receives and 
+%executes commands. In order to enable the server feature, the program
+%needs to be started using the {\tt -remote} command line switch as in
+%the example below:
+%%
+%\begin{MacVerbatim}
+%dhcp165057:prog> ./discus -remote
 %
-Note that the host IP address and port number are given at the end
-of the startup output. This information is needed to connect to this 
-running version of in our case \discus. To allow connections from
-computers other than 127.0.0.1 (localhost) or using a different port,
-use the command line options {\tt -access} and {\tt -port}.
-
-In order to connect to the \Discus server, we use the command 
-{\tt socket} as in this example:
+%          ***********************************************************
+%          *               D I S C U S   Version 5.22.0              *
+%          *                                                         *
+%          *         Created : Thu Jun 28 10:00:00 JST 2018          *
+%          *---------------------------------------------------------*
+%          * (c) R.B. Neder  (reinhard.neder@fau.de)                 *
+%          *     Th. Proffen (tproffen@lanl.gov)                     *
+%          ***********************************************************
+%          *                                                         *
+%          * For information on current changes type: help News      *
+%          *                                                         *
+%          ***********************************************************
 %
-\begin{MacVerbatim}
- discus > socket open,127.0.0.1,3330
- Connecting to 127.0.0.1:3330 ..
- Server : ready
- Connected ..
- discus > socket send,echo This is cool
- Server :  This is cool
- Server : ready
- discus > 
-\end{MacVerbatim}
+% Command line editing enabled ..
 %
-Of course any program or script that can use sockets is able to connect
-to the \Discus package programs in this way. For more details refer
-to the {\tt socket} command reference later in this guide.
+% User macros in   : /Users/thomasproffen/mac/discus/
+% System macros in : /Users/thomasproffen/mac/discus/
+% Start directory  : /Users/thomasproffen/Code/Diffuse/discus/prog
+%
+% ------ > Running in SERVER mode
+% Running in local mode (127.0.0.1) ..
+% Listening to port 3330 ..
+% Allowing connections from 127.0.0.1 ..
+%\end{MacVerbatim}
+%%
+%Note that the host IP address and port number are given at the end
+%of the startup output. This information is needed to connect to this 
+%running version of in our case \discus. To allow connections from
+%computers other than 127.0.0.1 (localhost) or using a different port,
+%use the command line options {\tt -access} and {\tt -port}.
+%
+%In order to connect to the \Discus server, we use the command 
+%{\tt socket} as in this example:
+%%
+%\begin{MacVerbatim}
+% discus > socket open,127.0.0.1,3330
+% Connecting to 127.0.0.1:3330 ..
+% Server : ready
+% Connected ..
+% discus > socket send,echo This is cool
+% Server :  This is cool
+% Server : ready
+% discus > 
+%\end{MacVerbatim}
+%%
+%Of course any program or script that can use sockets is able to connect
+%to the \Discus package programs in this way. For more details refer
+%to the {\tt socket} command reference later in this guide.
 
 %------------------------------------------------------------------------
