@@ -225,3 +225,224 @@ operations can be realized by creating the wanted different
 orientations of the molecules as different types using the symmetry
 segment of Discus (see chapter \ref{cryst-sym}) and
 subsequently using the {\it swap chemistry} mode.
+
+\section{Examples \label{mc-exa}}
+
+Since the publication of the Discus book \cite{nedpro} the Monte-Carlo part
+has undergone quite a few changes and updates. The examples in this section
+illustrate the current possibilities.
+
+\subsection{Simple Short range order}
+
+With this example a simple short range order example will be used to 
+illustrate the main Monte-Carlo concepts as implemented into \discus.
+
+The example uses a binary two dimensional crystal. This serves to speed up 
+the simulations compared to a full 3D-model but does not impose a restriction
+with respect to the possible concepts.
+
+A header of such a simulation might include the following lines:
+
+\begin{MacVerbatim}
+  1  discus                     ! Switch to Discus section
+  2  #                          ! Define useful variables
+  3  variable integer,size_cr   ! Crystal size in unit cells
+  4  variable real,comp         ! composition copper/gold
+  5  variable real,c100         ! intended correlation along [100]
+  6  variable real,c010         ! intended correlation along [010]
+  7  variable real,a100         ! Achieved correlation along [100]
+  8  variable real,a010         ! Achieved correlation along [010]
+  9  variable real,heat         ! Pseudo temperature
+ 10  #
+ 11  size_cr = 100              ! Set crystal size
+ 12  comp = 0.5                 ! Set composition
+ 13  #
+ 14  c100 =  0.75               ! Set desired correlations
+ 15  c010 = -0.75
+ 16  heat =  1.5                ! set pseudo temperature
+ 17  #
+ 18  read                       ! Read asymmetric unit and build crystal
+ 19    cell crystal.cell, size_cr, size_cr, 1
+ 20  replace cu,Au,all,comp     ! replace cooper by gold on all sites in the 
+ 21                             !   unit cell
+ 22  chem
+ 23    set mode, quick, period, xy   ! Set proper periodic boundary conditions
+ 24    element                       ! Check composition
+ 25  exit
+ 26  #
+ 27  set parallel, useomp:parallel   ! Increase speed by parallel calculation
+\end{MacVerbatim}
+
+This header section does not contain any material that is specific to the 
+Monte-Carlo section. The definitions in lines 11 through 16 are set within this
+macro. Alternatively you can make the macros more flexible by using parameters
+{\tt \$1, \$2} etc that are passed down to the macro.
+
+The initial crystal is build in lines 18 and 19, here a simple primitive unit 
+cell with a single Copper atom at 0,0,0 is used. A fraction of the Copper atoms
+are replaced by Gold atoms in line 20. The initial distribution of these Gold
+atoms throughout the crystal is random without any correlations between Copper and Gold.
+
+Lines 22 to 25 set periodic boundary conditions along the x- and y-axes, and exclude
+these along the z-axis, as the crystal dimension along this axis is just a 
+single unit cell. These settings are actually the default upon reading a unit cell
+that is expanded to a crystal of dimension 1 along any axis. 
+
+Line 27 uses an option introduced in Version 6 to use parallel processing in 
+order to speed up the calculation. This is the default behaviour. At the 
+moment several parallel threads will modify the crystal independently during the
+Monte-Carlo run. 
+
+
+\begin{MacVerbatim}
+  1  mmc                            ! Step into the Monte-Carlo menu
+  2  rese                           ! Reset Monte-Carlo to initial state
+  3  set neig,rese                  ! Reset neighbor definitions
+  4  set vec ,rese                  ! Reset vectors between atom pairs
+  5  #
+  6  set vec,1, 1,1,  1, 0, 0       !  The first two vector pairs are for the 
+  7  set vec,2, 1,1, -1, 0, 0       !  targets
+  8  set vec,3, 1,1,  0, 1, 0       !
+  9  set vec,4, 1,1,  0,-1, 0       !
+ 10  #
+ 11  set neig,number:1,vec,1,2      ! Define a first neighborhood of vectors 1 and 2
+ 12  #
+ 13  set neig,number:next,vec,3,4   ! Define a next neighborhood
+ 14  #
+ 15  set mode, 1.0, swchem,all      ! Define the modification mode
+ 16  #
+ 17  set targ,1,corr,cu,Au,c100,0.0,CORR  !  target 1 is for [100]
+ 18  set targ,2,corr,cu,Au,c010,0.0,CORR  !  target 2 is for [010]
+ 19  #
+ 20  set cyc, 500*n[1]              ! Define number of modification cycles
+ 21  set feed, 50*n[1]              ! Define number of feedback intervals
+ 22  set temp,heat                  ! Set pseudo temperature
+ 23  set finish, stop:cycles        ! Define termination criteria
+ 24  show                           ! Show current settings
+ 25  run                            ! Start the actual Monte-Carlo run
+ 26  set vec,5, 1,1,  1, 1, 0       ! These next vectors are to check achieved
+ 27  set vec,6, 1,1, -1,-1, 0       ! correlations along additional directions
+ 28  set vec,7, 1,1,  1,-1, 0       !
+ 29  set vec,8, 1,1, -1, 1, 0       !
+ 30  exit                           ! Go back to Discus menu
+\end{MacVerbatim}
+
+This is the actual Monte-Carlo macro to perform a short range order run. After
+entering the {\tt mmc} Monte-Carlo menu, the menu is reset to the intial state
+that is encountered at program start.
+
+Lines 6 to 9 define four vectors for the pair correlations. The first number on
+the {\tt set vec} line is a numbering of all vector relationsships. The vectors
+will be referenced under these numbers in lines 11 and 13. 
+
+The next two parameters, here both set to "1" refer to the sites within the unit 
+cells for which we want to establish a correlations. To obtain the list of sites
+within a unit cell, read an asymmetric unit and expand it to a single unit cell
+with commands like:
+ 
+\begin{MacVerbatim}
+  read
+    cell crystal.cell
+  show atom, all
+\end{MacVerbatim}
+
+The list of all atoms will give you all sites within the structure.
+
+The last three parameters describe whether the two sites are within the same unit
+cell or in neighboring unit cells. The command in line 6 establishes a relationship
+between an atom on site 1 in a chosen unit cell and an atom on site 1 in the 
+neighboring unit cell separated by vector [1, 0, 0]. If there are more than one site 
+per unit cell, you could also specify a command like {\tt set vec, 5, 1, 3,  0, 0, 0} to 
+establish as 5th vector a relationship between an atom on site 1 in a unit cell and an atom on 
+site 3 within the same unit cell.
+
+In this simple example, the four pairs will be immediate neighbors separated by
+$\pm \vec{a}$ and $\pm \vec{b}$. Lines 11 and 13 group these four vectors into 
+two neighborhoods. The first neighborhood consists of vectors 1 and 2, the 
+second neighborhood of vectors 3 and 4. For all pairs of atoms related by vectors 
+within the identical neighborhood \Discus will try to achieve identical pair
+correlations. In the current example, \Discus will sort the crystal while trying 
+to attempt that all atom pairs separated by either $\vec{a}$ or $-\vec{a}$ 
+will be correlated to each other. The type of correlation will be defined by the 
+targets in lines 17 and 18. Simultaneously with the first correlation \Discus
+will sort the atoms to create the desired second correlation along 
+$\vec{b}$ and $-\vec{b}$. 
+
+The optional parameter {\tt number:1} or {\tt number:next} defines the neighborhood
+number and was introduced in version 6.7. The {\tt set target} command in 
+lines 17 and 18 refers to this numbering
+scheme. In order to enhance flexibility, you can specify the number either as a 
+value (or as an expression) or as the phrase {\tt numer:next}, which will simply
+increment the number. This increment works for the first neighborhood as well.
+
+Note that \Discus versions prior to 6.7 required a {\tt set neig, add} line
+between all neighborhood definitions, but {\bf not} after the last 
+neighborhood definitions. The corresponding macro section would have been: 
+
+\begin{MacVerbatim}
+ 10  #
+ 11  set neig,vec,1,2               ! Define a neighborhood of vectors 1 and 2
+ 12  set neig,add                   ! Add space for a next neighborhood
+ 13  set neig,vec,3,4
+ 14  #
+\end{MacVerbatim}
+
+
+Trivially, to sort the crystal, we must modify its structure. \Discus allows 
+several different modifications to be carried out while {\it optimizing} the
+structure. In this example, we only need a single type of modification, the 
+exchange of two atom types. With the 
+
+{\tt set mode, 1.0, swchem, all} 
+
+command \Discus is instructed to choose two different atoms at random locations 
+throughout the 
+crystal. The initial energy state is computed and then the two atom types are 
+exchanged. If the new energy state is lower than the inital, the new state 
+is accepted. Otherwise the exchange is rejected with a probability
+defined by Eq. \ref{mc-eq1}. 
+
+In this example only one type of modification is used, thus the probability for
+this move, the second parameter, is set to 1.0. The keyword {\tt swchem} 
+instructs \Discus to switch the chemistry of the two selected atoms. The last 
+parameter {\tt all} defines that the two atoms my be at any location throughout the 
+crystal. Other values of this last parameter allow to restrict the choice 
+of the two atoms to be in close proximity or to be at the same site within their 
+respective unit cells. See the on-line help for more details.
+
+At the core of any Monte-Carlo simulation lies the choice of the energy that is 
+to be minimized. \Discus uses the 
+
+{\tt set target, 1, corr, Cu, Au, c100, 0.0, CORR}
+
+command to achieve this definition. In the macro listed above lines 17 and 18 
+perform the task. The first numerical parameter refers to the neighborhood 
+defined in lines 11 and 13. The next parameter, in this example {\tt corr}, 
+defines the energy, here a chemical correlation or Occupational disorder as 
+defined in section \ref{mc-corr-occ}. With this correlation type the pair 
+of atom types specified in parameters 3 and 4 {\tt Cu, Au} 
+will be sorted by atom type. If you give a positive value to the correlation
+parameter \Discus will sort equal atom types as neighbors within the 
+neighborhood that the current target points to. In this example, the 
+last parameter, the string {\tt CORR} specifies that \Discus shall sort the
+structure in order to achieve a correlation value given as parameter 5. Here 
+correlation is specified as variable {\tt c100} to reflect the correlation 
+along [1 0 0]. Any other variable name or an explicit numerical value would
+of course be valid as well. The 6th parameter {\tt 0.0} is the starting value
+for the Ising interaction energy of Eq. \ref{mc-eq2}. Initially the value 
+required to achieve the desired correlation of {\tt c100} is unknown. \Discus
+uses a feedback algorithm to determine this energy term. A positive correlation
+implies a negative value of J and a negative correlation a positive value of J.
+
+As an alternative the command can be specified as 
+
+{\tt set target, 1, corr, Cu, Au, 0.0, e100, ENER}
+
+The last parameter as string {\tt ENER} tells \Discus to use a fixed value 
+of {\tt e100} for the Ising energy term J. If the value of this term is positive,
+a negative correlation will result. The exact value of the final correlation 
+depends on the pseudo temperature used to accept {\it wrong} moves, see Eq. 
+\ref{mc-eq1}.
+
+
+

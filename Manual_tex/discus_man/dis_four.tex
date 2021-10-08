@@ -76,7 +76,7 @@ chapter.
 \par
 Starting with \Discus 5.0 you can also calculate a 3-dimensional 
 volume in reciprocal space. A third axis is added to the 
-values defined in the previous macr:
+values defined in the previous macro:
 
 \begin{MacVerbatim}
      1  four
@@ -99,6 +99,77 @@ This third axis defines the {\tt top left} corner of the reciprocal
 space volume. The corresponding data can be saves as a series of slices
 parallel to the layer defined by the corners {\tt ll, lr, ul} or as a
 3D file in the NeXus file format or as a series of 2D slices.
+
+Starting with \Discus 6.06 three new features were added to the Fourier
+calculation.
+
+The first new feature allows to calculate and merge several diffraction 
+pattern. This allows you to simulate smaller crystals whose individual 
+diffraction might be rather noisy but can be calculated rapidly. The
+average of all the respective diffraction pattern will give you a smoother
+final diffraction pattern. Consider the following macro:
+
+\begin{MacVerbatim}
+     1  fourier
+     2    ...               ! Define all relevant Fourier settings
+     3    set mode:init     ! Initialize the sum of Fourier calculations
+     4  exit
+     5  do LOOP=1, 5        ! A loop over five simulations
+     6    @build_a_nice_crystal.mac   ! Details omitted, just some nice
+     7                                ! simulation with local disorder
+     8    fourier
+     9      set mode:accumulate       ! Accumulate all individual calculations
+    10      run
+    11    exit
+    12  enddo
+    13  fourier
+    14     set mode:finish            ! We are done with the accumulation
+    15  exit
+\end{MacVerbatim}
+
+The command {\tt set mode:init} initializes the accumulation of several 
+Fourier calculations. All prior calculations will be lost. To go back to
+the single mode use the Fourier command {\tt set mode:single}. Within the 
+loop the individual Fourier transforms are accumulated into temporary storage
+as indicated by the {\tt set mode:accumulate} command. Once the loop is
+finished, all pattern are merged with the final Fourrier command 
+{\tt set mode:finish}. The merged pattern is now ready to be written 
+using the {\tt output} menu.
+
+The second new feature is the option to convolute the Fourier transform
+with a Gaussian resolution function.
+
+\begin{MacVerbatim}
+     1  fourier
+     2    ...               ! Define all relevant Fourier settings
+     3    run  [ sigabs:[0.01, 1, 0, 0], sigord:[0.01, 0,1,0], sigtop:[0.01, 0,0,1]
+     4  exit
+\end{MacVerbatim}
+
+\Discus allows to define a general triaxial ellipsoid. In the first example
+above, the sigma is 0.01\AA{}$^{-1}$ along all three axes. With:
+
+\begin{MacVerbatim}
+     1  fourier
+     2    ...               ! Define all relevant Fourier settings
+     3    run  [ sigabs:[0.005, 1.0, 1.0, 0], sigord:[0.02, -1.0,1.0,0], sigtop:[0.01, 0,0,1]
+     4  exit
+\end{MacVerbatim}
+
+three different half axes have been specified. Along reciprocal space direction [110] 
+a sigma of 0.005\AA{}$^{-1}$, along [$\overline{1}10$] a sigma of 0.02\AA{}$^{-1}$
+and finally along [001] a sigma of 0.01\AA{}$^{-1}$ is used. As pointed out in this
+second example, the three half axes of the ellipsoid may point in arbitrary 
+reciprocal space directions. They do not even have to be at mutual 90$^\circ$ to each 
+other.
+
+The third enhancement involves symmetry averaging. If requested, the crystals 
+point group symmetry is used to average the calculated diffraction pattern. 
+Currently the abscissa, ordinate and top axes must be parallel to a$^{*}$, 
+b$^{*}$ and c$^{*}$ respectively. The center need not be at the origin of 
+reciprocal space.  The average will work most evenly, however, if the center of the
+calculated data is at the origin.
+
 \par
 %------------------------------------------------------------------------
 
@@ -164,7 +235,7 @@ listed in the help file and the command reference.
 
 All results of the Fourier transforms are written at the {\tt
 output} segment of {\Discus}.  The following values can be saved
-after you have calculated a singel crystal diffraction pattern:
+after you have calculated a single crystal diffraction pattern:
 %
 \begin{quote}
         {\it intensity, amplitude, real part, imaginary part, 
@@ -178,7 +249,7 @@ Following a powder diffraction pattern calculation, you can write:
              and the powder PDF}
 \end{quote}
 %
-The single crystal Fourier transform calculates the real and i
+The single crystal Fourier transform calculates the real and 
 imaginary part, all
 other values are calculated at the time of output.  If the average
 structure factor $\langle F \rangle$ was subtracted during the
@@ -202,6 +273,11 @@ table \ref{out-tab}.
                {\Kuplot} which is part of the {\Discus} program
                package. \\
   \hline
+  {\tt hdf5} &  Create output in an HDF5 file format. \\
+  \hline
+  {\tt vesta} &  Create output in an ASCII file format suitable
+                for input into the VESTA programm. \\
+  \hline
   {\tt mrc} &  Create output in the MRC file format. \\
   \hline
   {\tt nexus} & Output is saved in the NeXus file format. See
@@ -222,7 +298,7 @@ table \ref{out-tab}.
                  to be imported by other programs. \\
   \hline
 \end{tabularx}
-\caption{\label{out-tab}Output formats for scattering intensities}
+\caption{\label{out-tab}Output formats for single crystal scattering intensities}
 \end{table}
 %
 The standard and gnu output formats write the actual numbers calculated by the
@@ -252,6 +328,43 @@ index as 'ymin'.  The values are written row by row, each row
 consisting of the values along the abscissa.  An empty line
 separates the rows in the output file.\par
 
+The {it HDF5} output is a binary file written with the help of
+the HDF5 library. Currently the format is compatible to the 
+data read by {\bf Yell}, the 3D-PDF program by Arkadiy Simonov.
+The \Kuplot section can read these files and step through the 3D-data.
+
+Two file formats are intended to visualize 3D data with external 
+programs such as Vesta and Chimera. For the Vesta program, 
+\Discus writes two files, the {\tt base.vesta} and the {\tt base.grd}
+files. The first contains display setting read by Vesta, while the
+second file is an ASCII 3D bitap of the scattering data. Likewise,
+the {\tt base.mrc} data are 3D data which can be read and displayed
+for example with Chimera. 
+
+As bitmaps for 3D-PDF calculations can be large, \Discus offers 
+the option to write only a reduced section of the output into these
+bitmaps. The {\tt range} command has several optional parameters to 
+place and restrict the output range.
+
+\begin{MacVerbatim}
+    1  output
+    2    ...
+    3    range full    ! write full range of the bitmap
+    4    range center:middle, pixel:[41, 51, 61]  
+    5    range center:[101,131,51], pixel:[41, 51, 61]  
+    6    range quad:llr
+\end{MacVerbatim}
+
+With line 3, the full range of the bitmap would be written into the output
+file. Line 4 defines the center of the section at the middle of the complete
+data set and writes a bitmap of full width with [41, 51, 61] pixels along
+the three axes. With a command like in line 6 the center of the data is 
+placed at the specified coordinate. Finally the option presented in line 6
+will write a quadrant/octant of the data. These will always include the center 
+of the complete data set and one of the four/eight possible quadrants/octants. 
+In the example along the first two axes the left half is chosen and along the 
+third axis the right half. 
+
 The {\it GNUPLOT} output is written row by row, each data point
 within each row in its own line of output.  The format of one such
 row is: "$ h_{1}, h_{2}, z-value, h_{3}$".  Again the sequence of
@@ -263,5 +376,29 @@ are set to zero, all values above a maximum threshold are set to
 255. Again, the bitmap is written row by row.  A color map included
 in file {\it color.map} is used to attribute colors to the output
 values.
+
+Table \ref{out-tab-pow} shows the output options for powder diffraction data.
+Possible values were listed at the beginning of this section.
+
+%
+\begin{table}[!tbh]
+\centering
+\begin{tabularx}{\textwidth}{|p{42mm}|X|}
+  \hline
+  {\bf Output format} & {\bf Description} \\
+  \hline\hline
+  {\tt powder} & Output is saved as powder diffraction data in a
+               simple two column ASCII file. Data can be written on a
+               2Theta of Q scale as defined by the first parameter.
+               Optionally the range of data along the chosen scale
+               can be limited. These settings are independent of the 
+               scale on which the data were calculated.\\
+  \hline
+  {\tt pdf} &  The powder diffraction data are converted into the 1D-powder 
+               PDF. \Discus takes care of the scaling and normalization.\\
+  \hline
+\end{tabularx}
+\caption{\label{out-tab-pow}Output formats for powder diffraction data.}
+\end{table}
 
 %------------------------------------------------------------------------

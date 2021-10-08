@@ -80,7 +80,7 @@ with a section with keywords setting parameters like lattice
 constants or space group followed by a section with the actual
 atoms. The sequence of keywords is arbitrary with two exceptions,
 the first line {\bf must} contain the keyword {\tt title} setting a
-title and the last keyword {\bf must} be i{\tt atoms} followed by a list of
+title and the last keyword {\bf must} be {\tt atoms} followed by a list of
 atoms and/or molecule definitions (see section \ref{mol}). Each atom
 within the asymmetric unit or complete structure is defined 
 at least by its
@@ -217,8 +217,8 @@ space\_group' from the \Discus command line.
 The next line in the
 example above gives the lattice constants of $a=b=c=5.14$\AA \ and
 $\alpha=\beta=\gamma=90$ degrees.  Note that \Discus requires
-all six values to be given.  The keyword 'atoms' in the example file
-which must be the last keyword starts the section with the list of
+all six values to be given.  The keyword 'atoms' in the structure file
+header must be the last keyword. It starts the section with the list of
 atoms.  Here zirconium occupies site 4(a) on (0,0,0) and oxygen is
 on 8(f) at ($\frac{1}{4}, \frac{1}{4}, \frac{1}{4}$).  The isotropic
 temperature factors for Zr and O are set to 0.5 \AA$^{2}$ and 1.0
@@ -531,7 +531,10 @@ on the sequence of generation. \par
 
 The command {\tt trans} in the {\tt chem} sub level of \Discus
 allows to transform between the index of an atom and its unit cell
-and site number. Alternatively the atom index $l'$ for an atom on
+and site number. Likewise the general \discus command
+{\tt index2cell} can be used for this calculation. 
+
+Alternatively the atom index $l'$ for an atom on
 site $l$ in unit cell $i,j,k$ can be calculated using the following
 equation:
 
@@ -552,7 +555,9 @@ CPU time for the Fourier transform and disk space when saving a
 structure, the {\tt purge} command may be applied which will delete
 all empty sites in the crystal and the given relation between atom
 index and unit cell/site is invalid.  The authors generally do {\bf
-not} recommend the usage of the 'purge' command.
+not} recommend the usage of the 'purge' command. The {\tt purge} 
+command will be useful as last step prior to a lengthy calculation of
+a powder diffraction pattern via the Debye-Scattering-Equation.
 
 %------------------------------------------------------------------------
 
@@ -787,6 +792,9 @@ open JMOL, if JAVA and JMOL have been installed on your computer.
 On computers with Linux or MacOS, you need to install JAVA and JMOL. 
 The Windows version includes a JMOL executable. You still need to 
 install the Java Run time Environment JRE. 
+
+As of versions {tt 6.00} and later, the JAVA installation is done
+automatically.
 
 To start a JMOL window, set the program to "jmol" and include 
 on the {\tt run} command line
