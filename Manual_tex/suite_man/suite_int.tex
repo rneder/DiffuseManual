@@ -6,7 +6,7 @@
 \section{What is DISCUS\_SUITE ?}
 
 The \Suite is a combination of the components of the DISCUS program 
-suite. It includes the sections alone programs 
+suite. It includes the sections 
 \href{./discus\_man.pdf}\discus, 
 \href{./diffev\_man.pdf}\diffev, 
 \href{./refine\_man.pdf}\refine, and
@@ -24,6 +24,13 @@ perform nearly no I/O during the refinement.
 See the \Diffev and \Refine manuals for full details of the 
 refinement process.
 
+As of Versions 6.02.00 and later, the \Suite is compiled with
+OpenMP, a standard for parallel processing. This will accelerate
+the calculations: powder, fourier and mmc within \discus. See the
+command language documentation for the commands {\tt set} and
+{\tt show} to control the number of parallel threads that will be 
+executed.
+
 %------------------------------------------------------------------------
 
 \section{Getting started \label{intro-get}}
@@ -35,7 +42,7 @@ Once the \Suite has been installed you should see an icon called
 on your personal desktop. Double click the icon to start
 the program of your choice.
 
-At program start, each of the programs sets its starting folder to\\
+At program start, \Suite sets its starting folder to\\
 \begin{MacVerbatim}
    C:\Users\your_name
 \end{MacVerbatim}
@@ -156,6 +163,29 @@ and should give some insight in the ways to use this program. \par
 \caption{\label{sym-tab}Used symbols}
 \end{table}
 
+\subsubsection{Autorun a startup macro \label{intro-auto}}
+
+As of version 6.03.00 and later the \suite will look for a 
+macro file called {\tt autorun.mac} within the starting 
+folder. If this macro is found, the commands within this macro
+are executed prior to any further action. 
+
+Use this feature to customize default behavior.
+At Windows the macro "autorun.mac" must be placed into the 
+folder:  
+\begin{MacVerbatim}
+   C:\Users\your_name
+\end{MacVerbatim}
+Make sure to delete, move or rename this macro file if you want to 
+disable the autorun feature.
+
+For Linux and MacOS, the \Suite looks for the macro file
+in the current directory at which you start the program. 
+You can disable its use by moving, renaming, or deleting the
+macro. Alternatively, if you use the command line option
+{\tt -noautorun} a macro {\tt autorun.mac} will be ignored.
+See the secion \ref{intro-cmd} for further details on command 
+line options.
 
 \subsubsection{Command line options \label{intro-cmd}}
 Several command line options are available for the Linux  and
@@ -174,10 +204,30 @@ The actual strings that
 you provide for par1, par2, par3 are handed down as parameters to
 this macro. Note that there are no comma between the parameters.
 
+another command line option is {\tt -noautorun}. If used as in:
+\begin{MacVerbatim}
+discus_suite -noautorun
+discus_suite -noautorun -macro useful.mac
+discus_suite -noautorun -macro useful_with_params.mac  par1 par2 par3
+\end{MacVerbatim}
+the macro {\tt autorun.mac} is ignored, even if it is present 
+within the start directory. If the command line option is 
+omitted the macro {\tt autorun.mac} if performed prior to any
+further action of \suite.
+
 For info on further command line options the the on-line help for
 the Command language.
 
 \subsection{Major Updates in this last version}
+
+In \Suite version 6.02 several of the time consuming calculations have
+been moved to an automatic parallel calculation using openMP, a standard
+for parallel calculations. See the section {\tt Parallel computing} in 
+the general package manual 
+\href{./package\_man.pdf}{DISCUS package} for further details. This internal
+parallel mode should not be confused with the explicit parallel calculation as 
+described in section \ref{intro-par} in this manual.
+\\
 
 In \Suite version 6.00 several new features were introduced:
 
