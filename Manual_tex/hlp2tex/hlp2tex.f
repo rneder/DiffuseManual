@@ -80,7 +80,7 @@ c
 	integer		i,j,il,len_str
 c
 	outline = ' '
-	il = len_str(zeile)
+	il = len_trim(zeile)
 	j=1
 	do i=1,il
 	  if (zeile(i:i).eq.'{') then
