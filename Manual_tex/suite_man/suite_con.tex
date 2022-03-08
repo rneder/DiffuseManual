@@ -5,28 +5,31 @@
 \chapter{Concepts \label{concepts}}
 \section{Quick overview } 
 
-The purpose of the \Suite is to run a combination of 
+The purpose of the \Suite is to run a combination of the sections: 
 \href{./diffev\_man.pdf}\diffev, 
 \href{./discus\_man.pdf}\discus,
 \href{./refine\_man.pdf}\refine, 
 and 
 \href{./kuplot\_man.pdf}\Kuplot within a single program. The \Suite 
-should for all practical reasons be the main program you start.
-It main application  will be a 
-run on a massive parallel system, but it will already pose an 
-improvement on a multi-core laptop. \Suite uses MPI to distribute 
-a part of its workload onto several processes. The original \Diffev
-starts \Discus as a separate slave program. This means that at each refinement
-cycle \Discus has to read all macros, and other relevant information over and 
-over again. This causes a lot of unnecessary I/O, which puts a considerable
-burden onto the central disk system.
+will be the initial section upon program start. This level serves
+as a simple rooftop to the individual sections, which do the main
+work. 
 
-As \Suite includes \diffev, \discus, \Refine and \Kuplot within one single program,
-all relevant input can be read once at the beginning of the refinement cycle.
-It will from there on be kept in internal memory, thus eliminating the need of
-further input. This includes the trial parameters as well as the result values.
-Within \suite, the need to write these files onto the disk no longer exists and 
-\Suite instructs \Diffev to store these values only internally.  
+%It main application  will be a 
+%run on a massive parallel system, but it will already pose an 
+%improvement on a multi-core laptop. \Suite uses MPI to distribute 
+%a part of its workload onto several processes. The original \Diffev
+%starts \Discus as a separate slave program. This means that at each refinement
+%cycle \Discus has to read all macros, and other relevant information over and 
+%over again. This causes a lot of unnecessary I/O, which puts a considerable
+%burden onto the central disk system.
+
+%As \Suite includes \diffev, \discus, \Refine and \Kuplot within one single program,
+%all relevant input can be read once at the beginning of the refinement cycle.
+%It will from there on be kept in internal memory, thus eliminating the need of
+%further input. This includes the trial parameters as well as the result values.
+%Within \suite, the need to write these files onto the disk no longer exists and 
+%\Suite instructs \Diffev to store these values only internally.  
 
 As the main tasks are still performed within the sections \diffev, \discus,
 \refine and \kuplot, the actual set of commands within \Suite is very limited. 
