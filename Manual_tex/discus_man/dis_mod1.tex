@@ -365,4 +365,96 @@ Both, the "atomtype" and "atomrange" and the property selection impose
 conditions that must be met, they
 are interpreted as a logical AND with the "moletype" and "molerange" parameters.
 
+\section{Creating a periodic structure \label{mod-per}}
+
+Under several circumstances, the current structure might not be periodic or at least 
+might not correspond to the sequence of atoms and unit cells as generated upon the 
+expansion of an asymmetric unit, see chapter \ref{struc}. A simple
+example might be the structure after you purged vacancies. Other more involved
+examples might result from the introduction of domains, see \ref{mod-domain}, or
+if the crystal was build using stacking faults, see \ref{mod-stack}. Finally, the 
+sequence of atoms generated for other programs like RMCprofile, molecular dynamics 
+programs or DFT like programs will likely be different from the sequence use 
+by \discus.
+
+For fast calculations within \Discus it is often desireable to have the atoms
+arranged in the strict sequence as generated in chapter \ref{struc}. This 
+sequence allow \Discus to find neighboring atoms much faster as the search is 
+restricted to a few unit cells. These searches are perfomed at many parts of 
+the program. It is thus desireable to be able to sort the atoms of a given 
+structure in this standard sequence. 
+
+The {\tt perioditize} menu has been designed to perform this task. Under 
+opportune circumstances it will do the job completely automatically, but it 
+will most likely to 
+be helped by providing information such as the number of unit cells, the 
+number of atoms per unit cell and the sites within the unit cell.
+
+A simple macro to perform the task might be:
+
+\begin{MacVerbatim}
+1  perioditize
+2    set ncell, 3,4,5
+3    set natoms, 8
+4    run
+5  exit
+\end{MacVerbatim}
+
+The {\tt ncell} command defines that the crystal consists of the given 
+number of unit cells along the three axes. The {\tt natoms} command defines the
+number of atoms per unit cell. As no {\tt set pos} command is given, 
+the program will attempt to automatically establish the actual positions 
+within the average unit cell. 
+
+The task is much simpler if the user specifies the actual sites within the 
+average unit cell. this can be done within the {\tt perioditize} menu
+with 
+\begin{MacVerbatim}
+1  set site, atoms:[names], pos:[x,y,z], number:value
+\end{MacVerbatim}
+Both, the {\tt atoms:} and the {\tt pos:} parameters are required. The
+{\tt atoms:} parameter defines which atom types may occupy the given site. 
+Atom names can be spcifies as list of current atom names or alternatively 
+as the string {\tt all} to imply all atom types. The parameters to the 
+{\tt pos} parameter must specify fractional coordinates in the range [0,1].
+The {\tt number} parameter is optional and mainly serves to correct 
+previous settings.
+
+In case of a structure with many symmetrically equivalent sites, it will
+be more compfortable to use the equivalent command:
+\begin{MacVerbatim}
+1  set wyck, atoms:[names], pos:[x,y,z]
+\end{MacVerbatim}
+In contrast to {\tt set site} this version creates all symmetrically 
+equivalent Wyckoff sites for the position [x,y,z]. It uses the current 
+space group. As several sites will be generated, {\tt set wyck} does not
+use the {\tt number:} parameter, and the new sites will be placed into
+the next free spaces. 
+
+There are many cases under which a structure cannot be rearranged in a
+periodic fashion since the underlying actual structure simply is not
+periodic or differs too widely for the current algorithm to cope. 
+Examples include:
+
+\begin{tabularx}{\textwidth}{|p{30mm}|X|}
+  \hline
+  {\bf Example} & {\bf Description} \\
+  \hline\hline
+  amorphous    & A truly amorphous structure such as a glass or liquid 
+                 cannot be expressed as a periodif structure. \\
+  composite    & A structure that consists of blocks with different 
+                 internal lattice parameters. This could be an inclusion
+                 compound or a layered structure.\\
+  core/shell   & Nanaoparticles whose core differs in its structure
+                 from the shell.\\
+  stacks       & The result of stacking faults will in most cases yield
+                 an inherently non-periodic structure. This holds in 
+                 particular if the translation vectors are not simple
+                 rational numbers. \\
+  finite       & For a finite object created with the surface menu large
+                 fractions might be missing. These can only be reconstructed
+                 if the full site, unit cell number and atoms per unit 
+                 cell is given.\\
+  \hline
+\end{tabularx}
 %------------------------------------------------------------------------
